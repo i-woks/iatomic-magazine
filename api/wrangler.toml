@@ -1,0 +1,23 @@
+name = "iatomic-api"
+main = "src/index.ts"
+compatibility_date = "2024-05-12"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+API_BASE_PATH = "/api"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "iatomic-db"
+database_id = ""
+
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "iatomic-media"
+
+[[kv_namespaces]]
+binding = "CACHE"
+id = ""
+
+[env.production]
+name = "iatomic-api"

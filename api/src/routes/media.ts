@@ -1,0 +1,23 @@
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
+import { eq, desc } from "drizzle-orm";
+import { media } from "../db/schema";
+import { createDb } from "../db";
+import { requireAuth } from "../middleware/auth";
+import { createApp } from "../lib/hono";
+const app = createApp();
+const MAX = 5 * 1024 * 1024;
+const ALLOWED = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"];
+const uploadSchema = z.object({ alt: z.string().max(500).optional().nullable() });
+app.get("/", async (c) => { const db = createDb(c.env.DB); const items = await db.select().from(media).orderBy(desc(media.createdAt)).limit(100); return c.json({ data: items }); });
+app.post("/", requireAuth, zValidator("form", uploadSchema), async (c) => {
+  const body = await c.req.parseBody({ all: false }); const file = body.file as File | undefined; if (!file) return c.json({ error: "No file" }, 400);
+  if (!ALLOWED.includes(file.type)) return c.json({ error: "Invalid type" }, 400); if (file.size > MAX) return c.json({ error: "Too large" }, 400);
+  const ext = file.name.split(".").pop()?.toLowerCase() || "bin"; const safeExt = /^[a-z0-9]+$/.test(ext) ? ext : "bin"; const key = `media/${crypto.randomUUID()}.${safeExt}`;
+  await c.env.MEDIA_BUCKET.put(key, file);
+  const db = createDb(c.env.DB); const [item] = await db.insert(media).values({ r2Key: key, url: `/api/media/file/${key}`, alt: (body.alt as string) || null, mimeType: file.type, size: file.size }).returning();
+  return c.json({ data: item }, 201);
+});
+app.get("/file/:key", async (c) => { const key = c.req.param("key"); if (key.includes("..") || key.startsWith("/")) return c.json({ error: "Invalid key" }, 400); const obj = await c.env.MEDIA_BUCKET.get(key); if (!obj) return c.json({ error: "Not found" }, 404); const h = new Headers(); obj.writeHttpMetadata(h); h.set("etag", obj.httpEtag); h.set("cache-control", "public, max-age=31536000, immutable"); return new Response(obj.body, { headers: h }); });
+app.delete("/:id", requireAuth, async (c) => { const id = parseInt(c.req.param("id"), 10); const db = createDb(c.env.DB); const item = await db.query.media.findFirst({ where: eq(media.id, id) }); if (!item) return c.json({ error: "Not found" }, 404); await c.env.MEDIA_BUCKET.delete(item.r2Key); await db.delete(media).where(eq(media.id, id)); return c.json({ success: true }); });
+export default app;

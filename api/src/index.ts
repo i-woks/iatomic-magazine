@@ -1,0 +1,17 @@
+import { cors } from "hono/cors";
+import { logger } from "hono/logger";
+import { createApp } from "./lib/hono";
+import { optionalAuth } from "./middleware/auth";
+import authRoutes from "./routes/auth";
+import postsRoutes from "./routes/posts";
+import categoriesRoutes from "./routes/categories";
+import tagsRoutes from "./routes/tags";
+import mediaRoutes from "./routes/media";
+import settingsRoutes from "./routes/settings";
+const app = createApp();
+app.use("*", cors({ origin: (origin) => origin, allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], allowHeaders: ["Content-Type", "Authorization"], credentials: true }));
+app.use(logger()); app.use(optionalAuth);
+app.get("/health", (c) => c.json({ status: "ok" }));
+app.route("/auth", authRoutes); app.route("/posts", postsRoutes); app.route("/categories", categoriesRoutes); app.route("/tags", tagsRoutes); app.route("/media", mediaRoutes); app.route("/settings", settingsRoutes);
+app.get("/", async (c) => { const db = (await import("./db")).createDb(c.env.DB); const { getPublicSettings } = await import("./routes/settings"); const s = await getPublicSettings(db); return c.json({ name: s.siteName, description: s.siteDescription, instagram: s.instagramUrl }); });
+export default app;

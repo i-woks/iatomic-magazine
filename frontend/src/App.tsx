@@ -1,0 +1,49 @@
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { ThemeProvider } from "@/hooks/useTheme";
+import { AuthProvider } from "@/hooks/useAuth";
+import { PublicLayout } from "@/components/layout/PublicLayout";
+import { AdminLayout } from "@/components/layout/AdminLayout";
+import { HomePage } from "@/pages/HomePage";
+import { ArticlePage } from "@/pages/ArticlePage";
+import { CategoryPage } from "@/pages/CategoryPage";
+import { SearchPage } from "@/pages/SearchPage";
+import { AboutPage } from "@/pages/AboutPage";
+import { ContactPage } from "@/pages/ContactPage";
+import { AdminLoginPage } from "@/pages/AdminLoginPage";
+import { AdminDashboardPage } from "@/pages/AdminDashboardPage";
+import { AdminPostsPage } from "@/pages/AdminPostsPage";
+import { AdminPostEditPage } from "@/pages/AdminPostEditPage";
+import { AdminCategoriesPage } from "@/pages/AdminCategoriesPage";
+import { AdminMediaPage } from "@/pages/AdminMediaPage";
+import { AdminSettingsPage } from "@/pages/AdminSettingsPage";
+export function App() {
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<PublicLayout />}>
+              <Route index element={<HomePage />} />
+              <Route path="article/:slug" element={<ArticlePage />} />
+              <Route path="category/:slug" element={<CategoryPage />} />
+              <Route path="search" element={<SearchPage />} />
+              <Route path="about" element={<AboutPage />} />
+              <Route path="contact" element={<ContactPage />} />
+            </Route>
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboardPage />} />
+              <Route path="posts" element={<AdminPostsPage />} />
+              <Route path="posts/new" element={<AdminPostEditPage />} />
+              <Route path="posts/:id/edit" element={<AdminPostEditPage />} />
+              <Route path="categories" element={<AdminCategoriesPage />} />
+              <Route path="media" element={<AdminMediaPage />} />
+              <Route path="settings" element={<AdminSettingsPage />} />
+            </Route>
+            <Route path="/admin/login" element={<AdminLoginPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
+  );
+}

@@ -1,0 +1,14 @@
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
+import { eq, desc } from "drizzle-orm";
+import { tags } from "../db/schema";
+import { createDb } from "../db";
+import { requireAuth } from "../middleware/auth";
+import { toSlug } from "../lib/helpers";
+import { createApp } from "../lib/hono";
+const app = createApp();
+const schema = z.object({ name: z.string().min(1).max(50) });
+app.get("/", async (c) => { const db = createDb(c.env.DB); const items = await db.select().from(tags).orderBy(desc(tags.id)).limit(200); return c.json({ data: items }); });
+app.post("/", requireAuth, zValidator("json", schema), async (c) => { const { name } = c.req.valid("json"); const db = createDb(c.env.DB); const slug = toSlug(name); if (await db.query.tags.findFirst({ where: eq(tags.slug, slug) })) return c.json({ error: "Tag exists" }, 409); const [tag] = await db.insert(tags).values({ name, slug }).returning(); return c.json({ data: tag }, 201); });
+app.delete("/:id", requireAuth, async (c) => { const id = parseInt(c.req.param("id"), 10); const db = createDb(c.env.DB); await db.delete(tags).where(eq(tags.id, id)); return c.json({ success: true }); });
+export default app;

@@ -1,0 +1,3 @@
+import { cva, type VariantProps } from "class-variance-authority"; import * as React from "react"; import { cn } from "@/lib/utils";
+const v = cva("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors duration-120", { variants: { variant: { default: "bg-ios-blue-soft text-ios-blue", secondary: "bg-fill-secondary text-label-secondary", outline: "border border-separator-opaque text-label-secondary" } }, defaultVariants: { variant: "default" } });
+export function Badge({ className, variant, ...p }: React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof v>) { return <div className={cn(v({ variant }), className)} {...p} />; }
