@@ -6,18 +6,82 @@ import { createDb } from "../db";
 import { requireAuth } from "../middleware/auth";
 import { createApp } from "../lib/hono";
 const app = createApp();
+
 const MAX = 5 * 1024 * 1024;
 const ALLOWED = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"];
 const uploadSchema = z.object({ alt: z.string().max(500).optional().nullable() });
-app.get("/", async (c) => { const db = createDb(c.env.DB); const items = await db.select().from(media).orderBy(desc(media.createdAt)).limit(100); return c.json({ data: items }); });
+
+function sanitizeFilename(name: string): string {
+  return name.replace(/[^a-zA-Z0-9_.-]/g, "_").replace(/_{2,}/g, "_").substring(0, 100);
+}
+
+function generateKey(filename: string): string {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, "0");
+  const base = sanitizeFilename(filename);
+  const ext = base.split(".").pop() || "bin";
+  const random = crypto.randomUUID();
+  return `media/${y}/${m}/${random}.${ext}`;
+}
+
+async function getImageDimensions(file: File): Promise<{ width: number | null; height: number | null }> {
+  return { width: null, height: null };
+}
+
+app.get("/", requireAuth, async (c) => {
+  const db = createDb(c.env.DB);
+  const items = await db.select().from(media).orderBy(desc(media.createdAt)).limit(100);
+  return c.json({ data: items });
+});
+
 app.post("/", requireAuth, zValidator("form", uploadSchema), async (c) => {
-  const body = await c.req.parseBody({ all: false }); const file = body.file as File | undefined; if (!file) return c.json({ error: "No file" }, 400);
-  if (!ALLOWED.includes(file.type)) return c.json({ error: "Invalid type" }, 400); if (file.size > MAX) return c.json({ error: "Too large" }, 400);
-  const ext = file.name.split(".").pop()?.toLowerCase() || "bin"; const safeExt = /^[a-z0-9]+$/.test(ext) ? ext : "bin"; const key = `media/${crypto.randomUUID()}.${safeExt}`;
+  const body = await c.req.parseBody({ all: false });
+  const file = body.file as File | undefined;
+  if (!file) return c.json({ error: "No file" }, 400);
+  if (!ALLOWED.includes(file.type)) return c.json({ error: "Invalid file type. Allowed: jpg, jpeg, png, webp, svg, gif" }, 400);
+  if (file.size > MAX) return c.json({ error: "File too large. Max 5MB" }, 400);
+
+  const key = generateKey(file.name);
   await c.env.MEDIA_BUCKET.put(key, file);
-  const db = createDb(c.env.DB); const [item] = await db.insert(media).values({ r2Key: key, url: `/api/media/file/${key}`, alt: (body.alt as string) || null, mimeType: file.type, size: file.size }).returning();
+
+  const publicBase = (c.env as any).PUBLIC_MEDIA_BASE_URL || "";
+  const url = publicBase ? `${publicBase}/${key}` : `/api/media/file/${key}`;
+  const dimensions = await getImageDimensions(file);
+
+  const db = createDb(c.env.DB);
+  const [item] = await db.insert(media).values({
+    r2Key: key,
+    url,
+    alt: (body.alt as string) || null,
+    mimeType: file.type,
+    size: file.size,
+    width: dimensions.width,
+    height: dimensions.height,
+  }).returning();
   return c.json({ data: item }, 201);
 });
-app.get("/file/:key", async (c) => { const key = c.req.param("key"); if (key.includes("..") || key.startsWith("/")) return c.json({ error: "Invalid key" }, 400); const obj = await c.env.MEDIA_BUCKET.get(key); if (!obj) return c.json({ error: "Not found" }, 404); const h = new Headers(); obj.writeHttpMetadata(h); h.set("etag", obj.httpEtag); h.set("cache-control", "public, max-age=31536000, immutable"); return new Response(obj.body, { headers: h }); });
-app.delete("/:id", requireAuth, async (c) => { const id = parseInt(c.req.param("id"), 10); const db = createDb(c.env.DB); const item = await db.query.media.findFirst({ where: eq(media.id, id) }); if (!item) return c.json({ error: "Not found" }, 404); await c.env.MEDIA_BUCKET.delete(item.r2Key); await db.delete(media).where(eq(media.id, id)); return c.json({ success: true }); });
+
+app.get("/file/:key", async (c) => {
+  const key = c.req.param("key");
+  if (key.includes("..") || key.startsWith("/")) return c.json({ error: "Invalid key" }, 400);
+  const obj = await c.env.MEDIA_BUCKET.get(key);
+  if (!obj) return c.json({ error: "Not found" }, 404);
+  const h = new Headers();
+  obj.writeHttpMetadata(h);
+  h.set("etag", obj.httpEtag);
+  h.set("cache-control", "public, max-age=31536000, immutable");
+  return new Response(obj.body, { headers: h });
+});
+
+app.delete("/:id", requireAuth, async (c) => {
+  const id = parseInt(c.req.param("id"), 10);
+  const db = createDb(c.env.DB);
+  const item = await db.query.media.findFirst({ where: eq(media.id, id) });
+  if (!item) return c.json({ error: "Not found" }, 404);
+  await c.env.MEDIA_BUCKET.delete(item.r2Key);
+  await db.delete(media).where(eq(media.id, id));
+  return c.json({ success: true });
+});
+
 export default app;

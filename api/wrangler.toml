@@ -7,6 +7,7 @@ account_id = "144fbcd4f86a4569675d40cd5804d6e4"
 
 [vars]
 API_BASE_PATH = "/api"
+# PUBLIC_MEDIA_BASE_URL = "https://pub-xxx.r2.dev"  # uncomment if you configure a public R2 domain
 
 [[d1_databases]]
 binding = "DB"

@@ -16,6 +16,10 @@ import { AdminPostEditPage } from "@/pages/AdminPostEditPage";
 import { AdminCategoriesPage } from "@/pages/AdminCategoriesPage";
 import { AdminMediaPage } from "@/pages/AdminMediaPage";
 import { AdminSettingsPage } from "@/pages/AdminSettingsPage";
+
+const ADMIN_BASE_PATH = import.meta.env.VITE_ADMIN_BASE_PATH || "/control/iatomic-panel";
+
+export { ADMIN_BASE_PATH };
 export function App() {
   return (
     <ThemeProvider>
@@ -30,7 +34,7 @@ export function App() {
               <Route path="about" element={<AboutPage />} />
               <Route path="contact" element={<ContactPage />} />
             </Route>
-            <Route path="/admin" element={<AdminLayout />}>
+            <Route path={ADMIN_BASE_PATH} element={<AdminLayout />}>
               <Route index element={<AdminDashboardPage />} />
               <Route path="posts" element={<AdminPostsPage />} />
               <Route path="posts/new" element={<AdminPostEditPage />} />
@@ -39,7 +43,7 @@ export function App() {
               <Route path="media" element={<AdminMediaPage />} />
               <Route path="settings" element={<AdminSettingsPage />} />
             </Route>
-            <Route path="/admin/login" element={<AdminLoginPage />} />
+            <Route path={`${ADMIN_BASE_PATH}/login`} element={<AdminLoginPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Save, AlertCircle } from "lucide-react";
+import { Save, AlertCircle, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Select } from "@/components/ui/Select";
-import { fetchSettings, updateSettings, fetchAdminPosts } from "@/lib/api";
+import { fetchSettings, updateSettings, fetchAdminPosts, uploadMedia } from "@/lib/api";
 import type { Post } from "@/types";
 
 export function AdminSettingsPage() {
@@ -17,31 +17,34 @@ export function AdminSettingsPage() {
   const [siteName, setSiteName] = useState("");
   const [siteDescription, setSiteDescription] = useState("");
   const [logoUrl, setLogoUrl] = useState("");
+  const [logoAlt, setLogoAlt] = useState("");
   const [instagramUrl, setInstagramUrl] = useState("");
   const [baseSeoTitle, setBaseSeoTitle] = useState("");
   const [baseSeoDescription, setBaseSeoDescription] = useState("");
   const [featuredPostId, setFeaturedPostId] = useState<number | "">("");
   const [homepagePostCount, setHomepagePostCount] = useState(12);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
 
   useEffect(() => {
     Promise.all([fetchSettings(), fetchAdminPosts()])
       .then(([s, p]) => {
-        const data = s.data;
+        const d = s.data;
         setPosts(p.data);
-        setSiteName(data.siteName);
-        setSiteDescription(data.siteDescription);
-        setLogoUrl(data.logoUrl || "");
-        setInstagramUrl(data.instagramUrl);
-        setBaseSeoTitle(data.baseSeoTitle);
-        setBaseSeoDescription(data.baseSeoDescription);
-        setFeaturedPostId(data.featuredPostId || "");
-        setHomepagePostCount(data.homepagePostCount);
+        setSiteName(d.siteName);
+        setSiteDescription(d.siteDescription);
+        setLogoUrl(d.logoUrl || "");
+        setLogoAlt(d.logoAlt || "");
+        setInstagramUrl(d.instagramUrl);
+        setBaseSeoTitle(d.baseSeoTitle);
+        setBaseSeoDescription(d.baseSeoDescription);
+        setFeaturedPostId(d.featuredPostId || "");
+        setHomepagePostCount(d.homepagePostCount);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setSuccess(false);
@@ -51,6 +54,7 @@ export function AdminSettingsPage() {
         siteName,
         siteDescription,
         logoUrl: logoUrl || undefined,
+        logoAlt: logoAlt || undefined,
         instagramUrl,
         baseSeoTitle,
         baseSeoDescription,
@@ -62,6 +66,21 @@ export function AdminSettingsPage() {
       setError(err.message);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingLogo(true);
+    setError(null);
+    try {
+      const res = await uploadMedia(file, logoAlt || "iAtomic logo");
+      setLogoUrl(res.data.url);
+    } catch (err: any) {
+      setError(err.message || "خطا در آپلود لوگو");
+    } finally {
+      setUploadingLogo(false);
     }
   };
 
@@ -89,7 +108,7 @@ export function AdminSettingsPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={submit} className="space-y-6">
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-1.5">
             <Label>نام سایت</Label>
@@ -99,9 +118,23 @@ export function AdminSettingsPage() {
             <Label>توضیحات سایت</Label>
             <Input value={siteDescription} onChange={(e) => setSiteDescription(e.target.value)} />
           </div>
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 md:col-span-2">
             <Label>آدرس لوگو</Label>
-            <Input value={logoUrl} onChange={(e) => setLogoUrl(e.target.value)} dir="ltr" />
+            <Input value={logoUrl} onChange={(e) => setLogoUrl(e.target.value)} dir="ltr" placeholder="/logo.jpg" />
+          </div>
+          <div className="space-y-1.5">
+            <Label>متن جایگزین لوگو (alt)</Label>
+            <Input value={logoAlt} onChange={(e) => setLogoAlt(e.target.value)} placeholder="iAtomic Logo" />
+          </div>
+          <div className="space-y-1.5">
+            <Label>آپلود لوگو</Label>
+            <div className="flex items-center gap-2">
+              <label className="inline-flex cursor-pointer items-center gap-2 rounded-ios border border-separator-opaque bg-bg-primary px-4 py-2 text-sm text-label-primary transition-colors hover:bg-fill-quaternary">
+                <ImageIcon className="h-4 w-4" />
+                {uploadingLogo ? "در حال آپلود..." : "انتخاب فایل لوگو"}
+                <input type="file" accept="image/*" className="hidden" onChange={handleLogoUpload} disabled={uploadingLogo} />
+              </label>
+            </div>
           </div>
           <div className="space-y-1.5">
             <Label>لینک اینستاگرام</Label>
@@ -128,13 +161,7 @@ export function AdminSettingsPage() {
           </div>
           <div className="space-y-1.5">
             <Label>تعداد مقالات صفحه اصلی</Label>
-            <Input
-              type="number"
-              min={1}
-              max={50}
-              value={homepagePostCount}
-              onChange={(e) => setHomepagePostCount(Number(e.target.value))}
-            />
+            <Input type="number" min={1} max={50} value={homepagePostCount} onChange={(e) => setHomepagePostCount(Number(e.target.value))} />
           </div>
         </div>
 

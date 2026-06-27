@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /control/
 Disallow: /admin
 Disallow: /api
 
-Sitemap: https://iatomic.pages.dev/sitemap.xml
+Sitemap: https://iatomic-web.pages.dev/sitemap.xml

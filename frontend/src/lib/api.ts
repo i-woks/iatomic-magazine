@@ -5,20 +5,25 @@ async function fetchApi<T>(path: string, options: RequestInit = {}): Promise<T> 
   if (!res.ok) { const err = await res.json().catch(() => ({ error: "Request failed" })); throw new Error(err.error || `Request failed ${res.status}`); }
   return res.json() as Promise<T>;
 }
+export const fetchCsrfToken = () => fetchApi<{ token: string }>("/auth/csrf");
+export const login = (email: string, password: string, csrfToken: string) => fetchApi<{ user: User }>("/auth/login", { method: "POST", body: JSON.stringify({ email, password, csrfToken }) });
+export const logout = () => fetchApi<{ success: boolean }>("/auth/logout", { method: "POST" });
+export const fetchMe = () => fetchApi<{ user: User }>("/auth/me");
 export const fetchSettings = () => fetchApi<{ data: SiteSettings }>("/settings");
 export const fetchCategories = () => fetchApi<{ data: Category[] }>("/categories");
 export const fetchTags = () => fetchApi<{ data: Tag[] }>("/tags");
 export const fetchFeaturedPost = () => fetchApi<{ data: Post | null }>("/posts/featured");
 export const fetchPosts = (params: { page?: number; limit?: number; category?: string; q?: string } = {}) => {
-  const s = new URLSearchParams(); if (params.page) s.set("page", String(params.page)); if (params.limit) s.set("limit", String(params.limit)); if (params.category) s.set("category", params.category); if (params.q) s.set("q", params.q);
+  const s = new URLSearchParams();
+  if (params.page) s.set("page", String(params.page));
+  if (params.limit) s.set("limit", String(params.limit));
+  if (params.category) s.set("category", params.category);
+  if (params.q) s.set("q", params.q);
   return fetchApi<Paginated<Post>>(`/posts?${s.toString()}`);
 };
 export const fetchPost = (slug: string) => fetchApi<{ data: Post }>(`/posts/${slug}`);
 export const fetchRelatedPosts = (slug: string) => fetchApi<{ data: Post[] }>(`/posts/${slug}/related`);
 export const fetchAdjacentPosts = (slug: string) => fetchApi<{ prev: { id: number; title: string; slug: string } | null; next: { id: number; title: string; slug: string } | null }>(`/posts/${slug}/adjacent`);
-export const login = (email: string, password: string) => fetchApi<{ user: User }>("/auth/login", { method: "POST", body: JSON.stringify({ email, password }) });
-export const logout = () => fetchApi<{ success: boolean }>("/auth/logout", { method: "POST" });
-export const fetchMe = () => fetchApi<{ user: User }>("/auth/me");
 export const fetchAdminPosts = () => fetchApi<{ data: Post[] }>("/posts/admin/list");
 export const fetchAdminPost = (id: number) => fetchApi<{ data: Post }>(`/posts/admin/${id}`);
 export const createPost = (body: Partial<Post> & { categoryId: number; status: "draft" | "published"; tagIds: number[] }) => fetchApi<{ data: Post }>("/posts", { method: "POST", body: JSON.stringify(body) });

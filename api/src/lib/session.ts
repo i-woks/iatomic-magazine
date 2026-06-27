@@ -13,6 +13,9 @@ export interface Env {
     CACHE: KVNamespace;
     MEDIA_BUCKET: R2Bucket;
     ADMIN_SESSION_SECRET: string;
+    ADMIN_EMAIL?: string;
+    ADMIN_INITIAL_PASSWORD?: string;
+    PUBLIC_MEDIA_BASE_URL?: string;
     TURNSTILE_SECRET_KEY?: string;
     SETUP_SECRET?: string;
   };
