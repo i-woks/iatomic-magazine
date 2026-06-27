@@ -1,3 +1,10 @@
+/**
+ * Auth routes — CSRF fix:
+ * The CSRF cookie is set with sameSite:"None" + secure:true so it is
+ * included on cross-origin requests (Pages → Worker).
+ * The double-submit pattern is retained: the browser sends the cookie
+ * AND the JSON body contains the same token; server compares both.
+ */
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
@@ -7,10 +14,20 @@ import { hashPassword, verifyPassword } from "../lib/crypto";
 import { createSession, clearSession, Env } from "../lib/session";
 import { createApp } from "../lib/hono";
 import { getCookie, setCookie } from "hono/cookie";
+
 const app = createApp();
 
-const loginSchema = z.object({ email: z.string().email(), password: z.string().min(1), csrfToken: z.string().min(1) });
-const setupSchema = z.object({ setupSecret: z.string().min(1), name: z.string().min(1), email: z.string().email(), password: z.string().min(8) });
+const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+  csrfToken: z.string().min(1),
+});
+const setupSchema = z.object({
+  setupSecret: z.string().min(1),
+  name: z.string().min(1),
+  email: z.string().email(),
+  password: z.string().min(8),
+});
 
 const RATE_LIMIT_ATTEMPTS = 5;
 const RATE_LIMIT_WINDOW_SECONDS = 15 * 60;
@@ -49,9 +66,21 @@ function generateCsrfToken(): string {
   return btoa(String.fromCharCode(...bytes));
 }
 
+/** GET /api/auth/csrf
+ *  Sets the CSRF cookie with sameSite:None so cross-origin Pages→Worker
+ *  requests carry the cookie, enabling the double-submit check on login.
+ */
 app.get("/csrf", async (c) => {
   const token = generateCsrfToken();
-  setCookie(c, CSRF_COOKIE, token, { httpOnly: false, secure: true, sameSite: "Strict", path: "/", maxAge: 3600 });
+  // sameSite:"None" + secure:true is required for cross-site cookies
+  // (Pages on iatomic.pages.dev → Worker on iatomic-api.iwok3m.workers.dev)
+  setCookie(c, CSRF_COOKIE, token, {
+    httpOnly: false,     // must be readable by JS for double-submit pattern
+    secure: true,
+    sameSite: "None",   // FIXED: was "Strict" which blocked cross-origin sends
+    path: "/",
+    maxAge: 3600,
+  });
   return c.json({ token });
 });
 
@@ -61,9 +90,12 @@ app.post("/login", zValidator("json", loginSchema), async (c) => {
   }
   const { email, password, csrfToken } = c.req.valid("json");
   const cookieToken = getCookie(c, CSRF_COOKIE);
+
+  // Double-submit CSRF check
   if (!cookieToken || cookieToken !== csrfToken) {
     return c.json({ error: "Invalid CSRF token" }, 403);
   }
+
   const db = createDb(c.env.DB);
   const user = await db.query.users.findFirst({ where: eq(users.email, email) });
   if (!user || !(await verifyPassword(password, user.passwordHash))) {
@@ -75,11 +107,14 @@ app.post("/login", zValidator("json", loginSchema), async (c) => {
   return c.json({ user: { id: user.id, name: user.name, email: user.email, role: user.role } });
 });
 
-app.post("/logout", async (c) => { await clearSession(c); return c.json({ success: true }); });
+app.post("/logout", async (c) => {
+  await clearSession(c);
+  return c.json({ success: true });
+});
 
 app.post("/setup", zValidator("json", setupSchema), async (c) => {
   const { setupSecret, name, email, password } = c.req.valid("json");
-  const expected = c.env.SETUP_SECRET;
+  const expected = (c.env as any).SETUP_SECRET;
   if (!expected || setupSecret !== expected) return c.json({ error: "Invalid setup secret" }, 403);
   const db = createDb(c.env.DB);
   const existing = await db.query.users.findFirst({ where: eq(users.email, email) });
@@ -91,14 +126,15 @@ app.post("/setup", zValidator("json", setupSchema), async (c) => {
 });
 
 app.post("/init-admin", async (c) => {
-  const adminEmail = c.env.ADMIN_EMAIL;
-  const adminPassword = c.env.ADMIN_INITIAL_PASSWORD;
+  const env = c.env as any;
+  const adminEmail = env.ADMIN_EMAIL;
+  const adminPassword = env.ADMIN_INITIAL_PASSWORD;
   if (!adminEmail || !adminPassword) {
     return c.json({ error: "ADMIN_EMAIL and ADMIN_INITIAL_PASSWORD must be set" }, 400);
   }
   const db = createDb(c.env.DB);
-  const anyUser = await db.query.users.findFirst();
-  if (anyUser) return c.json({ error: "Admin already initialized" }, 409);
+  const existing = await db.query.users.findFirst({ where: eq(users.email, adminEmail) });
+  if (existing) return c.json({ error: "Admin already initialized" }, 409);
   const passwordHash = await hashPassword(adminPassword);
   const [user] = await db.insert(users).values({ name: "Admin", email: adminEmail, passwordHash, role: "admin" }).returning();
   return c.json({ user: { id: user.id, name: user.name, email: user.email, role: user.role } }, 201);

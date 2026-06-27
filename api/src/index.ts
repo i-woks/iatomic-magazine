@@ -10,6 +10,7 @@ import mediaRoutes from "./routes/media";
 import settingsRoutes from "./routes/settings";
 import aiRoutes from "./routes/ai";
 import adsRoutes from "./routes/ads";
+import contactRoutes from "./routes/contact";
 
 const app = createApp();
 
@@ -32,8 +33,9 @@ app.route("/api/media", mediaRoutes);
 app.route("/api/settings", settingsRoutes);
 app.route("/api/ai", aiRoutes);
 app.route("/api/ads", adsRoutes);
+app.route("/api/public/contact", contactRoutes);
 
-// R2 media proxy (uncomment after R2 activation)
+// R2 media proxy
 app.get("/media/:key{.+}", async (c) => {
   const key = c.req.param("key");
   if (key.includes("..") || key.startsWith("/")) return c.json({ error: "Invalid key" }, 400);

@@ -27,13 +27,12 @@ export function PublicLayout() {
 
   return (
     <div className="relative flex min-h-screen flex-col bg-bg-primary">
-      {/* Global animated blue halos */}
+      {/* Subtle animated background halos — z-index 0, behind all content */}
       <div className="halo-wrap" aria-hidden="true">
         <div className="halo halo-tr" />
         <div className="halo halo-bl" />
       </div>
 
-      {/* Floating glass header */}
       <Header
         categories={categories}
         instagramUrl={settings?.instagramUrl}
@@ -41,8 +40,8 @@ export function PublicLayout() {
         logoAlt={settings?.logoAlt || "Atomic Logo"}
       />
 
-      {/* Page content — padded below floating header */}
-      <main className="relative z-10 flex-1 pt-24">
+      {/* pt-16 = header height clearance; relative z-10 sits above halos */}
+      <main className="relative z-10 flex-1 pt-16">
         <Outlet context={{ settings, categories }} />
       </main>
 

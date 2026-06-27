@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { ArticleCard } from "@/components/ArticleCard";
 import { DonationWidget } from "@/components/DonationWidget";
-import { AdZone } from "@/components/AdZone";
+
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { fetchFeaturedPost, fetchPosts } from "@/lib/api";
@@ -40,9 +40,6 @@ export function HomePage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-      {/* Ad zone above donation — renders nothing if no active ad */}
-      <AdZone placement="homepage_top_above_donation" className="mb-4" />
-
       {/* Donation widget */}
       <section className="mb-6">
         <DonationWidget />

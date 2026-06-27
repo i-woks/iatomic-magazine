@@ -1,8 +1,9 @@
 /**
- * AdZone — renders active ads for a placement.
- * If no active ad: renders absolutely nothing (no space, no placeholder).
- * Tracks impressions via IntersectionObserver (only when visible).
- * Tracks clicks via server redirect endpoint.
+ * AdZone — renders active MANUAL ads for a placement.
+ * Google AdSense is NOT supported (removed per spec).
+ * If no active ad: renders null — zero space, no placeholder.
+ * Impression tracking: IntersectionObserver at 50% threshold.
+ * Click tracking: server-side redirect endpoint.
  */
 import { useEffect, useRef, useState } from "react";
 
@@ -10,15 +11,13 @@ const API_URL = import.meta.env.VITE_API_URL || "";
 
 interface Ad {
   id: number;
-  type: "manual_banner" | "google_adsense";
+  type: "manual_banner";
   label: string;
   placement: string;
   status: string;
   media_url?: string | null;
   destination_url?: string | null;
   alt?: string | null;
-  adsense_client_id?: string | null;
-  adsense_slot_id?: string | null;
   width?: number | null;
   height?: number | null;
   aspect_ratio?: string | null;
@@ -36,11 +35,10 @@ export function AdZone({ placement, className }: AdZoneProps) {
   useEffect(() => {
     fetch(`${API_URL}/api/ads/public/${placement}`)
       .then(r => r.ok ? r.json() : { data: [] })
-      .then(d => { setAds(d.data || []); setLoaded(true); })
+      .then(d => { setAds((d.data || []).filter((a: Ad) => a.type === "manual_banner")); setLoaded(true); })
       .catch(() => setLoaded(true));
   }, [placement]);
 
-  // Render nothing until loaded, then nothing if no ads
   if (!loaded || ads.length === 0) return null;
 
   return (
@@ -54,7 +52,6 @@ function AdItem({ ad }: { ad: Ad }) {
   const ref = useRef<HTMLDivElement>(null);
   const impressed = useRef(false);
 
-  // Impression tracking via IntersectionObserver
   useEffect(() => {
     if (!ref.current || impressed.current) return;
     const obs = new IntersectionObserver(
@@ -71,27 +68,10 @@ function AdItem({ ad }: { ad: Ad }) {
     return () => obs.disconnect();
   }, [ad.id]);
 
-  const clickUrl = `${API_URL}/api/ads/public/${ad.id}/click`;
-
-  if (ad.type === "google_adsense") {
-    if (!ad.adsense_client_id || !ad.adsense_slot_id) return null;
-    return (
-      <div ref={ref} className="ad-zone my-3 overflow-hidden rounded-ios">
-        <ins
-          className="adsbygoogle"
-          style={{ display: "block" }}
-          data-ad-client={ad.adsense_client_id}
-          data-ad-slot={ad.adsense_slot_id}
-          data-ad-format="auto"
-          data-full-width-responsive="true"
-        />
-      </div>
-    );
-  }
-
-  // Manual banner
   if (!ad.media_url) return null;
-  const isVideo = ad.media_url.match(/\.(mp4|webm)$/i);
+
+  const clickUrl = `${API_URL}/api/ads/public/${ad.id}/click`;
+  const isVideo = /\.(mp4|webm)$/i.test(ad.media_url);
 
   return (
     <div ref={ref} className="ad-zone my-3">

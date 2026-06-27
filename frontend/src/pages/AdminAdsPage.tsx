@@ -8,7 +8,7 @@ import { Select } from "@/components/ui/Select";
 
 const API_URL = import.meta.env.VITE_API_URL || "";
 
-type AdType = "manual_banner" | "google_adsense";
+type AdType = "manual_banner";
 type AdStatus = "active" | "inactive" | "scheduled";
 
 interface Ad {
@@ -20,8 +20,6 @@ interface Ad {
   media_url?: string | null;
   destination_url?: string | null;
   alt?: string | null;
-  adsense_client_id?: string | null;
-  adsense_slot_id?: string | null;
   width?: number | null;
   height?: number | null;
   aspect_ratio?: string | null;
@@ -45,7 +43,7 @@ const PLACEMENTS = [
 const EMPTY_FORM = {
   type: "manual_banner" as AdType, label: "", placement: "homepage_top_above_donation",
   status: "inactive" as AdStatus, destinationUrl: "", alt: "",
-  adsenseClientId: "", adsenseSlotId: "", width: "", height: "",
+  width: "", height: "",
   aspectRatio: "", priority: "0", startsAt: "", endsAt: "",
 };
 
@@ -75,7 +73,7 @@ export function AdminAdsPage() {
     setForm({
       type: ad.type, label: ad.label, placement: ad.placement, status: ad.status,
       destinationUrl: ad.destination_url || "", alt: ad.alt || "",
-      adsenseClientId: ad.adsense_client_id || "", adsenseSlotId: ad.adsense_slot_id || "",
+      
       width: ad.width ? String(ad.width) : "", height: ad.height ? String(ad.height) : "",
       aspectRatio: ad.aspect_ratio || "", priority: String(ad.priority),
       startsAt: ad.starts_at || "", endsAt: ad.ends_at || "",
@@ -88,7 +86,6 @@ export function AdminAdsPage() {
     const body: Record<string, unknown> = {
       type: form.type, label: form.label, placement: form.placement, status: form.status,
       destinationUrl: form.destinationUrl || null, alt: form.alt || null,
-      adsenseClientId: form.adsenseClientId || null, adsenseSlotId: form.adsenseSlotId || null,
       width: form.width ? parseInt(form.width) : null, height: form.height ? parseInt(form.height) : null,
       aspectRatio: form.aspectRatio || null, priority: parseInt(form.priority) || 0,
       startsAt: form.startsAt || null, endsAt: form.endsAt || null,
@@ -121,7 +118,7 @@ export function AdminAdsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-label-primary">مدیریت آگهی‌ها</h1>
-          <p className="text-sm text-label-secondary mt-1">مدیریت آگهی‌های دستی و Google AdSense</p>
+          <p className="text-sm text-label-secondary mt-1">مدیریت آگهی‌های دستی</p>
         </div>
         <Button onClick={openNew} className="gap-2"><Plus className="h-4 w-4" />آگهی جدید</Button>
       </div>
@@ -136,7 +133,6 @@ export function AdminAdsPage() {
             <div className="space-y-1.5"><Label>نوع آگهی</Label>
               <Select value={form.type} onChange={e => setF("type", e.target.value)}>
                 <option value="manual_banner">بنر دستی</option>
-                <option value="google_adsense">Google AdSense</option>
               </Select>
             </div>
             <div className="space-y-1.5"><Label>جایگاه</Label>
@@ -154,10 +150,6 @@ export function AdminAdsPage() {
             {form.type === "manual_banner" && <>
               <div className="space-y-1.5"><Label>آدرس مقصد (URL)</Label><Input value={form.destinationUrl} onChange={e => setF("destinationUrl", e.target.value)} placeholder="https://..." dir="ltr" /></div>
               <div className="space-y-1.5"><Label>متن جایگزین (Alt)</Label><Input value={form.alt} onChange={e => setF("alt", e.target.value)} placeholder="توضیح تصویر" /></div>
-            </>}
-            {form.type === "google_adsense" && <>
-              <div className="space-y-1.5"><Label>AdSense Client ID</Label><Input value={form.adsenseClientId} onChange={e => setF("adsenseClientId", e.target.value)} placeholder="ca-pub-..." dir="ltr" /></div>
-              <div className="space-y-1.5"><Label>AdSense Slot ID</Label><Input value={form.adsenseSlotId} onChange={e => setF("adsenseSlotId", e.target.value)} placeholder="1234567890" dir="ltr" /></div>
             </>}
             <div className="space-y-1.5"><Label>اولویت</Label><Input type="number" value={form.priority} onChange={e => setF("priority", e.target.value)} dir="ltr" /></div>
             <div className="space-y-1.5"><Label>نسبت ابعاد (مثلاً 16/9)</Label><Input value={form.aspectRatio} onChange={e => setF("aspectRatio", e.target.value)} placeholder="16/9" dir="ltr" /></div>
@@ -187,7 +179,7 @@ export function AdminAdsPage() {
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-semibold text-label-primary truncate">{ad.label}</span>
                     <StatusBadge status={ad.status} />
-                    <span className="text-xs text-label-tertiary bg-fill-tertiary rounded-full px-2 py-0.5">{ad.type === "google_adsense" ? "AdSense" : "بنر"}</span>
+                    <span className="text-xs text-label-tertiary bg-fill-tertiary rounded-full px-2 py-0.5">{"بنر"}</span>
                   </div>
                   <p className="text-sm text-label-secondary mt-1">{PLACEMENTS.find(p => p.value === ad.placement)?.label || ad.placement}</p>
                   {/* Analytics */}
