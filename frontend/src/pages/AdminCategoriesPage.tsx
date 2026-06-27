@@ -1,41 +1,20 @@
-import { useEffect, useState } from "react";
-import { Plus, Pencil, Trash2, AlertCircle } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Textarea } from "@/components/ui/Textarea";
-import { Label } from "@/components/ui/Label";
-import { Skeleton } from "@/components/ui/Skeleton";
-import { fetchCategories, createCategory, updateCategory, deleteCategory } from "@/lib/api";
-import type { Category } from "@/types";
-
+import { useEffect, useState } from "react"; import { Plus, Pencil, Trash2, AlertCircle } from "lucide-react"; import { Button } from "@/components/ui/Button"; import { Input } from "@/components/ui/Input"; import { Textarea } from "@/components/ui/Textarea"; import { Label } from "@/components/ui/Label"; import { Skeleton } from "@/components/ui/Skeleton"; import { fetchCategories, createCategory, updateCategory, deleteCategory } from "@/lib/api"; import type { Category } from "@/types";
 export function AdminCategoriesPage() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [editing, setEditing] = useState<Category | null>(null);
-  const [name, setName] = useState("");
-  const [slug, setSlug] = useState("");
-  const [description, setDescription] = useState("");
-  const [accentColor, setAccentColor] = useState("#007AFF");
-  const [icon, setIcon] = useState("🧪");
-  const [sortOrder, setSortOrder] = useState(0);
-  const [saving, setSaving] = useState(false);
-
-  const load = () => { setLoading(true); fetchCategories().then((r) => setCategories(r.data)).catch((err) => setError(err.message)).finally(() => setLoading(false)); };
+  const [categories, setCategories] = useState<Category[]>([]); const [loading, setLoading] = useState(true); const [error, setError] = useState<string | null>(null); const [editing, setEditing] = useState<Category | null>(null); const [name, setName] = useState(""); const [slug, setSlug] = useState(""); const [description, setDescription] = useState(""); const [accentColor, setAccentColor] = useState("#007AFF"); const [sortOrder, setSortOrder] = useState(0); const [saving, setSaving] = useState(false);
+  const load = () => { setLoading(true); fetchCategories().then(r => setCategories(r.data)).catch(err => setError(err.message)).finally(() => setLoading(false)); };
   useEffect(() => { load(); }, []);
-  const reset = () => { setEditing(null); setName(""); setSlug(""); setDescription(""); setAccentColor("#007AFF"); setIcon("🧪"); setSortOrder(0); };
-  const edit = (c: Category) => { setEditing(c); setName(c.name); setSlug(c.slug); setDescription(c.description || ""); setAccentColor(c.accentColor); setIcon(c.icon || "🧪"); setSortOrder(c.sortOrder); };
-  const submit = async (e: React.FormEvent) => { e.preventDefault(); setError(null); setSaving(true); try { const body = { name, slug, description, accentColor, icon, sortOrder }; if (editing) await updateCategory(editing.id, body); else await createCategory(body); reset(); load(); } catch (err: any) { setError(err.message); } finally { setSaving(false); } };
-  const del = async (id: number) => { if (!confirm("آیا از حذف این تاپیک مادر اطمینان دارید؟")) return; try { await deleteCategory(id); load(); } catch (err: any) { setError(err.message); } };
-
+  const reset = () => { setEditing(null); setName(""); setSlug(""); setDescription(""); setAccentColor("#007AFF"); setSortOrder(0); };
+  const edit = (c: Category) => { setEditing(c); setName(c.name); setSlug(c.slug); setDescription(c.description || ""); setAccentColor(c.accentColor); setSortOrder(c.sortOrder); };
+  const submit = async (e: React.FormEvent) => { e.preventDefault(); setError(null); setSaving(true); try { const body = { name, slug, description, accentColor, sortOrder }; if (editing) await updateCategory(editing.id, body); else await createCategory(body); reset(); load(); } catch (err: any) { setError(err.message); } finally { setSaving(false); } };
+  const del = async (id: number) => { if (!confirm("آیا از حذف این دسته‌بندی اطمینان دارید؟")) return; try { await deleteCategory(id); load(); } catch (err: any) { setError(err.message); } };
   return (
-    <div><h1 className="mb-6 text-2xl font-bold text-label-primary">مدیریت تاپیک‌های مادر</h1>
+    <div><h1 className="mb-6 text-2xl font-bold text-label-primary">مدیریت دسته‌بندی‌ها</h1>
       {error && <div className="mb-4 flex items-center gap-2 rounded-ios bg-red-50 p-3 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-300"><AlertCircle className="h-4 w-4" />{error}</div>}
       <form onSubmit={submit} className="mb-8 rounded-ios border border-separator/30 bg-bg-secondary/60 p-5">
-        <div className="grid gap-4 md:grid-cols-2"><div className="space-y-1.5"><Label>نام تاپیک مادر</Label><Input value={name} onChange={e => setName(e.target.value)} required /></div><div className="space-y-1.5"><Label>اسلاگ انگلیسی</Label><Input value={slug} onChange={e => setSlug(e.target.value)} dir="ltr" /></div><div className="space-y-1.5 md:col-span-2"><Label>توضیحات کوتاه</Label><Textarea value={description} onChange={e => setDescription(e.target.value)} className="h-20" /></div><div className="space-y-1.5"><Label>رنگ accent</Label><div className="flex items-center gap-2"><input type="color" value={accentColor} onChange={e => setAccentColor(e.target.value)} className="h-11 w-11 rounded-ios border border-separator-opaque bg-bg-primary p-1" /><Input value={accentColor} onChange={e => setAccentColor(e.target.value)} dir="ltr" /></div></div><div className="space-y-1.5"><Label>آیکن / ایموجی</Label><Input value={icon} onChange={e => setIcon(e.target.value)} /></div><div className="space-y-1.5"><Label>ترتیب نمایش</Label><Input type="number" value={sortOrder} onChange={e => setSortOrder(Number(e.target.value))} /></div></div>
-        <div className="mt-4 flex items-center gap-2"><Button type="submit" disabled={saving} className="gap-2"><Plus className="h-4 w-4" />{editing ? "ذخیره تغییرات" : "ایجاد تاپیک"}</Button>{editing && <Button type="button" variant="outline" onClick={reset}>انصراف</Button>}</div>
+        <div className="grid gap-4 md:grid-cols-2"><div className="space-y-1.5"><Label>نام</Label><Input value={name} onChange={e => setName(e.target.value)} required /></div><div className="space-y-1.5"><Label>اسلاگ</Label><Input value={slug} onChange={e => setSlug(e.target.value)} dir="ltr" /></div><div className="space-y-1.5 md:col-span-2"><Label>توضیحات</Label><Textarea value={description} onChange={e => setDescription(e.target.value)} className="h-20" /></div><div className="space-y-1.5"><Label>رنگ accent</Label><div className="flex items-center gap-2"><input type="color" value={accentColor} onChange={e => setAccentColor(e.target.value)} className="h-11 w-11 rounded-ios border border-separator-opaque bg-bg-primary p-1" /><Input value={accentColor} onChange={e => setAccentColor(e.target.value)} dir="ltr" /></div></div><div className="space-y-1.5"><Label>ترتیب نمایش</Label><Input type="number" value={sortOrder} onChange={e => setSortOrder(Number(e.target.value))} /></div></div>
+        <div className="mt-4 flex items-center gap-2"><Button type="submit" disabled={saving} className="gap-2"><Plus className="h-4 w-4" />{editing ? "ذخیره تغییرات" : "ایجاد دسته‌بندی"}</Button>{editing && <Button type="button" variant="outline" onClick={reset}>انصراف</Button>}</div>
       </form>
-      {loading ? <Skeleton className="h-64" /> : <div className="overflow-hidden rounded-ios border border-separator/30 bg-bg-secondary/60"><table className="w-full text-right text-sm"><thead className="bg-fill-quaternary text-label-secondary"><tr><th className="px-4 py-3">تاپیک</th><th className="px-4 py-3">اسلاگ</th><th className="px-4 py-3">رنگ</th><th className="px-4 py-3">مقالات</th><th className="px-4 py-3 text-left">عملیات</th></tr></thead><tbody>{categories.map(c => <tr key={c.id} className="border-t border-separator/20"><td className="px-4 py-3 font-medium text-label-primary"><span className="ml-2">{c.icon || "🧪"}</span>{c.name}</td><td className="px-4 py-3 text-label-secondary">{c.slug}</td><td className="px-4 py-3"><span className="inline-block h-4 w-4 rounded-full" style={{ backgroundColor: c.accentColor }} /></td><td className="px-4 py-3 text-label-tertiary">{c.postCount}</td><td className="px-4 py-3"><div className="flex items-center justify-end gap-2"><Button variant="ghost" size="icon" className="rounded-full" onClick={() => edit(c)} aria-label="edit"><Pencil className="h-4 w-4" /></Button><Button variant="ghost" size="icon" className="rounded-full text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20" onClick={() => del(c.id)} aria-label="delete"><Trash2 className="h-4 w-4" /></Button></div></td></tr>)}</tbody></table></div>}
+      {loading ? <Skeleton className="h-64" /> : <div className="overflow-hidden rounded-ios border border-separator/30 bg-bg-secondary/60"><table className="w-full text-right text-sm"><thead className="bg-fill-quaternary text-label-secondary"><tr><th className="px-4 py-3">نام</th><th className="px-4 py-3">اسلاگ</th><th className="px-4 py-3">رنگ</th><th className="px-4 py-3">مقالات</th><th className="px-4 py-3 text-left">عملیات</th></tr></thead><tbody>{categories.map(c => <tr key={c.id} className="border-t border-separator/20"><td className="px-4 py-3 font-medium text-label-primary">{c.name}</td><td className="px-4 py-3 text-label-secondary">{c.slug}</td><td className="px-4 py-3"><span className="inline-block h-4 w-4 rounded-full" style={{ backgroundColor: c.accentColor }} /></td><td className="px-4 py-3 text-label-tertiary">{c.postCount}</td><td className="px-4 py-3"><div className="flex items-center justify-end gap-2"><Button variant="ghost" size="icon" className="rounded-full" onClick={() => edit(c)} aria-label="edit"><Pencil className="h-4 w-4" /></Button><Button variant="ghost" size="icon" className="rounded-full text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20" onClick={() => del(c.id)} aria-label="delete"><Trash2 className="h-4 w-4" /></Button></div></td></tr>)}</tbody></table></div>}
     </div>
   );
 }

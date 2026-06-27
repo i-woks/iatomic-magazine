@@ -3,7 +3,6 @@ export interface User {
   name: string;
   email: string;
   role: "admin" | "editor";
-  lastLoginAt?: string | null;
 }
 
 export interface Category {
@@ -12,27 +11,14 @@ export interface Category {
   slug: string;
   description: string | null;
   accentColor: string;
-  icon?: string | null;
   sortOrder: number;
   postCount?: number;
-}
-
-export interface Subtopic {
-  id: number;
-  categoryId: number;
-  name: string;
-  slug: string;
-  description: string | null;
-  icon?: string | null;
-  sortOrder: number;
-  articleCount?: number;
 }
 
 export interface Tag {
   id: number;
   name: string;
   slug: string;
-  kind?: "secondary" | "system";
 }
 
 export interface MediaItem {
@@ -54,41 +40,21 @@ export interface Post {
   excerpt: string;
   content: string;
   coverImageId: number | null;
-  imageAlt?: string | null;
   status: "draft" | "published";
   authorId: number;
   categoryId: number;
-  primarySubtopicId?: number | null;
   readingTime: number;
   metaTitle: string | null;
   metaDescription: string | null;
   canonicalUrl: string | null;
   sources: string | null;
-  aiStatus?: string | null;
-  aiSourcesJson?: string | null;
-  aiNotes?: string | null;
-  featuredScore?: number;
-  viewCount?: number;
-  likes?: number;
-  dislikes?: number;
   publishedAt: string | null;
   createdAt: string;
   updatedAt: string;
   category?: Category | null;
   author?: User | null;
   tags?: Tag[];
-  subtopics?: Subtopic[];
-  primarySubtopic?: Subtopic | null;
   coverImage?: MediaItem | null;
-}
-
-export interface ContactMessage {
-  id: number;
-  category: string;
-  message: string;
-  status: "new" | "reviewed" | "answered" | "archived";
-  sourceIp?: string | null;
-  createdAt: string;
 }
 
 export interface SiteSettings {

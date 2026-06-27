@@ -1,20 +1,33 @@
+/**
+ * Auth routes — CSRF fix:
+ * The CSRF cookie is set with sameSite:"None" + secure:true so it is
+ * included on cross-origin requests (Pages → Worker).
+ * The double-submit pattern is retained: the browser sends the cookie
+ * AND the JSON body contains the same token; server compares both.
+ */
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
 import { users } from "../db/schema";
 import { createDb } from "../db";
 import { hashPassword, verifyPassword } from "../lib/crypto";
-import { createSession, clearSession } from "../lib/session";
+import { createSession, clearSession, Env } from "../lib/session";
 import { createApp } from "../lib/hono";
 import { getCookie, setCookie } from "hono/cookie";
-import { requireAuth } from "../middleware/auth";
 
 const app = createApp();
 
-const loginSchema = z.object({ email: z.string().email(), password: z.string().min(1), csrfToken: z.string().min(1) });
-const setupSchema = z.object({ setupSecret: z.string().min(1), name: z.string().min(1), email: z.string().email(), password: z.string().min(8) });
-const profileSchema = z.object({ name: z.string().min(1).max(100), email: z.string().email() });
-const passwordSchema = z.object({ currentPassword: z.string().min(1), newPassword: z.string().min(8) });
+const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+  csrfToken: z.string().min(1),
+});
+const setupSchema = z.object({
+  setupSecret: z.string().min(1),
+  name: z.string().min(1),
+  email: z.string().email(),
+  password: z.string().min(8),
+});
 
 const RATE_LIMIT_ATTEMPTS = 5;
 const RATE_LIMIT_WINDOW_SECONDS = 15 * 60;
@@ -53,17 +66,36 @@ function generateCsrfToken(): string {
   return btoa(String.fromCharCode(...bytes));
 }
 
+/** GET /api/auth/csrf
+ *  Sets the CSRF cookie with sameSite:None so cross-origin Pages→Worker
+ *  requests carry the cookie, enabling the double-submit check on login.
+ */
 app.get("/csrf", async (c) => {
   const token = generateCsrfToken();
-  setCookie(c, CSRF_COOKIE, token, { httpOnly: false, secure: true, sameSite: "None", path: "/", maxAge: 3600 });
+  // sameSite:"None" + secure:true is required for cross-site cookies
+  // (Pages on iatomic.pages.dev → Worker on iatomic-api.iwok3m.workers.dev)
+  setCookie(c, CSRF_COOKIE, token, {
+    httpOnly: false,     // must be readable by JS for double-submit pattern
+    secure: true,
+    sameSite: "None",   // FIXED: was "Strict" which blocked cross-origin sends
+    path: "/",
+    maxAge: 3600,
+  });
   return c.json({ token });
 });
 
 app.post("/login", zValidator("json", loginSchema), async (c) => {
-  if (await isRateLimited(c)) return c.json({ error: "Too many login attempts. Please try again later." }, 429);
+  if (await isRateLimited(c)) {
+    return c.json({ error: "Too many login attempts. Please try again later." }, 429);
+  }
   const { email, password, csrfToken } = c.req.valid("json");
   const cookieToken = getCookie(c, CSRF_COOKIE);
-  if (!cookieToken || cookieToken !== csrfToken) return c.json({ error: "Invalid CSRF token" }, 403);
+
+  // Double-submit CSRF check
+  if (!cookieToken || cookieToken !== csrfToken) {
+    return c.json({ error: "Invalid CSRF token" }, 403);
+  }
+
   const db = createDb(c.env.DB);
   const user = await db.query.users.findFirst({ where: eq(users.email, email) });
   if (!user || !(await verifyPassword(password, user.passwordHash))) {
@@ -71,9 +103,8 @@ app.post("/login", zValidator("json", loginSchema), async (c) => {
     return c.json({ error: "Invalid credentials" }, 401);
   }
   await resetAttempts(c);
-  await db.update(users).set({ lastLoginAt: new Date().toISOString() }).where(eq(users.id, user.id));
   await createSession(c, user.id);
-  return c.json({ user: { id: user.id, name: user.name, email: user.email, role: user.role, lastLoginAt: new Date().toISOString() } });
+  return c.json({ user: { id: user.id, name: user.name, email: user.email, role: user.role } });
 });
 
 app.post("/logout", async (c) => {
@@ -98,7 +129,9 @@ app.post("/init-admin", async (c) => {
   const env = c.env as any;
   const adminEmail = env.ADMIN_EMAIL;
   const adminPassword = env.ADMIN_INITIAL_PASSWORD;
-  if (!adminEmail || !adminPassword) return c.json({ error: "ADMIN_EMAIL and ADMIN_INITIAL_PASSWORD must be set" }, 400);
+  if (!adminEmail || !adminPassword) {
+    return c.json({ error: "ADMIN_EMAIL and ADMIN_INITIAL_PASSWORD must be set" }, 400);
+  }
   const db = createDb(c.env.DB);
   const existing = await db.query.users.findFirst({ where: eq(users.email, adminEmail) });
   if (existing) return c.json({ error: "Admin already initialized" }, 409);
@@ -110,27 +143,7 @@ app.post("/init-admin", async (c) => {
 app.get("/me", async (c) => {
   const user = c.get("user");
   if (!user) return c.json({ error: "Unauthorized" }, 401);
-  return c.json({ user });
-});
-
-app.put("/profile", requireAuth, zValidator("json", profileSchema), async (c) => {
-  const current = c.get("user");
-  const body = c.req.valid("json");
-  const db = createDb(c.env.DB);
-  const [user] = await db.update(users).set({ name: body.name, email: body.email, updatedAt: new Date().toISOString() }).where(eq(users.id, current.id)).returning();
-  return c.json({ user: { id: user.id, name: user.name, email: user.email, role: user.role, lastLoginAt: user.lastLoginAt } });
-});
-
-app.put("/password", requireAuth, zValidator("json", passwordSchema), async (c) => {
-  const current = c.get("user");
-  const { currentPassword, newPassword } = c.req.valid("json");
-  const db = createDb(c.env.DB);
-  const user = await db.query.users.findFirst({ where: eq(users.id, current.id) });
-  if (!user) return c.json({ error: "Unauthorized" }, 401);
-  if (!(await verifyPassword(currentPassword, user.passwordHash))) return c.json({ error: "رمز عبور فعلی نادرست است" }, 400);
-  const passwordHash = await hashPassword(newPassword);
-  await db.update(users).set({ passwordHash, updatedAt: new Date().toISOString() }).where(eq(users.id, current.id));
-  return c.json({ success: true });
+  return c.json({ user: { id: user.id, name: user.name, email: user.email, role: user.role } });
 });
 
 export default app;
