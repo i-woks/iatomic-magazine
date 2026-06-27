@@ -100,13 +100,13 @@
    TODO: Provide legal Karixby font file at /fonts/Karixby.woff2
    Until then, geometric sans-serif fallback is used.
 ═══════════════════════════════════════════════════════════ */
-/* @font-face {
+@font-face {
   font-family: "Karixby";
-  src: url("/fonts/Karixby.woff2") format("woff2");
+  src: url("/fonts/Karixby.otf") format("opentype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
-} */
+}
 
 /* ═══════════════════════════════════════════════════════════
    FLOATING LIQUID-GLASS HEADER
