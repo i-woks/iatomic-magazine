@@ -1,6 +1,6 @@
-# iAtomic Magazine
+# AtomicMagazine
 
-A production-ready Persian RTL scientific magazine website for the iAtomic brand, built with React, Cloudflare Workers, D1, R2, and KV.
+A production-ready Persian RTL scientific magazine website for the Atomic brand, built with React, Cloudflare Workers, D1, R2, and KV.
 
 ## Features
 
@@ -24,5 +24,5 @@ npm run dev:api
 
 ## Notes
 
-- The iAtomic logo is a placeholder using an atom icon. Replace `frontend/src/components/layout/Logo.tsx` and the admin layout with the real brand asset when available.
+- The Atomic logo is a placeholder using an atom icon. Replace `frontend/src/components/layout/Logo.tsx` and the admin layout with the real brand asset when available.
 - Never commit secrets, tokens, or passwords to the repository.

@@ -1,0 +1,50 @@
+CREATE TABLE IF NOT EXISTS subtopics (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  category_id INTEGER NOT NULL,
+  name TEXT NOT NULL,
+  slug TEXT NOT NULL UNIQUE,
+  description TEXT,
+  icon TEXT,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL DEFAULT (CURRENT_TIMESTAMP)
+);
+
+CREATE TABLE IF NOT EXISTS post_subtopics (
+  post_id INTEGER NOT NULL,
+  subtopic_id INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS article_votes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  post_id INTEGER NOT NULL,
+  voter_token TEXT NOT NULL,
+  vote_type TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  updated_at TEXT NOT NULL DEFAULT (CURRENT_TIMESTAMP)
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_article_votes_unique ON article_votes(post_id, voter_token);
+
+CREATE TABLE IF NOT EXISTS contact_messages (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  category TEXT NOT NULL,
+  message TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'new',
+  source_ip TEXT,
+  created_at TEXT NOT NULL DEFAULT (CURRENT_TIMESTAMP)
+);
+
+CREATE TABLE IF NOT EXISTS telegram_settings (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+
+ALTER TABLE posts ADD COLUMN ai_status TEXT DEFAULT 'manual';
+ALTER TABLE posts ADD COLUMN ai_sources_json TEXT;
+ALTER TABLE posts ADD COLUMN featured_score INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE posts ADD COLUMN view_count INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE posts ADD COLUMN secondary_tag_ids TEXT;
+ALTER TABLE posts ADD COLUMN primary_subtopic_id INTEGER;
+ALTER TABLE posts ADD COLUMN image_alt TEXT;
+ALTER TABLE posts ADD COLUMN ai_notes TEXT;
+ALTER TABLE users ADD COLUMN last_login_at TEXT;

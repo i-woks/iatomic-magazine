@@ -1,14 +1,28 @@
-import { useEffect, useState } from "react"; import { Link } from "react-router-dom"; import { Plus, Pencil, Trash2, AlertCircle } from "lucide-react"; import { Button } from "@/components/ui/Button"; import { Skeleton } from "@/components/ui/Skeleton"; import { fetchAdminPosts, deletePost } from "@/lib/api"; import type { Post } from "@/types";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { Plus, Pencil, Trash2, AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { fetchAdminPosts, deletePost } from "@/lib/api";
+import type { Post } from "@/types";
+
 export function AdminPostsPage() {
-  const [posts, setPosts] = useState<Post[]>([]); const [loading, setLoading] = useState(true); const [error, setError] = useState<string | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [filter, setFilter] = useState<"all" | "draft" | "published" | "queued">("all");
+
   const load = () => { setLoading(true); fetchAdminPosts().then(r => setPosts(r.data)).catch(err => setError(err.message)).finally(() => setLoading(false)); };
   useEffect(() => { load(); }, []);
   const del = async (id: number) => { if (!confirm("آیا از حذف این مقاله اطمینان دارید؟")) return; try { await deletePost(id); setPosts(prev => prev.filter(p => p.id !== id)); } catch (err: any) { setError(err.message); } };
+  const filtered = useMemo(() => posts.filter((post) => filter === "all" ? true : filter === "queued" ? post.aiStatus === "queued" : post.status === filter), [posts, filter]);
+
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between"><h1 className="text-2xl font-bold text-label-primary">مدیریت مقالات</h1><Link to="/admin/posts/new"><Button className="gap-2"><Plus className="h-4 w-4" />مقاله جدید</Button></Link></div>
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><div><h1 className="text-2xl font-bold text-label-primary">مدیریت مقالات</h1><p className="text-sm text-label-secondary">مقاله‌ها، پیش‌نویس‌ها و صف انتشار هوش مصنوعی</p></div><Link to="/admin/posts/new"><Button className="gap-2"><Plus className="h-4 w-4" />مقاله جدید</Button></Link></div>
+      <div className="mb-4 flex flex-wrap gap-2">{[{ key: "all", label: "همه" }, { key: "published", label: "منتشرشده" }, { key: "draft", label: "پیش‌نویس" }, { key: "queued", label: "صف AI" }].map((item) => <button key={item.key} onClick={() => setFilter(item.key as typeof filter)} className={`rounded-full px-4 py-2 text-sm ${filter === item.key ? "bg-ios-blue text-white" : "bg-fill-quaternary text-label-secondary"}`}>{item.label}</button>)}</div>
       {error && <div className="mb-4 flex items-center gap-2 rounded-ios bg-red-50 p-3 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-300"><AlertCircle className="h-4 w-4" />{error}</div>}
-      {loading ? <Skeleton className="h-64" /> : <div className="overflow-hidden rounded-ios border border-separator/30 bg-bg-secondary/60"><table className="w-full text-right text-sm"><thead className="bg-fill-quaternary text-label-secondary"><tr><th className="px-4 py-3">عنوان</th><th className="px-4 py-3">دسته‌بندی</th><th className="px-4 py-3">وضعیت</th><th className="px-4 py-3">تاریخ</th><th className="px-4 py-3 text-left">عملیات</th></tr></thead><tbody>{posts.map(post => <tr key={post.id} className="border-t border-separator/20"><td className="px-4 py-3 font-medium text-label-primary">{post.title}</td><td className="px-4 py-3 text-label-secondary">{post.category?.name}</td><td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${post.status === "published" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"}`}>{post.status === "published" ? "منتشر شده" : "پیش‌نویس"}</span></td><td className="px-4 py-3 text-label-tertiary">{post.updatedAt ? new Date(post.updatedAt).toLocaleDateString("fa-IR") : "—"}</td><td className="px-4 py-3"><div className="flex items-center justify-end gap-2"><Link to={`/admin/posts/${post.id}/edit`}><Button variant="ghost" size="icon" className="rounded-full" aria-label="edit"><Pencil className="h-4 w-4" /></Button></Link><Button variant="ghost" size="icon" className="rounded-full text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20" aria-label="delete" onClick={() => del(post.id)}><Trash2 className="h-4 w-4" /></Button></div></td></tr>)}</tbody></table></div>}
+      {loading ? <Skeleton className="h-64" /> : <div className="overflow-hidden rounded-ios border border-separator/30 bg-bg-secondary/60"><table className="w-full text-right text-sm"><thead className="bg-fill-quaternary text-label-secondary"><tr><th className="px-4 py-3">عنوان</th><th className="px-4 py-3">تاپیک مادر</th><th className="px-4 py-3">وضعیت</th><th className="px-4 py-3">AI</th><th className="px-4 py-3">تاریخ</th><th className="px-4 py-3 text-left">عملیات</th></tr></thead><tbody>{filtered.map(post => <tr key={post.id} className="border-t border-separator/20"><td className="px-4 py-3 font-medium text-label-primary">{post.title}</td><td className="px-4 py-3 text-label-secondary">{post.category?.name}</td><td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${post.status === "published" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"}`}>{post.status === "published" ? "منتشر شده" : "پیش‌نویس"}</span></td><td className="px-4 py-3 text-label-secondary">{post.aiStatus || "manual"}</td><td className="px-4 py-3 text-label-tertiary">{post.updatedAt ? new Date(post.updatedAt).toLocaleDateString("fa-IR") : "—"}</td><td className="px-4 py-3"><div className="flex items-center justify-end gap-2"><Link to={`/admin/posts/${post.id}/edit`}><Button variant="ghost" size="icon" className="rounded-full" aria-label="edit"><Pencil className="h-4 w-4" /></Button></Link><Button variant="ghost" size="icon" className="rounded-full text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20" aria-label="delete" onClick={() => del(post.id)}><Trash2 className="h-4 w-4" /></Button></div></td></tr>)}</tbody></table></div>}
     </div>
   );
 }

@@ -132,7 +132,7 @@ app.post("/run", requireAuth, async (c) => {
   let sources = mcpResult?.sources;
 
   if (!content) {
-    const systemPrompt = `تو یک نویسنده علمی فارسی هستی که برای مجله iAtomic مقاله می‌نویسی. مقالاتت باید علمی، دقیق، و برای عموم قابل فهم باشند. از Markdown استفاده کن.`;
+    const systemPrompt = `تو یک نویسنده علمی فارسی هستی که برای مجله Atomic مقاله می‌نویسی. مقالاتت باید علمی، دقیق، و برای عموم قابل فهم باشند. از Markdown استفاده کن.`;
     const userPrompt = `موضوع: ${topic}\n\nدستورالعمل نوشتاری: ${writingFormat}\n\nیک مقاله کامل با حداقل ${minLength} کلمه و حداکثر ${maxLength} کلمه به فارسی بنویس. مقاله باید شامل:\n- عنوان جذاب\n- مقدمه\n- بخش‌های اصلی با هدینگ\n- نتیجه‌گیری\n- فهرست منابع (اگر وجود دارند)\n\nخروجی را به صورت JSON با کلیدهای title، excerpt، content، و sources برگردان.`;
 
     const aiRes = await fetch(`${apiBaseUrl}/v1/chat/completions`, {

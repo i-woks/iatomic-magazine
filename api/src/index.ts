@@ -14,12 +14,15 @@ import contactRoutes from "./routes/contact";
 
 const app = createApp();
 
-app.use("*", cors({
-  origin: (origin) => origin,
-  allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-}));
+app.use(
+  "*",
+  cors({
+    origin: (origin) => origin,
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowHeaders: ["Content-Type", "Authorization", "x-voter-token"],
+    credentials: true,
+  })
+);
 app.use(logger());
 app.use(optionalAuth);
 
@@ -34,8 +37,8 @@ app.route("/api/settings", settingsRoutes);
 app.route("/api/ai", aiRoutes);
 app.route("/api/ads", adsRoutes);
 app.route("/api/public/contact", contactRoutes);
+app.route("/api/contact", contactRoutes);
 
-// R2 media proxy
 app.get("/media/:key{.+}", async (c) => {
   const key = c.req.param("key");
   if (key.includes("..") || key.startsWith("/")) return c.json({ error: "Invalid key" }, 400);
@@ -54,7 +57,7 @@ app.get("/", async (c) => {
   const db = (await import("./db")).createDb(c.env.DB);
   const { getPublicSettings } = await import("./routes/settings");
   const s = await getPublicSettings(db);
-  return c.json({ name: "Atomic Magazine", brand: "اَتُمیک", description: s.siteDescription, instagram: s.instagramUrl });
+  return c.json({ name: "AtomicMagazine", brand: "اَتُمیک", description: s.siteDescription, instagram: s.instagramUrl });
 });
 
 export default app;
