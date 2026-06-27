@@ -2,12 +2,11 @@ import { cn } from "@/lib/utils";
 
 interface LogoProps {
   className?: string;
-  logoUrl?: string | null;
   logoAlt?: string | null;
   size?: "sm" | "md" | "lg";
 }
 
-export function Logo({ className, logoUrl, logoAlt, size = "md" }: LogoProps) {
+export function Logo({ className, logoAlt, size = "md" }: LogoProps) {
   const alt = logoAlt || "iAtomic Logo";
   const sizeMap = {
     sm: { frame: "h-8 w-8", text: "text-base" },

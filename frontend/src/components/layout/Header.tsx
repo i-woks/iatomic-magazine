@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, X, Send } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Logo } from "./Logo";
@@ -12,13 +12,12 @@ interface HeaderProps {
   categories: Category[];
   instagramUrl?: string;
   telegramUrl?: string;
-  logoUrl?: string | null;
   logoAlt?: string | null;
 }
 
 const TELEGRAM_URL = "https://t.me/AtomicMagazine";
 
-export function Header({ categories, instagramUrl, telegramUrl, logoUrl, logoAlt }: HeaderProps) {
+export function Header({ categories, instagramUrl, telegramUrl, logoAlt }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -175,7 +174,7 @@ export function Header({ categories, instagramUrl, telegramUrl, logoUrl, logoAlt
           </div>
 
           <Link to="/" className="outline-none">
-            <Logo logoUrl={logoUrl} logoAlt={logoAlt} />
+            <Logo logoAlt={logoAlt} />
           </Link>
         </div>
 

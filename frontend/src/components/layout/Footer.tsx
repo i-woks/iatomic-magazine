@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { Instagram, Mail } from "lucide-react";
 import { Logo } from "./Logo";
+import { TelegramIcon } from "./Header";
 import type { Category } from "@/types";
+
+const TELEGRAM_URL = "https://t.me/AtomicMagazine";
 
 interface FooterProps {
   categories: Category[];
@@ -12,14 +15,14 @@ interface FooterProps {
   logoAlt?: string | null;
 }
 
-export function Footer({ categories, instagramUrl, siteName, siteDescription, logoUrl, logoAlt }: FooterProps) {
+export function Footer({ categories, instagramUrl, siteName, siteDescription, logoAlt }: FooterProps) {
   return (
     <footer className="border-t border-separator/40 bg-bg-secondary/40 pt-12 pb-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-8 md:grid-cols-3">
           <div className="space-y-4">
-            <Link to="/" className="outline-none">
-              <Logo logoUrl={logoUrl} logoAlt={logoAlt} />
+            <Link to="/" className="outline-none inline-block">
+              <Logo logoAlt={logoAlt} />
             </Link>
             <p className="text-sm leading-relaxed text-label-secondary">
               {siteDescription || "مجله علمی آیاتمیک: فیزیک، کیهان‌شناسی، کوانتوم و علم روز."}
@@ -30,12 +33,21 @@ export function Footer({ categories, instagramUrl, siteName, siteDescription, lo
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-fill-quaternary text-label-secondary transition-colors hover:bg-ios-blue-soft hover:text-ios-blue"
-                aria-label="اینستاگرام"
+                aria-label="اینستاگرام iAtomic"
               >
                 <Instagram className="h-5 w-5" />
               </a>
               <a
-                href="mailto:contact@iatomic.local"
+                href={TELEGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-fill-quaternary text-label-secondary transition-colors hover:bg-ios-blue-soft hover:text-ios-blue"
+                aria-label="کانال تلگرام Atomic Magazine"
+              >
+                <TelegramIcon className="h-5 w-5" />
+              </a>
+              <a
+                href="mailto:contact@iatomic.ir"
                 className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-fill-quaternary text-label-secondary transition-colors hover:bg-ios-blue-soft hover:text-ios-blue"
                 aria-label="ایمیل"
               >
@@ -77,6 +89,16 @@ export function Footer({ categories, instagramUrl, siteName, siteDescription, lo
                 <Link to="/search" className="text-sm text-label-secondary transition-colors hover:text-ios-blue">
                   جستجو
                 </Link>
+              </li>
+              <li>
+                <a
+                  href={TELEGRAM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-label-secondary transition-colors hover:text-ios-blue"
+                >
+                  کانال تلگرام
+                </a>
               </li>
             </ul>
           </div>

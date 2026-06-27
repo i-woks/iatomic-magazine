@@ -78,7 +78,7 @@ export function AdminAiAutomationPage() {
     setError(null);
     setSaved(false);
     try {
-      await saveAiConfig(config);
+      await saveAiConfig(config as unknown as Record<string, unknown>);
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
     } catch (e: any) {
@@ -428,7 +428,6 @@ function StatusCard({
   label,
   value,
   icon,
-  accent = "blue",
 }: {
   label: string;
   value: string;

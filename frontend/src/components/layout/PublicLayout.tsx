@@ -33,7 +33,7 @@ export function PublicLayout() {
       <Header
         categories={categories}
         instagramUrl={settings?.instagramUrl}
-        logoUrl={settings?.logoUrl || "/logo.jpg"}
+        telegramUrl="https://t.me/AtomicMagazine"
         logoAlt={settings?.logoAlt || "iAtomic Logo"}
       />
       <main className="flex-1 pt-16">

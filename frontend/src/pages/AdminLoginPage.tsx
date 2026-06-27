@@ -4,7 +4,6 @@ import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
-import { Logo } from "@/components/layout/Logo";
 import { login, fetchCsrfToken } from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
 import { ADMIN_BASE_PATH } from "@/App";
