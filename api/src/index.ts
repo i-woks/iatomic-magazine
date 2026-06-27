@@ -11,6 +11,10 @@ import settingsRoutes from "./routes/settings";
 import aiRoutes from "./routes/ai";
 import adsRoutes from "./routes/ads";
 import contactRoutes from "./routes/contact";
+import { createDb } from "./db";
+import { contactMessages, posts } from "./db/schema";
+import { eq, sql } from "drizzle-orm";
+import { formatStatusReport, sendTelegramMessage } from "./services/telegram.service";
 
 const app = createApp();
 
@@ -50,6 +54,21 @@ app.get("/media/:key{.+}", async (c) => {
   return new Response(obj.body, { headers });
 });
 
+async function sendTelegramDailyStatusReport(env: any) {
+  const db = createDb(env.DB);
+  const today = new Date().toISOString().slice(0, 10);
+  const totalPublished = await db.select({ count: sql<number>`count(*)` }).from(posts).where(eq(posts.status, "published")).get();
+  const publishedToday = await db.select({ count: sql<number>`count(*)` }).from(posts).where(sql`${posts.status} = 'published' AND substr(${posts.publishedAt}, 1, 10) = ${today}`).get();
+  const draftCount = await db.select({ count: sql<number>`count(*)` }).from(posts).where(eq(posts.status, "draft")).get();
+  const contactCount = await db.select({ count: sql<number>`count(*)` }).from(contactMessages).get();
+  return sendTelegramMessage(env, formatStatusReport({
+    totalPublished: Number(totalPublished?.count || 0),
+    publishedToday: Number(publishedToday?.count || 0),
+    draftCount: Number(draftCount?.count || 0),
+    contactMessages: Number(contactCount?.count || 0),
+  }));
+}
+
 app.get("/", async (c) => {
   const db = (await import("./db")).createDb(c.env.DB);
   const { getPublicSettings } = await import("./routes/settings");
@@ -57,4 +76,9 @@ app.get("/", async (c) => {
   return c.json({ name: "Atomic Magazine", brand: "اَتُمیک", description: s.siteDescription, instagram: s.instagramUrl });
 });
 
-export default app;
+export default {
+  fetch: app.fetch,
+  async scheduled(_event: ScheduledEvent, env: any, _ctx: ExecutionContext) {
+    await sendTelegramDailyStatusReport(env);
+  },
+};

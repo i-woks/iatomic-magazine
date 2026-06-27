@@ -14,7 +14,7 @@ ADMIN_BASE_PATH = "/control/iatomic-panel"
 # PUBLIC_MEDIA_BASE_URL = "https://pub-xxx.r2.dev"  # Uncomment after setting up public R2 domain
 
 # Secrets (already set via wrangler secret put):
-# AI_API_KEY, N8N_MCP_SERVER_URL, ADMIN_EMAIL, ADMIN_INITIAL_PASSWORD
+# AI_API_KEY, OPENAI_API_KEY, N8N_MCP_SERVER_URL, ADMIN_EMAIL, ADMIN_INITIAL_PASSWORD
 # ADMIN_SESSION_SECRET, SETUP_SECRET, CRON_SECRET
 
 [[d1_databases]]
@@ -35,7 +35,7 @@ binding = "CACHE"
 id = "edfb0874d80a45a8879f7fdb6775777f"
 
 [triggers]
-crons = ["0 9 * * *"]
+crons = ["30 5 * * *"]
 
 [env.production]
 name = "iatomic-api"
@@ -54,4 +54,4 @@ binding = "CACHE"
 id = "edfb0874d80a45a8879f7fdb6775777f"
 
 [env.production.triggers]
-crons = ["0 9 * * *"]
+crons = ["30 5 * * *"]

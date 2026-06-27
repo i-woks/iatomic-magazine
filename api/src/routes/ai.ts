@@ -7,7 +7,7 @@ import { createApp } from "../lib/hono";
 import { requireAuth } from "../middleware/auth";
 import { createDb } from "../db";
 import { settings, posts, categories, tags, postTags } from "../db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 
@@ -71,6 +71,124 @@ app.get("/logs", requireAuth, async (c) => {
     return c.json({ data: [] });
   }
 });
+
+
+type GeneratedArticle = {
+  title?: string;
+  excerpt?: string;
+  content?: string;
+  sources?: string;
+};
+
+type ReviewResult = {
+  approved: boolean;
+  confidence: number;
+  issues: string[];
+  safeToPublish: boolean;
+  improvedTitle?: string;
+  improvedExcerpt?: string;
+  improvedContent?: string;
+  improvedSources?: string;
+};
+
+function safeJsonParse<T>(raw: string, fallback: T): T {
+  try { return JSON.parse(raw) as T; } catch { return fallback; }
+}
+
+function trustedSourcePrompt() {
+  return [
+    "منابع باید علمی و معتبر باشند؛ مثل NASA, ESA, CERN, Nature, Science, arXiv, PubMed, دانشگاه‌ها، ژورنال‌های peer-reviewed و کتاب‌های علمی معتبر.",
+    "از ادعاهای بی‌منبع، خبرهای زرد، وبلاگ‌های نامعتبر و قطعیت کاذب پرهیز کن.",
+    "اگر موضوع شواهد کافی ندارد، آن را با احتیاط و شفافیت بیان کن.",
+  ].join("\n");
+}
+
+async function callChatJson(input: {
+  apiKey: string;
+  apiBaseUrl: string;
+  model: string;
+  systemPrompt: string;
+  userPrompt: string;
+  timeoutMs?: number;
+}) {
+  const res = await fetch(`${input.apiBaseUrl.replace(/\/$/, "")}/v1/chat/completions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${input.apiKey}`,
+    },
+    body: JSON.stringify({
+      model: input.model,
+      messages: [
+        { role: "system", content: input.systemPrompt },
+        { role: "user", content: input.userPrompt },
+      ],
+      temperature: 0.35,
+      max_tokens: 3500,
+      response_format: { type: "json_object" },
+    }),
+    signal: AbortSignal.timeout(input.timeoutMs || 45000),
+  });
+
+  if (!res.ok) throw new Error(`AI API returned ${res.status}`);
+  const data = await res.json() as any;
+  const raw = data.choices?.[0]?.message?.content;
+  if (!raw) throw new Error("AI API returned empty content");
+  return raw as string;
+}
+
+async function reviewArticleWithSecondAi(env: any, article: GeneratedArticle, topic: string): Promise<ReviewResult | null> {
+  const openAiKey: string | undefined = env.OPENAI_API_KEY;
+  const reviewKey: string | undefined = env.REVIEW_AI_API_KEY || openAiKey;
+  if (!reviewKey) return null;
+  const reviewBaseUrl: string = env.REVIEW_AI_API_BASE_URL || "https://api.openai.com";
+  const reviewModel: string = env.REVIEW_AI_MODEL || "gpt-4o-mini";
+
+  const raw = await callChatJson({
+    apiKey: reviewKey,
+    apiBaseUrl: reviewBaseUrl,
+    model: reviewModel,
+    systemPrompt: [
+      "تو بازبین علمی سخت‌گیر برای مجله علمی فارسی AtomicMagazine هستی.",
+      "وظیفه تو جلوگیری از انتشار مطالب فیک، ادعاهای بی‌منبع و خطاهای علمی است.",
+      trustedSourcePrompt(),
+      "فقط JSON معتبر برگردان.",
+    ].join("\n"),
+    userPrompt: JSON.stringify({
+      task: "fact_check_and_review_article",
+      topic,
+      article,
+      requiredOutput: {
+        approved: "boolean: true only if scientifically safe as a draft",
+        confidence: "number 0..1",
+        safeToPublish: "boolean: normally false unless excellent; admin approval still required",
+        issues: "array of concise Persian issue strings",
+        improvedTitle: "optional Persian title",
+        improvedExcerpt: "optional Persian excerpt",
+        improvedContent: "optional corrected Persian markdown content",
+        improvedSources: "optional credible sources list",
+      },
+    }),
+    timeoutMs: 45000,
+  });
+
+  const parsed = safeJsonParse<ReviewResult>(raw, {
+    approved: false,
+    confidence: 0,
+    safeToPublish: false,
+    issues: ["خروجی بازبین قابل خواندن نبود."],
+  });
+  return {
+    approved: Boolean(parsed.approved),
+    confidence: Number(parsed.confidence || 0),
+    safeToPublish: Boolean(parsed.safeToPublish),
+    issues: Array.isArray(parsed.issues) ? parsed.issues.slice(0, 10) : [],
+    improvedTitle: parsed.improvedTitle,
+    improvedExcerpt: parsed.improvedExcerpt,
+    improvedContent: parsed.improvedContent,
+    improvedSources: parsed.improvedSources,
+  };
+}
 
 // ─── POST /api/ai/run ─────────────────────────────────────────────────
 app.post("/run", requireAuth, async (c) => {
@@ -186,6 +304,24 @@ app.post("/run", requireAuth, async (c) => {
     return c.json({ success: false, message: "AI response missing required fields" }, 502);
   }
 
+  // Second-AI scientific review/fact-check. If configured, failed review prevents auto-publishing.
+  let review: ReviewResult | null = null;
+  try {
+    review = await reviewArticleWithSecondAi(env, { title, excerpt, content, sources }, topic);
+  } catch (err: any) {
+    await appendLog(db, "partial", `Second AI review failed; article will remain draft. ${err?.message || ""}`.trim(), 0);
+  }
+
+  if (review) {
+    if (review.improvedTitle) title = review.improvedTitle;
+    if (review.improvedExcerpt) excerpt = review.improvedExcerpt;
+    if (review.improvedContent) content = review.improvedContent;
+    if (review.improvedSources) sources = review.improvedSources;
+    if (!review.approved || review.confidence < 0.65) {
+      await appendLog(db, "partial", `AI review flagged article as risky. Issues: ${review.issues.join(" | ") || "unspecified"}`, 0);
+    }
+  }
+
   // Validate content length
   const wordCount = content.split(/\s+/).length;
   if (wordCount < minLength / 5) {
@@ -218,7 +354,8 @@ app.post("/run", requireAuth, async (c) => {
   const readingTime = Math.ceil(wordCount / 200);
 
   // Save as draft (always safe default)
-  const status: "draft" | "published" = cfg.autoPublish && !cfg.requireApproval ? "published" : "draft";
+  const reviewAllowsPublish = review ? (review.approved && review.safeToPublish && review.confidence >= 0.85) : false;
+  const status: "draft" | "published" = cfg.autoPublish && !cfg.requireApproval && reviewAllowsPublish ? "published" : "draft";
 
   const [newPost] = await db
     .insert(posts)
@@ -233,7 +370,10 @@ app.post("/run", requireAuth, async (c) => {
       readingTime,
       metaTitle: title,
       metaDescription: (excerpt || title).substring(0, 160),
-      sources: sources || null,
+      sources: [sources || "", review ? `
+
+AI review confidence: ${review.confidence}
+AI review issues: ${(review.issues || []).join(" | ") || "none"}` : ""].join("").trim() || null,
       publishedAt: status === "published" ? new Date().toISOString() : null,
     })
     .returning();
