@@ -1,4 +1,4 @@
-import type { User, Post, Category, Tag, MediaItem, SiteSettings, Paginated } from "@/types";
+import type { User, Post, Category, Tag, MediaItem, SiteSettings, Paginated, ContactMessage, TelegramStatus } from "@/types";
 
 const API_URL = import.meta.env.VITE_API_URL || "";
 
@@ -82,3 +82,17 @@ export const triggerAiRun = () =>
   fetchApi<{ success: boolean; message: string }>("/ai/run", { method: "POST" });
 export const fetchAiLogs = () =>
   fetchApi<{ data: Array<{ id: number; runAt: string; status: string; message: string; articlesGenerated: number }> }>("/ai/logs");
+
+// ── Telegram / Contact Messages ─────────────────────────────────────
+export const fetchTelegramStatus = () =>
+  fetchApi<{ data: TelegramStatus }>("/public/contact/admin/telegram/status");
+export const sendTelegramTestMessage = () =>
+  fetchApi<{ ok: boolean; error?: string }>("/public/contact/admin/telegram/test", { method: "POST" });
+export const sendTelegramStatusReport = () =>
+  fetchApi<{ ok: boolean; error?: string }>("/public/contact/admin/telegram/status-report", { method: "POST" });
+export const fetchContactMessages = () =>
+  fetchApi<{ data: ContactMessage[] }>("/public/contact/admin/messages");
+export const updateContactMessageStatus = (id: number, status: ContactMessage["status"]) =>
+  fetchApi<{ ok: boolean }>(`/public/contact/admin/messages/${id}`, { method: "PUT", body: JSON.stringify({ status }) });
+export const deleteContactMessage = (id: number) =>
+  fetchApi<{ ok: boolean }>(`/public/contact/admin/messages/${id}`, { method: "DELETE" });

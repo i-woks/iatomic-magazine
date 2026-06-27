@@ -10,8 +10,8 @@ const SESSION_TTL = 60 * 60 * 24 * 7;
 export interface Env {
   Bindings: {
     DB: D1Database;
-    CACHE: KVNamespace;
-    MEDIA_BUCKET: R2Bucket;
+    CACHE?: KVNamespace;
+    MEDIA_BUCKET?: R2Bucket;
     ADMIN_SESSION_SECRET: string;
     ADMIN_EMAIL?: string;
     ADMIN_INITIAL_PASSWORD?: string;
@@ -31,7 +31,7 @@ export async function createSession(c: Context<Env>, userId: number): Promise<st
   const tokenHash = await sha256(token); const now = Math.floor(Date.now() / 1000);
   const db = createDb(c.env.DB);
   await db.insert(sessions).values({ id, userId, tokenHash, expiresAt: now + SESSION_TTL });
-  setCookie(c, SESSION_COOKIE, token, { httpOnly: true, secure: true, sameSite: "Strict", path: "/", maxAge: SESSION_TTL });
+  setCookie(c, SESSION_COOKIE, token, { httpOnly: true, secure: true, sameSite: "None", path: "/", maxAge: SESSION_TTL });
   return token;
 }
 

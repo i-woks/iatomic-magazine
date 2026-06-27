@@ -42,8 +42,10 @@ app.post("/", requireAuth, zValidator("form", uploadSchema), async (c) => {
   if (!ALLOWED.includes(file.type)) return c.json({ error: "Invalid file type. Allowed: jpg, jpeg, png, webp, svg, gif" }, 400);
   if (file.size > MAX) return c.json({ error: "File too large. Max 5MB" }, 400);
 
+  const bucket = c.env.MEDIA_BUCKET;
+  if (!bucket) return c.json({ error: "Media storage is not configured" }, 503);
   const key = generateKey(file.name);
-  await c.env.MEDIA_BUCKET.put(key, file);
+  await bucket.put(key, file);
 
   const publicBase = (c.env as any).PUBLIC_MEDIA_BASE_URL || "";
   const url = publicBase ? `${publicBase}/${key}` : `/api/media/file/${key}`;
@@ -65,7 +67,9 @@ app.post("/", requireAuth, zValidator("form", uploadSchema), async (c) => {
 app.get("/file/:key", async (c) => {
   const key = c.req.param("key");
   if (key.includes("..") || key.startsWith("/")) return c.json({ error: "Invalid key" }, 400);
-  const obj = await c.env.MEDIA_BUCKET.get(key);
+  const bucket = c.env.MEDIA_BUCKET;
+  if (!bucket) return c.json({ error: "Media storage is not configured" }, 503);
+  const obj = await bucket.get(key);
   if (!obj) return c.json({ error: "Not found" }, 404);
   const h = new Headers();
   obj.writeHttpMetadata(h);
@@ -79,7 +83,9 @@ app.delete("/:id", requireAuth, async (c) => {
   const db = createDb(c.env.DB);
   const item = await db.query.media.findFirst({ where: eq(media.id, id) });
   if (!item) return c.json({ error: "Not found" }, 404);
-  await c.env.MEDIA_BUCKET.delete(item.r2Key);
+  const bucket = c.env.MEDIA_BUCKET;
+  if (!bucket) return c.json({ error: "Media storage is not configured" }, 503);
+  await bucket.delete(item.r2Key);
   await db.delete(media).where(eq(media.id, id));
   return c.json({ success: true });
 });

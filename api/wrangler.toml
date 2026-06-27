@@ -3,7 +3,7 @@ main = "src/index.ts"
 compatibility_date = "2024-05-12"
 compatibility_flags = ["nodejs_compat"]
 
-account_id = "144fbcd4f86a4569675d40cd5804d6e4"
+account_id = "0be31dbd903c8a7832f2058036b05221"
 
 [vars]
 API_BASE_PATH = "/api"
@@ -20,7 +20,7 @@ ADMIN_BASE_PATH = "/control/iatomic-panel"
 [[d1_databases]]
 binding = "DB"
 database_name = "iatomic-db"
-database_id = "0de942a7-6a1d-43e3-a0fc-7fe0b28876f5"
+database_id = "df091f99-f96c-4a52-9e05-355eab604d1b"
 
 # R2 media storage — REQUIRES R2 to be activated in Cloudflare Dashboard first:
 # https://dash.cloudflare.com → R2 Object Storage → Enable
@@ -32,7 +32,7 @@ database_id = "0de942a7-6a1d-43e3-a0fc-7fe0b28876f5"
 
 [[kv_namespaces]]
 binding = "CACHE"
-id = "3fb63a94a8974df095cb04ad4c2292f7"
+id = "edfb0874d80a45a8879f7fdb6775777f"
 
 [triggers]
 crons = ["0 9 * * *"]
@@ -43,7 +43,7 @@ name = "iatomic-api"
 [[env.production.d1_databases]]
 binding = "DB"
 database_name = "iatomic-db"
-database_id = "0de942a7-6a1d-43e3-a0fc-7fe0b28876f5"
+database_id = "df091f99-f96c-4a52-9e05-355eab604d1b"
 
 # [[env.production.r2_buckets]]
 # binding = "MEDIA_BUCKET"
@@ -51,7 +51,7 @@ database_id = "0de942a7-6a1d-43e3-a0fc-7fe0b28876f5"
 
 [[env.production.kv_namespaces]]
 binding = "CACHE"
-id = "3fb63a94a8974df095cb04ad4c2292f7"
+id = "edfb0874d80a45a8879f7fdb6775777f"
 
 [env.production.triggers]
 crons = ["0 9 * * *"]

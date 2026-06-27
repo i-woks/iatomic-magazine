@@ -66,6 +66,18 @@ export const media = sqliteTable("media", {
   createdAt: text("created_at").notNull().default(sql`(CURRENT_TIMESTAMP)`),
 });
 
+export const contactMessages = sqliteTable("contact_messages", {
+  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  category: text("category").notNull(),
+  message: text("message").notNull(),
+  status: text("status", { enum: ["new", "reviewed", "archived"] }).notNull().default("new"),
+  sourcePage: text("source_page"),
+  telegramSent: integer("telegram_sent", { mode: "boolean" }).notNull().default(false),
+  telegramError: text("telegram_error"),
+  createdAt: text("created_at").notNull().default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: text("updated_at").notNull().default(sql`(CURRENT_TIMESTAMP)`),
+});
+
 export const settings = sqliteTable("settings", {
   key: text("key").primaryKey(),
   value: text("value").notNull(),
@@ -85,4 +97,5 @@ export type Category = typeof categories.$inferSelect;
 export type Tag = typeof tags.$inferSelect;
 export type MediaItem = typeof media.$inferSelect;
 export type Setting = typeof settings.$inferSelect;
+export type ContactMessage = typeof contactMessages.$inferSelect;
 export type Session = typeof sessions.$inferSelect;

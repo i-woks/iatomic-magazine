@@ -39,6 +39,7 @@ function getClientIp(c: any): string {
 
 async function isRateLimited(c: any): Promise<boolean> {
   const kv = c.env.CACHE;
+  if (!kv) return false;
   const ip = getClientIp(c);
   const key = `login_attempts:${ip}`;
   const current = await kv.get(key);
@@ -48,6 +49,7 @@ async function isRateLimited(c: any): Promise<boolean> {
 
 async function recordAttempt(c: any) {
   const kv = c.env.CACHE;
+  if (!kv) return;
   const ip = getClientIp(c);
   const key = `login_attempts:${ip}`;
   const current = await kv.get(key);
@@ -57,6 +59,7 @@ async function recordAttempt(c: any) {
 
 async function resetAttempts(c: any) {
   const kv = c.env.CACHE;
+  if (!kv) return;
   const ip = getClientIp(c);
   await kv.delete(`login_attempts:${ip}`);
 }

@@ -18,6 +18,7 @@ import { AdminMediaPage } from "@/pages/AdminMediaPage";
 import { AdminSettingsPage } from "@/pages/AdminSettingsPage";
 import { AdminAiAutomationPage } from "@/pages/AdminAiAutomationPage";
 import { AdminAdsPage } from "@/pages/AdminAdsPage";
+import { AdminContactMessagesPage } from "@/pages/AdminContactMessagesPage";
 
 const ADMIN_BASE_PATH = import.meta.env.VITE_ADMIN_BASE_PATH || "/control/iatomic-panel";
 export { ADMIN_BASE_PATH };
@@ -48,6 +49,7 @@ export function App() {
               <Route path="ads" element={<AdminAdsPage />} />
               <Route path="ai-automation" element={<AdminAiAutomationPage />} />
               <Route path="settings" element={<AdminSettingsPage />} />
+              <Route path="contact-messages" element={<AdminContactMessagesPage />} />
             </Route>
             <Route path={`${ADMIN_BASE_PATH}/login`} element={<AdminLoginPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />

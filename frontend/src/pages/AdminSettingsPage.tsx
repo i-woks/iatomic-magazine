@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { Save, AlertCircle, Image as ImageIcon } from "lucide-react";
+import { Save, AlertCircle, Image as ImageIcon, Send, ShieldCheck, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Select } from "@/components/ui/Select";
-import { fetchSettings, updateSettings, fetchAdminPosts, uploadMedia } from "@/lib/api";
-import type { Post } from "@/types";
+import { fetchSettings, updateSettings, fetchAdminPosts, uploadMedia, fetchTelegramStatus, sendTelegramTestMessage, sendTelegramStatusReport } from "@/lib/api";
+import type { Post, TelegramStatus } from "@/types";
 
 export function AdminSettingsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -24,10 +24,13 @@ export function AdminSettingsPage() {
   const [featuredPostId, setFeaturedPostId] = useState<number | "">("");
   const [homepagePostCount, setHomepagePostCount] = useState(12);
   const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [telegramStatus, setTelegramStatus] = useState<TelegramStatus | null>(null);
+  const [telegramLoading, setTelegramLoading] = useState(false);
+  const [telegramMessage, setTelegramMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    Promise.all([fetchSettings(), fetchAdminPosts()])
-      .then(([s, p]) => {
+    Promise.all([fetchSettings(), fetchAdminPosts(), fetchTelegramStatus().catch(() => null)])
+      .then(([s, p, t]) => {
         const d = s.data;
         setPosts(p.data);
         setSiteName(d.siteName);
@@ -39,6 +42,7 @@ export function AdminSettingsPage() {
         setBaseSeoDescription(d.baseSeoDescription);
         setFeaturedPostId(d.featuredPostId || "");
         setHomepagePostCount(d.homepagePostCount);
+        if (t) setTelegramStatus(t.data);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
@@ -84,6 +88,34 @@ export function AdminSettingsPage() {
     }
   };
 
+  const handleTelegramTest = async () => {
+    setTelegramLoading(true);
+    setTelegramMessage(null);
+    try {
+      await sendTelegramTestMessage();
+      setTelegramMessage("پیام تست با موفقیت ارسال شد.");
+      const status = await fetchTelegramStatus();
+      setTelegramStatus(status.data);
+    } catch (err: any) {
+      setTelegramMessage(err.message || "ارسال پیام تست ناموفق بود.");
+    } finally {
+      setTelegramLoading(false);
+    }
+  };
+
+  const handleTelegramReport = async () => {
+    setTelegramLoading(true);
+    setTelegramMessage(null);
+    try {
+      await sendTelegramStatusReport();
+      setTelegramMessage("گزارش وضعیت با موفقیت به تلگرام ارسال شد.");
+    } catch (err: any) {
+      setTelegramMessage(err.message || "ارسال گزارش وضعیت ناموفق بود.");
+    } finally {
+      setTelegramLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
@@ -107,6 +139,40 @@ export function AdminSettingsPage() {
           تنظیمات با موفقیت ذخیره شد.
         </div>
       )}
+
+      <section className="mb-6 rounded-[22px] border border-separator/30 bg-bg-secondary/70 p-5 shadow-ios-sm">
+        <div className="mb-4 flex items-center gap-2">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-ios-blue-soft text-ios-blue">
+            <ShieldCheck className="h-5 w-5" />
+          </div>
+          <div>
+            <h2 className="font-bold text-label-primary">وضعیت تلگرام</h2>
+            <p className="text-xs text-label-secondary">توکن هرگز نمایش داده نمی‌شود و فقط سمت سرور استفاده می‌شود.</p>
+          </div>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="rounded-ios bg-bg-primary/60 p-3 text-sm">
+            Bot token configured: <b className={telegramStatus?.botTokenConfigured ? "text-green-600" : "text-red-600"}>{telegramStatus?.botTokenConfigured ? "yes" : "no"}</b>
+          </div>
+          <div className="rounded-ios bg-bg-primary/60 p-3 text-sm">
+            Admin chat ID configured: <b className={telegramStatus?.adminChatIdConfigured ? "text-green-600" : "text-red-600"}>{telegramStatus?.adminChatIdConfigured ? "yes" : "no"}</b>
+          </div>
+        </div>
+        {!telegramStatus?.fullyConfigured && (
+          <p className="mt-3 rounded-ios bg-yellow-50 p-3 text-sm text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200">
+            ارتباط مستقیم در حال حاضر پیکربندی نشده است. Secrets لازم: TELEGRAM_BOT_TOKEN و TELEGRAM_ADMIN_CHAT_ID
+          </p>
+        )}
+        {telegramMessage && <p className="mt-3 rounded-ios bg-fill-tertiary p-3 text-sm text-label-secondary">{telegramMessage}</p>}
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Button type="button" variant="outline" onClick={handleTelegramTest} disabled={telegramLoading} className="gap-2">
+            <Send className="h-4 w-4" /> ارسال پیام تست
+          </Button>
+          <Button type="button" variant="outline" onClick={handleTelegramReport} disabled={telegramLoading} className="gap-2">
+            <BarChart3 className="h-4 w-4" /> ارسال گزارش وضعیت
+          </Button>
+        </div>
+      </section>
 
       <form onSubmit={submit} className="space-y-6">
         <div className="grid gap-6 md:grid-cols-2">

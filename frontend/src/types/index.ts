@@ -80,3 +80,22 @@ export interface Paginated<T> {
   data: T[];
   pagination: Pagination;
 }
+
+export interface ContactMessage {
+  id: number;
+  category: "مشکلات" | "پیشنهادات" | "گزارش" | "سایر موارد";
+  message: string;
+  status: "new" | "reviewed" | "archived";
+  sourcePage: string | null;
+  telegramSent: boolean;
+  telegramError: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TelegramStatus {
+  botTokenConfigured: boolean;
+  adminChatIdConfigured: boolean;
+  fullyConfigured: boolean;
+  lastTestStatus: string | null;
+}
