@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Atom, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
+import { Logo } from "@/components/layout/Logo";
 import { login, fetchCsrfToken } from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
 import { ADMIN_BASE_PATH } from "@/App";
@@ -40,17 +41,21 @@ export function AdminLoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-bg-primary px-4">
-      <div className="glass-panel w-full max-w-sm rounded-2xl p-8 shadow-ios">
-        <div className="mb-6 flex justify-center">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-ios-blue text-white">
-            <Atom className="h-8 w-8" />
+      <div className="glass-panel w-full max-w-sm rounded-[24px] p-8 shadow-ios-lg">
+        {/* Logo */}
+        <div className="mb-6 flex flex-col items-center gap-3">
+          <div className="logo-frame flex h-20 w-20 items-center justify-center rounded-[22px] overflow-hidden shadow-ios">
+            {/* Dark theme logo */}
+            <img src="/logo-dark.jpg" alt="iAtomic" className="logo-dark h-full w-full object-contain p-2" />
+            {/* Light theme logo */}
+            <img src="/logo-light.jpg" alt="iAtomic" className="logo-light h-full w-full object-contain p-2" />
           </div>
+          <h1 className="text-xl font-bold text-label-primary">ورود مدیر iAtomic</h1>
         </div>
-        <h1 className="mb-6 text-center text-xl font-bold text-label-primary">ورود مدیر iAtomic</h1>
 
         {error && (
           <div className="mb-4 flex items-center gap-2 rounded-ios bg-red-50 p-3 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-300">
-            <AlertCircle className="h-4 w-4" />
+            <AlertCircle className="h-4 w-4 shrink-0" />
             {error}
           </div>
         )}
@@ -58,15 +63,36 @@ export function AdminLoginPage() {
         <form onSubmit={submit} className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="email">ایمیل</Label>
-            <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="admin@iatomic.local" dir="ltr" />
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              placeholder="admin@iatomic.ir"
+              dir="ltr"
+            />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="password">رمز عبور</Label>
-            <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} required placeholder="••••••••" dir="ltr" />
+            <Input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="••••••••"
+              dir="ltr"
+            />
           </div>
-          <Button type="submit" className="w-full" disabled={loading}>{loading ? "در حال ورود..." : "ورود"}</Button>
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "در حال ورود..." : "ورود"}
+          </Button>
         </form>
-        <p className="mt-6 text-center text-xs text-label-tertiary">دسترسی تنها برای مدیران مجاز است.</p>
+
+        <p className="mt-6 text-center text-xs text-label-tertiary">
+          دسترسی تنها برای مدیران مجاز است.
+        </p>
       </div>
     </div>
   );

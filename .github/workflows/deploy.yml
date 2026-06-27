@@ -4,10 +4,74 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      deploy_to_cloudflare:
+        description: 'Deploy to Cloudflare? (yes/no)'
+        required: true
+        default: 'no'
 
 jobs:
-  deploy:
+  build-and-test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      build_success: ${{ steps.build.outcome }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install root dependencies
+        run: npm ci --if-present
+
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: frontend
+
+      - name: Install API dependencies
+        run: npm ci
+        working-directory: api
+
+      - name: Type check frontend
+        run: npx tsc --noEmit
+        working-directory: frontend
+        continue-on-error: true
+
+      - name: Type check API
+        run: npx tsc --noEmit
+        working-directory: api
+        continue-on-error: true
+
+      - name: Build frontend
+        id: build
+        run: npm run build
+        working-directory: frontend
+        env:
+          VITE_API_URL: "https://iatomic-api.iwok3m.workers.dev"
+          VITE_ADMIN_BASE_PATH: "/control/iatomic-panel"
+
+      - name: Upload frontend dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist
+          retention-days: 1
+
+  deploy-cloudflare:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    # Only deploy if:
+    # 1. Manually triggered with deploy_to_cloudflare=yes, OR
+    # 2. This is a push AND the build succeeded
+    if: |
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_to_cloudflare == 'yes') ||
+      (github.event_name == 'push' && needs.build-and-test.outputs.build_success == 'success')
     permissions:
       contents: read
     steps:
@@ -18,22 +82,30 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install frontend dependencies
         run: npm ci
+        working-directory: frontend
 
-      - name: Build frontend
-        run: npm run build -w frontend
-        env:
-          VITE_API_URL: "https://iatomic-api.iwok3m.workers.dev"
-          VITE_ADMIN_BASE_PATH: "/control/iatomic-panel"
+      - name: Install API dependencies
+        run: npm ci
+        working-directory: api
 
-      - name: Deploy API
-        run: npm run deploy -w api
+      - name: Download frontend dist
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist
+
+      - name: Deploy API Worker
+        run: npx wrangler deploy
+        working-directory: api
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
-      - name: Deploy frontend
-        run: npm run deploy -w frontend
+      - name: Deploy Frontend (Cloudflare Pages)
+        run: npx wrangler pages deploy dist --project-name=iatomic-magazine
+        working-directory: frontend
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

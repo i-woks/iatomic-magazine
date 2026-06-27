@@ -1,6 +1,7 @@
 import { Link, Navigate, useLocation, Outlet } from "react-router-dom";
-import { LayoutDashboard, FileText, Tags, Image, Settings, LogOut, Atom } from "lucide-react";
+import { LayoutDashboard, FileText, Tags, Image, Settings, LogOut, Bot } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { Logo } from "./Logo";
 import { useAuth } from "@/hooks/useAuth";
 import { logout } from "@/lib/api";
 import { cn } from "@/lib/utils";
@@ -11,6 +12,7 @@ const nav = [
   { to: "posts", label: "مقالات", icon: FileText },
   { to: "categories", label: "دسته‌بندی‌ها", icon: Tags },
   { to: "media", label: "رسانه", icon: Image },
+  { to: "ai-automation", label: "هوش مصنوعی", icon: Bot },
   { to: "settings", label: "تنظیمات", icon: Settings },
 ];
 
@@ -39,20 +41,23 @@ export function AdminLayout() {
 
   return (
     <div className="flex min-h-screen bg-bg-primary">
-      <aside className="hidden w-64 border-l border-separator/30 bg-bg-secondary/40 lg:block">
+      {/* Sidebar */}
+      <aside className="hidden w-64 border-l border-separator/30 bg-bg-secondary/40 lg:flex lg:flex-col">
         <div className="p-6">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-ios-blue text-white">
-              <Atom className="h-5 w-5" />
-            </div>
-            <span className="font-bold text-label-primary">iAtomic Admin</span>
+          <Link to="/" className="block">
+            <Logo size="sm" />
           </Link>
+          <p className="mt-1 pr-12 text-xs text-label-tertiary">پنل مدیریت</p>
         </div>
-        <nav className="px-4">
+
+        <nav className="flex-1 px-4">
           {nav.map((item) => {
             const Icon = item.icon;
             const target = adminPath(item.to);
-            const active = target === location.pathname;
+            const active =
+              item.to === ""
+                ? location.pathname === target
+                : location.pathname.startsWith(target);
             return (
               <Link
                 key={target}
@@ -70,8 +75,9 @@ export function AdminLayout() {
             );
           })}
         </nav>
-        <div className="absolute bottom-6 left-6 right-6">
-          <div className="mb-3 px-4 text-sm text-label-secondary">{user.name}</div>
+
+        <div className="p-4 border-t border-separator/30">
+          <div className="mb-2 px-2 text-xs text-label-tertiary truncate">{user.email || user.name}</div>
           <Button variant="outline" className="w-full gap-2" onClick={handleLogout}>
             <LogOut className="h-4 w-4" />
             خروج
@@ -79,23 +85,34 @@ export function AdminLayout() {
         </div>
       </aside>
 
+      {/* Main */}
       <main className="flex-1 overflow-auto">
+        {/* Mobile top nav */}
         <div className="border-b border-separator/30 bg-bg-secondary/40 p-4 lg:hidden">
           <div className="flex items-center justify-between">
-            <span className="font-bold text-label-primary">iAtomic Admin</span>
-            <Button variant="ghost" size="sm" onClick={handleLogout}>
-              خروج
+            <Logo size="sm" />
+            <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-1 text-xs">
+              <LogOut className="h-3.5 w-3.5" />خروج
             </Button>
           </div>
           <nav className="mt-3 flex flex-wrap gap-2">
             {nav.map((item) => {
               const Icon = item.icon;
               const target = adminPath(item.to);
+              const active =
+                item.to === ""
+                  ? location.pathname === target
+                  : location.pathname.startsWith(target);
               return (
                 <Link
                   key={target}
                   to={target}
-                  className="flex items-center gap-1 rounded-lg bg-fill-quaternary px-3 py-1.5 text-xs text-label-secondary"
+                  className={cn(
+                    "flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs transition-colors",
+                    active
+                      ? "bg-ios-blue-soft text-ios-blue"
+                      : "bg-fill-quaternary text-label-secondary hover:bg-fill-tertiary"
+                  )}
                 >
                   <Icon className="h-3.5 w-3.5" />
                   {item.label}
@@ -104,6 +121,7 @@ export function AdminLayout() {
             })}
           </nav>
         </div>
+
         <div className="p-6">
           <Outlet />
         </div>

@@ -7,7 +7,20 @@ account_id = "144fbcd4f86a4569675d40cd5804d6e4"
 
 [vars]
 API_BASE_PATH = "/api"
-# PUBLIC_MEDIA_BASE_URL = "https://pub-xxx.r2.dev"  # uncomment if you configure a public R2 domain
+AI_PROVIDER = "deepseek"
+AI_MODEL = "deepseek-chat"
+AI_API_BASE_URL = "https://api.deepseek.com"
+ADMIN_BASE_PATH = "/control/iatomic-panel"
+# PUBLIC_MEDIA_BASE_URL = "https://pub-xxx.r2.dev"  # Uncomment if you configure a public R2 domain
+
+# Secrets (set via: wrangler secret put <SECRET_NAME>)
+# AI_API_KEY
+# N8N_MCP_SERVER_URL
+# ADMIN_SESSION_SECRET
+# ADMIN_EMAIL
+# ADMIN_INITIAL_PASSWORD
+# SETUP_SECRET
+# CRON_SECRET
 
 [[d1_databases]]
 binding = "DB"
@@ -21,6 +34,10 @@ bucket_name = "iatomic-media"
 [[kv_namespaces]]
 binding = "CACHE"
 id = "3fb63a94a8974df095cb04ad4c2292f7"
+
+# Cron trigger for AI article automation (runs daily at 9am UTC)
+[triggers]
+crons = ["0 9 * * *"]
 
 [env.production]
 name = "iatomic-api"
@@ -37,3 +54,6 @@ bucket_name = "iatomic-media"
 [[env.production.kv_namespaces]]
 binding = "CACHE"
 id = "3fb63a94a8974df095cb04ad4c2292f7"
+
+[env.production.triggers]
+crons = ["0 9 * * *"]
