@@ -11,29 +11,31 @@ AI_PROVIDER = "deepseek"
 AI_MODEL = "deepseek-chat"
 AI_API_BASE_URL = "https://api.deepseek.com"
 ADMIN_BASE_PATH = "/control/iatomic-panel"
-# PUBLIC_MEDIA_BASE_URL = "https://pub-xxx.r2.dev"  # Uncomment after setting up public R2 domain
+# PUBLIC_MEDIA_BASE_URL = "https://pub-xxx.r2.dev"  # Uncomment if you configure a public R2 domain
 
-# Secrets (already set via wrangler secret put):
-# AI_API_KEY, N8N_MCP_SERVER_URL, ADMIN_EMAIL, ADMIN_INITIAL_PASSWORD
-# ADMIN_SESSION_SECRET, SETUP_SECRET, CRON_SECRET
+# Secrets (set via: wrangler secret put <SECRET_NAME>)
+# AI_API_KEY
+# N8N_MCP_SERVER_URL
+# ADMIN_SESSION_SECRET
+# ADMIN_EMAIL
+# ADMIN_INITIAL_PASSWORD
+# SETUP_SECRET
+# CRON_SECRET
 
 [[d1_databases]]
 binding = "DB"
 database_name = "iatomic-db"
 database_id = "0de942a7-6a1d-43e3-a0fc-7fe0b28876f5"
 
-# R2 media storage — REQUIRES R2 to be activated in Cloudflare Dashboard first:
-# https://dash.cloudflare.com → R2 Object Storage → Enable
-# Then run: wrangler r2 bucket create iatomic-media
-# Then uncomment the lines below and redeploy.
-# [[r2_buckets]]
-# binding = "MEDIA_BUCKET"
-# bucket_name = "iatomic-media"
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "iatomic-media"
 
 [[kv_namespaces]]
 binding = "CACHE"
 id = "3fb63a94a8974df095cb04ad4c2292f7"
 
+# Cron trigger for AI article automation (runs daily at 9am UTC)
 [triggers]
 crons = ["0 9 * * *"]
 
@@ -45,9 +47,9 @@ binding = "DB"
 database_name = "iatomic-db"
 database_id = "0de942a7-6a1d-43e3-a0fc-7fe0b28876f5"
 
-# [[env.production.r2_buckets]]
-# binding = "MEDIA_BUCKET"
-# bucket_name = "iatomic-media"
+[[env.production.r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "iatomic-media"
 
 [[env.production.kv_namespaces]]
 binding = "CACHE"
