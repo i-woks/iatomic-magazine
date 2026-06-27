@@ -25,7 +25,7 @@ export function Footer({ categories, instagramUrl, siteName, siteDescription, lo
               <Logo logoAlt={logoAlt} />
             </Link>
             <p className="text-sm leading-relaxed text-label-secondary">
-              {siteDescription || "مجله علمی آیاتمیک: فیزیک، کیهان‌شناسی، کوانتوم و علم روز."}
+              {siteDescription || "مجله علمی اَتُمیک: فیزیک، کیهان‌شناسی، کوانتوم و علم روز."}
             </p>
             <div className="flex items-center gap-3">
               <a
@@ -33,7 +33,7 @@ export function Footer({ categories, instagramUrl, siteName, siteDescription, lo
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-fill-quaternary text-label-secondary transition-colors hover:bg-ios-blue-soft hover:text-ios-blue"
-                aria-label="اینستاگرام iAtomic"
+                aria-label="اینستاگرام Atomic"
               >
                 <Instagram className="h-5 w-5" />
               </a>
@@ -77,7 +77,7 @@ export function Footer({ categories, instagramUrl, siteName, siteDescription, lo
             <ul className="space-y-2">
               <li>
                 <Link to="/about" className="text-sm text-label-secondary transition-colors hover:text-ios-blue">
-                  درباره iAtomic
+                  درباره Atomic
                 </Link>
               </li>
               <li>
@@ -105,7 +105,7 @@ export function Footer({ categories, instagramUrl, siteName, siteDescription, lo
         </div>
 
         <div className="mt-10 border-t border-separator/30 pt-6 text-center text-xs text-label-tertiary">
-          <p>© {new Date().getFullYear()} {siteName || "iAtomic"}. تمامی حقوق محفوظ است.</p>
+          <p>© {new Date().getFullYear()} {siteName || "Atomic"}. تمامی حقوق محفوظ است.</p>
         </div>
       </div>
     </footer>

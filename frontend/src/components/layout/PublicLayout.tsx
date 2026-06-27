@@ -12,10 +12,7 @@ export function PublicLayout() {
 
   useEffect(() => {
     Promise.all([fetchSettings(), fetchCategories()])
-      .then(([s, c]) => {
-        setSettings(s.data);
-        setCategories(c.data);
-      })
+      .then(([s, c]) => { setSettings(s.data); setCategories(c.data); })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
@@ -29,23 +26,32 @@ export function PublicLayout() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-bg-primary">
+    <div className="relative flex min-h-screen flex-col bg-bg-primary">
+      {/* Global animated blue halos */}
+      <div className="halo-wrap" aria-hidden="true">
+        <div className="halo halo-tr" />
+        <div className="halo halo-bl" />
+      </div>
+
+      {/* Floating glass header */}
       <Header
         categories={categories}
         instagramUrl={settings?.instagramUrl}
         telegramUrl="https://t.me/AtomicMagazine"
-        logoAlt={settings?.logoAlt || "iAtomic Logo"}
+        logoAlt={settings?.logoAlt || "Atomic Logo"}
       />
-      <main className="flex-1 pt-16">
+
+      {/* Page content — padded below floating header */}
+      <main className="relative z-10 flex-1 pt-24">
         <Outlet context={{ settings, categories }} />
       </main>
+
       <Footer
         categories={categories}
         instagramUrl={settings?.instagramUrl}
         siteName={settings?.siteName}
         siteDescription={settings?.siteDescription}
-        logoUrl={settings?.logoUrl || "/logo.jpg"}
-        logoAlt={settings?.logoAlt || "iAtomic Logo"}
+        logoAlt={settings?.logoAlt || "Atomic Logo"}
       />
     </div>
   );

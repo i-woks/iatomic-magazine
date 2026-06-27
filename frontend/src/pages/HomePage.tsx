@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { ArticleCard } from "@/components/ArticleCard";
 import { DonationWidget } from "@/components/DonationWidget";
+import { AdZone } from "@/components/AdZone";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { fetchFeaturedPost, fetchPosts } from "@/lib/api";
@@ -39,6 +40,9 @@ export function HomePage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      {/* Ad zone above donation — renders nothing if no active ad */}
+      <AdZone placement="homepage_top_above_donation" className="mb-4" />
+
       {/* Donation widget */}
       <section className="mb-6">
         <DonationWidget />
@@ -86,9 +90,9 @@ export function HomePage() {
 
       {/* Featured/selected placeholder */}
       <section className="glass-card mb-10 rounded-ios-lg p-6">
-        <h2 className="mb-2 text-lg font-bold text-label-primary">مقالات برگزیده iAtomic</h2>
+        <h2 className="mb-2 text-lg font-bold text-label-primary">مقالات برگزیده Atomic</h2>
         <p className="text-sm text-label-secondary">
-          مقالات تحلیلی و آموزشی در حوزه فیزیک، کیهان‌شناسی، کوانتوم و علم روز. با iAtomic همراه باشید.
+          مقالات تحلیلی و آموزشی در حوزه فیزیک، کیهان‌شناسی، کوانتوم و علم روز. با Atomic همراه باشید.
         </p>
       </section>
 
@@ -107,9 +111,9 @@ export function HomePage() {
         </section>
         <aside className="space-y-6">
           <div className="glass-card rounded-ios p-5">
-            <h3 className="mb-3 text-base font-bold text-label-primary">iAtomic را دنبال کنید</h3>
+            <h3 className="mb-3 text-base font-bold text-label-primary">Atomic را دنبال کنید</h3>
             <p className="mb-4 text-sm text-label-secondary">
-              آخرین مقالات علمی را در اینستاگرام iAtomic بخوانید.
+              آخرین مقالات علمی را در اینستاگرام Atomic بخوانید.
             </p>
             <a
               href={settings?.instagramUrl || "https://instagram.com/iatomic_"}

@@ -4,7 +4,7 @@ export function ArticleCard({ post, featured, className }: { post: Post; feature
     <article className={cn("group relative overflow-hidden rounded-ios bg-bg-secondary/60 border border-separator/30 shadow-ios transition-all duration-120 hover:shadow-ios-lg dark:bg-bg-secondary", featured && "md:grid md:grid-cols-2 md:gap-0", className)}>
       <Link to={`/article/${post.slug}`} className="block overflow-hidden">
         <div className={cn("aspect-[16/10] bg-fill-secondary transition-transform duration-240 group-hover:scale-[1.02]", featured && "md:aspect-auto md:h-full")}>
-          {post.coverImage ? <img src={post.coverImage.url} alt={post.title} loading="lazy" className="h-full w-full object-cover" /> : <div className="flex h-full w-full items-center justify-center text-label-tertiary"><span className="text-sm">iAtomic</span></div>}
+          {post.coverImage ? <img src={post.coverImage.url} alt={post.title} loading="lazy" className="h-full w-full object-cover" /> : <div className="flex h-full w-full items-center justify-center text-label-tertiary"><span className="text-sm">Atomic</span></div>}
         </div>
       </Link>
       <div className="p-5">

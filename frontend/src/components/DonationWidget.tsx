@@ -24,9 +24,9 @@ export function DonationWidget({ className }: DonationWidgetProps) {
             <Heart className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="text-base font-bold text-label-primary">حمایت از iAtomic</h3>
+            <h3 className="text-base font-bold text-label-primary">حمایت از Atomic</h3>
             <p className="text-sm text-label-secondary">
-              اگر محتوای علمی iAtomic برات مفیده، می‌تونی با یک حمایت کوچک کمک کنی ادامه‌دار بمونه.
+              اگر محتوای علمی Atomic برات مفیده، می‌تونی با یک حمایت کوچک کمک کنی ادامه‌دار بمونه.
             </p>
           </div>
         </div>
@@ -36,7 +36,7 @@ export function DonationWidget({ className }: DonationWidgetProps) {
           rel="noopener noreferrer"
           className="inline-flex shrink-0 items-center justify-center"
         >
-          <Button className="w-full gap-2 sm:w-auto" aria-label="حمایت مالی از iAtomic">
+          <Button className="w-full gap-2 sm:w-auto" aria-label="حمایت مالی از Atomic">
             <Heart className="h-4 w-4" />
             حمایت مالی
           </Button>

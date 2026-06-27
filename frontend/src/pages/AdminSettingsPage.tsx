@@ -75,7 +75,7 @@ export function AdminSettingsPage() {
     setUploadingLogo(true);
     setError(null);
     try {
-      const res = await uploadMedia(file, logoAlt || "iAtomic logo");
+      const res = await uploadMedia(file, logoAlt || "Atomic logo");
       setLogoUrl(res.data.url);
     } catch (err: any) {
       setError(err.message || "خطا در آپلود لوگو");
@@ -124,7 +124,7 @@ export function AdminSettingsPage() {
           </div>
           <div className="space-y-1.5">
             <Label>متن جایگزین لوگو (alt)</Label>
-            <Input value={logoAlt} onChange={(e) => setLogoAlt(e.target.value)} placeholder="iAtomic Logo" />
+            <Input value={logoAlt} onChange={(e) => setLogoAlt(e.target.value)} placeholder="Atomic Logo" />
           </div>
           <div className="space-y-1.5">
             <Label>آپلود لوگو</Label>

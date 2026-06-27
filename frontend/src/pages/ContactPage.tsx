@@ -12,7 +12,7 @@ export function ContactPage() {
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
       <h1 className="mb-4 text-3xl font-bold text-label-primary">تماس و لینک‌ها</h1>
       <p className="mb-8 text-label-secondary">
-        برای ارتباط با iAtomic و دنبال کردن آخرین محتواها، از راه‌های زیر استفاده کنید.
+        برای ارتباط با Atomic و دنبال کردن آخرین محتواها، از راه‌های زیر استفاده کنید.
       </p>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -69,7 +69,7 @@ export function ContactPage() {
 
       <div className="mt-8 rounded-ios border border-separator/30 bg-fill-quaternary/50 p-5">
         <p className="text-sm text-label-secondary">
-          پیام‌های ارسالی پس از بررسی تیم iAtomic پاسخ داده می‌شوند. لطفاً برای موضوعات علمی،
+          پیام‌های ارسالی پس از بررسی تیم Atomic پاسخ داده می‌شوند. لطفاً برای موضوعات علمی،
           پیشنهاد مقاله و همکاری با ما در ارتباط باشید.
         </p>
       </div>

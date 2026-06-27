@@ -17,9 +17,9 @@ import { AdminCategoriesPage } from "@/pages/AdminCategoriesPage";
 import { AdminMediaPage } from "@/pages/AdminMediaPage";
 import { AdminSettingsPage } from "@/pages/AdminSettingsPage";
 import { AdminAiAutomationPage } from "@/pages/AdminAiAutomationPage";
+import { AdminAdsPage } from "@/pages/AdminAdsPage";
 
 const ADMIN_BASE_PATH = import.meta.env.VITE_ADMIN_BASE_PATH || "/control/iatomic-panel";
-
 export { ADMIN_BASE_PATH };
 
 export function App() {
@@ -28,7 +28,7 @@ export function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-            {/* Public site */}
+            {/* Public */}
             <Route path="/" element={<PublicLayout />}>
               <Route index element={<HomePage />} />
               <Route path="article/:slug" element={<ArticlePage />} />
@@ -37,8 +37,7 @@ export function App() {
               <Route path="about" element={<AboutPage />} />
               <Route path="contact" element={<ContactPage />} />
             </Route>
-
-            {/* Admin panel */}
+            {/* Admin */}
             <Route path={ADMIN_BASE_PATH} element={<AdminLayout />}>
               <Route index element={<AdminDashboardPage />} />
               <Route path="posts" element={<AdminPostsPage />} />
@@ -46,12 +45,11 @@ export function App() {
               <Route path="posts/:id/edit" element={<AdminPostEditPage />} />
               <Route path="categories" element={<AdminCategoriesPage />} />
               <Route path="media" element={<AdminMediaPage />} />
+              <Route path="ads" element={<AdminAdsPage />} />
               <Route path="ai-automation" element={<AdminAiAutomationPage />} />
               <Route path="settings" element={<AdminSettingsPage />} />
             </Route>
             <Route path={`${ADMIN_BASE_PATH}/login`} element={<AdminLoginPage />} />
-
-            {/* Catch-all */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>

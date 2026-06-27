@@ -45,11 +45,11 @@ export function AdminLoginPage() {
         <div className="mb-6 flex flex-col items-center gap-3">
           <div className="logo-frame flex h-20 w-20 items-center justify-center rounded-[22px] overflow-hidden shadow-ios">
             {/* Dark theme logo */}
-            <img src="/logo-dark.jpg" alt="iAtomic" className="logo-dark h-full w-full object-contain p-2" />
+            <img src="/logo-dark.jpg" alt="Atomic" className="logo-dark h-full w-full object-contain p-2" />
             {/* Light theme logo */}
-            <img src="/logo-light.jpg" alt="iAtomic" className="logo-light h-full w-full object-contain p-2" />
+            <img src="/logo-light.jpg" alt="Atomic" className="logo-light h-full w-full object-contain p-2" />
           </div>
-          <h1 className="text-xl font-bold text-label-primary">ورود مدیر iAtomic</h1>
+          <h1 className="text-xl font-bold text-label-primary">ورود مدیر Atomic</h1>
         </div>
 
         {error && (

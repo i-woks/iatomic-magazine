@@ -6,12 +6,18 @@ interface LogoProps {
   size?: "sm" | "md" | "lg";
 }
 
+/**
+ * Theme-aware Atomic logo.
+ * CORRECTED MAPPING (per spec):
+ *   Light/day  → logo-dark.jpg  (black background, white mark) — class logo-for-dark
+ *   Dark/night → logo-light.jpg (white background, black mark) — class logo-for-light
+ */
 export function Logo({ className, logoAlt, size = "md" }: LogoProps) {
-  const alt = logoAlt || "iAtomic Logo";
+  const alt = logoAlt || "Atomic Logo";
   const sizeMap = {
-    sm: { frame: "h-8 w-8", text: "text-base" },
-    md: { frame: "h-10 w-10", text: "text-xl" },
-    lg: { frame: "h-14 w-14", text: "text-2xl" },
+    sm: { frame: "h-8 w-8", text: "text-sm" },
+    md: { frame: "h-10 w-10", text: "text-base" },
+    lg: { frame: "h-14 w-14", text: "text-xl" },
   };
   const s = sizeMap[size];
 
@@ -19,31 +25,30 @@ export function Logo({ className, logoAlt, size = "md" }: LogoProps) {
     <div className={cn("flex items-center gap-2", className)}>
       <div
         className={cn(
-          "logo-frame relative flex shrink-0 items-center justify-center overflow-hidden transition-all duration-240",
-          "rounded-[16px] border border-[rgba(0,122,255,0.18)] shadow-[0_2px_12px_rgba(0,122,255,0.10)]",
+          "logo-frame relative flex shrink-0 items-center justify-center overflow-hidden rounded-[14px] transition-all duration-240",
           s.frame
         )}
         style={{ background: "var(--logo-frame-bg)" }}
       >
-        {/* Dark theme logo: black bg, white mark */}
+        {/* Light mode: logo-dark.jpg (black bg, white mark) */}
         <img
           src="/logo-dark.jpg"
           alt={alt}
-          className="logo-dark absolute inset-0 h-full w-full object-contain p-1"
+          className="logo-for-dark absolute inset-0 h-full w-full object-contain p-1"
           loading="eager"
           draggable={false}
         />
-        {/* Light theme logo: white bg, black mark */}
+        {/* Dark mode: logo-light.jpg (white bg, black mark) */}
         <img
           src="/logo-light.jpg"
           alt={alt}
-          className="logo-light absolute inset-0 h-full w-full object-contain p-1"
+          className="logo-for-light absolute inset-0 h-full w-full object-contain p-1"
           loading="eager"
           draggable={false}
         />
       </div>
       <span className={cn("font-bold tracking-tight text-label-primary", s.text)}>
-        iAtomic
+        Atomic
       </span>
     </div>
   );
