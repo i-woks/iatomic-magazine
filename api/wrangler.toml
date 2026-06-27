@@ -3,13 +3,15 @@ main = "src/index.ts"
 compatibility_date = "2024-05-12"
 compatibility_flags = ["nodejs_compat"]
 
+account_id = "144fbcd4f86a4569675d40cd5804d6e4"
+
 [vars]
 API_BASE_PATH = "/api"
 
 [[d1_databases]]
 binding = "DB"
 database_name = "iatomic-db"
-database_id = ""
+database_id = "0de942a7-6a1d-43e3-a0fc-7fe0b28876f5"
 
 [[r2_buckets]]
 binding = "MEDIA_BUCKET"
@@ -17,7 +19,20 @@ bucket_name = "iatomic-media"
 
 [[kv_namespaces]]
 binding = "CACHE"
-id = ""
+id = "3fb63a94a8974df095cb04ad4c2292f7"
 
 [env.production]
 name = "iatomic-api"
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "iatomic-db"
+database_id = "0de942a7-6a1d-43e3-a0fc-7fe0b28876f5"
+
+[[env.production.r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "iatomic-media"
+
+[[env.production.kv_namespaces]]
+binding = "CACHE"
+id = "3fb63a94a8974df095cb04ad4c2292f7"
