@@ -1,10 +1,7 @@
 name = "iatomic-web"
 compatibility_date = "2024-05-12"
-
 account_id = "144fbcd4f86a4569675d40cd5804d6e4"
-
-[site]
-bucket = "./dist"
+pages_build_output_dir = "dist"
 
 [env.production]
 name = "iatomic-web"
