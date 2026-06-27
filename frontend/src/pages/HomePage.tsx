@@ -93,36 +93,18 @@ export function HomePage() {
         </p>
       </section>
 
-      {/* Sidebar-style sections */}
-      <div className="grid gap-8 lg:grid-cols-3">
-        <section className="lg:col-span-2">
-          <h2 className="mb-4 text-lg font-bold text-label-primary">فیزیک و کوانتوم</h2>
-          <div className="grid gap-6 sm:grid-cols-2">
-            {recent
-              .filter((p) => p.category?.slug === "physics" || p.category?.slug === "quantum")
-              .slice(0, 2)
-              .map((post) => (
-                <ArticleCard key={post.id} post={post} />
-              ))}
-          </div>
-        </section>
-        <aside className="space-y-6">
-          <div className="glass-card rounded-ios p-5">
-            <h3 className="mb-3 text-base font-bold text-label-primary">Atomic را دنبال کنید</h3>
-            <p className="mb-4 text-sm text-label-secondary">
-              آخرین مقالات علمی را در اینستاگرام Atomic بخوانید.
-            </p>
-            <a
-              href={settings?.instagramUrl || "https://instagram.com/iatomic_"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex w-full items-center justify-center rounded-ios bg-ios-blue px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-ios-blue-hover"
-            >
-              دنبال کردن در اینستاگرام
-            </a>
-          </div>
-        </aside>
-      </div>
+      {/* Focused science section */}
+      <section className="mb-10">
+        <h2 className="mb-4 text-lg font-bold text-label-primary">فیزیک و کوانتوم</h2>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {recent
+            .filter((p) => p.category?.slug === "physics" || p.category?.slug === "quantum")
+            .slice(0, 3)
+            .map((post) => (
+              <ArticleCard key={post.id} post={post} />
+            ))}
+        </div>
+      </section>
     </div>
   );
 }

@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
-import { Instagram, Mail } from "lucide-react";
-import { Logo } from "./Logo";
+import { Instagram, Mail, Quote } from "lucide-react";
 import { TelegramIcon } from "./Header";
 import type { Category } from "@/types";
 
@@ -15,18 +14,35 @@ interface FooterProps {
   logoAlt?: string | null;
 }
 
-export function Footer({ categories, instagramUrl, siteName, siteDescription, logoAlt }: FooterProps) {
+export function Footer({ categories, instagramUrl, siteName }: FooterProps) {
   return (
     <footer className="border-t border-separator/40 bg-bg-secondary/40 pt-12 pb-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-8 md:grid-cols-3">
           <div className="space-y-4">
-            <Link to="/" className="outline-none inline-block">
-              <Logo logoAlt={logoAlt} />
-            </Link>
-            <p className="text-sm leading-relaxed text-label-secondary">
-              {siteDescription || "مجله علمی اَتُمیک: فیزیک، کیهان‌شناسی، کوانتوم و علم روز."}
-            </p>
+            <div className="rounded-[24px] border border-separator/30 bg-bg-primary/55 p-4 shadow-ios-sm backdrop-blur-xl">
+              <div className="mb-3 flex items-center gap-3">
+                <img
+                  src="/images/richard-feynman.jpg"
+                  alt="Richard Feynman"
+                  className="h-14 w-14 shrink-0 rounded-full border border-white/50 object-cover shadow-ios-sm dark:border-white/10"
+                  loading="lazy"
+                />
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-label-primary">Richard Feynman</p>
+                  <p className="text-xs text-label-tertiary">Physicist</p>
+                </div>
+                <Quote className="mr-auto h-5 w-5 shrink-0 text-ios-blue/70" />
+              </div>
+              <blockquote className="space-y-3 text-sm leading-7 text-label-secondary">
+                <p dir="ltr" className="text-left font-medium text-label-primary">
+                  “I would rather have questions that can't be answered than answers that can't be questioned.”
+                </p>
+                <p>
+                  «ترجیح می‌دهم پرسش‌هایی داشته باشم که هنوز پاسخی برایشان نیست، تا پاسخ‌هایی که نتوان آن‌ها را به چالش کشید.»
+                </p>
+              </blockquote>
+            </div>
             <div className="flex items-center gap-3">
               <a
                 href={instagramUrl || "https://instagram.com/iatomic_"}
