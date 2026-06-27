@@ -21,12 +21,12 @@ export async function getPublicSettings(db: ReturnType<typeof createDb>) {
   const rows = await db.select().from(settings);
   const map = new Map(rows.map((r) => [r.key, r.value]));
   return {
-    siteName: map.get("site_name") || "Atomic",
-    siteDescription: map.get("site_description") || "مجله علمی اَتُمیک",
+    siteName: map.get("site_name") || "iAtomic",
+    siteDescription: map.get("site_description") || "مجله علمی آیاتمیک",
     logoUrl: map.get("logo_url") || null,
-    logoAlt: map.get("logo_alt") || "Atomic Logo",
+    logoAlt: map.get("logo_alt") || "iAtomic Logo",
     instagramUrl: map.get("instagram_url") || "https://instagram.com/iatomic_",
-    baseSeoTitle: map.get("base_seo_title") || "AtomicMagazine",
+    baseSeoTitle: map.get("base_seo_title") || "iAtomic Magazine",
     baseSeoDescription: map.get("base_seo_description") || "",
     featuredPostId: map.get("featured_post_id") ? parseInt(map.get("featured_post_id")!, 10) : null,
     homepagePostCount: parseInt(map.get("homepage_post_count") || "12", 10)

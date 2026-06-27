@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { fetchSettings, fetchCategories } from "@/lib/api";
@@ -9,21 +9,13 @@ export function PublicLayout() {
   const [settings, setSettings] = useState<SiteSettings | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  const location = useLocation();
 
   useEffect(() => {
     Promise.all([fetchSettings(), fetchCategories()])
-      .then(([s, c]) => {
-        setSettings(s.data);
-        setCategories(c.data);
-      })
+      .then(([s, c]) => { setSettings(s.data); setCategories(c.data); })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
-
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [location.pathname]);
 
   if (loading) {
     return (
@@ -35,6 +27,7 @@ export function PublicLayout() {
 
   return (
     <div className="relative flex min-h-screen flex-col bg-bg-primary">
+      {/* Subtle animated background halos — z-index 0, behind all content */}
       <div className="halo-wrap" aria-hidden="true">
         <div className="halo halo-tr" />
         <div className="halo halo-bl" />
@@ -47,7 +40,8 @@ export function PublicLayout() {
         logoAlt={settings?.logoAlt || "Atomic Logo"}
       />
 
-      <main className="relative z-10 flex-1 pt-20">
+      {/* pt-16 = header height clearance; relative z-10 sits above halos */}
+      <main className="relative z-10 flex-1 pt-16">
         <Outlet context={{ settings, categories }} />
       </main>
 

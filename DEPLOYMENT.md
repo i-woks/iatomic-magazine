@@ -1,4 +1,4 @@
-# Deployment Guide — AtomicMagazine
+# Deployment Guide — iAtomic Magazine
 
 ## Project Structure
 
