@@ -81,12 +81,12 @@ export function Footer({ categories, instagramUrl, siteName }: FooterProps) {
                       <button
                         type="button"
                         onClick={() => setQuoteLang(isEnglish ? "fa" : "en")}
-                        className="inline-flex translate-y-[1px] items-center gap-1 rounded-full border border-separator/40 bg-fill-quaternary px-2 py-0.5 text-[10px] font-medium text-label-secondary transition-all hover:border-ios-blue-border hover:bg-ios-blue-soft hover:text-ios-blue"
+                        className="inline-flex translate-y-[1px] items-center gap-[3px] rounded-[8px] border border-separator/30 bg-fill-quaternary/90 px-1.5 py-[2px] text-[9px] font-semibold leading-none text-label-secondary transition-all hover:border-ios-blue-border hover:bg-ios-blue-soft hover:text-ios-blue"
                         aria-label={isEnglish ? "نمایش ترجمه فارسی" : "نمایش متن انگلیسی"}
                         title={isEnglish ? "نمایش ترجمه فارسی" : "Translate to English"}
                       >
                         <span>{isEnglish ? "FA" : "EN"}</span>
-                        <Languages className="h-3.5 w-3.5" />
+                        <Languages className="h-[11px] w-[11px]" />
                       </button>
                     </p>
                   </blockquote>

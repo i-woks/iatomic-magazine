@@ -13,7 +13,7 @@ export function ScrollManager() {
 
   useEffect(() => {
     if (navigationType === "POP") return;
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   }, [location.pathname, location.search, navigationType]);
 
   return null;
