@@ -139,7 +139,7 @@ export function Header({ categories, logoAlt }: HeaderProps) {
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-50 border-b border-transparent transition-all duration-240",
-        scrolled && "border-separator/30 bg-bg-primary/72 shadow-[0_8px_26px_rgba(15,23,42,0.08)] backdrop-blur-xl saturate-150"
+        scrolled && "border-separator/30 bg-bg-primary shadow-[0_6px_20px_rgba(17,24,39,0.04)]"
       )}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -164,7 +164,7 @@ export function Header({ categories, logoAlt }: HeaderProps) {
 
         <nav className="hidden items-center gap-0.5 lg:flex" aria-label="دسته‌بندی‌ها">
           {categories.slice(0, 6).map(cat => (
-            <Link key={cat.id} to={`/category/${cat.slug}`} className="cosmic-chip rounded-full border px-3 py-2 text-sm font-semibold text-label-secondary transition-colors hover:text-label-primary">
+            <Link key={cat.id} to={`/category/${cat.slug}`} className="rounded-full border border-separator/20 bg-white px-3 py-2 text-sm font-medium text-label-secondary transition-colors hover:text-ios-blue">
               {cat.name}
             </Link>
           ))}
@@ -179,7 +179,7 @@ export function Header({ categories, logoAlt }: HeaderProps) {
               </Button>
             </form>
           ) : (
-            <Button variant="ghost" size="icon" className="rounded-full bg-fill-quaternary/70 shadow-[0_8px_22px_rgba(15,23,42,0.06)] backdrop-blur-xl" aria-label="جستجو" onClick={() => setSearchOpen(true)}>
+            <Button variant="ghost" size="icon" className="rounded-full bg-white shadow-[0_6px_18px_rgba(17,24,39,0.05)]" aria-label="جستجو" onClick={() => setSearchOpen(true)}>
               <Search className="h-5 w-5" />
             </Button>
           )}
@@ -191,8 +191,8 @@ export function Header({ categories, logoAlt }: HeaderProps) {
       <div className={cn("fixed inset-0 z-[70] lg:hidden", menuOpen ? "visible" : "invisible pointer-events-none")} aria-hidden={!menuOpen}>
         <div
           className={cn(
-            "absolute inset-0 bg-slate-900/10 transition-[opacity,backdrop-filter] duration-300 ease-out",
-            menuOpen ? "opacity-100 backdrop-blur-[7px]" : "opacity-0 backdrop-blur-0"
+            "absolute inset-0 bg-slate-900/10 transition-opacity duration-300 ease-out",
+            menuOpen ? "opacity-100" : "opacity-0"
           )}
           onClick={closeMenu}
         />
@@ -200,7 +200,7 @@ export function Header({ categories, logoAlt }: HeaderProps) {
         <aside
           ref={menuRef}
           className={cn(
-            "absolute right-0 top-0 flex h-[100dvh] w-[min(92vw,372px)] origin-right flex-col overflow-hidden rounded-l-[30px] border-l border-white/55 bg-bg-primary/86 shadow-[-20px_0_60px_rgba(15,23,42,0.18)] backdrop-blur-2xl transition-all duration-300 ease-[cubic-bezier(.2,.8,.2,1)]",
+            "absolute right-0 top-0 flex h-[100dvh] w-[min(92vw,372px)] origin-right flex-col overflow-hidden rounded-l-[30px] border-l border-separator/20 bg-bg-primary shadow-[-14px_0_38px_rgba(17,24,39,0.12)] transition-all duration-300 ease-[cubic-bezier(.2,.8,.2,1)]",
             menuOpen ? "translate-x-0 scale-100 opacity-100" : "translate-x-full scale-[0.98] opacity-0"
           )}
           aria-label="منوی موبایل"
@@ -229,7 +229,7 @@ export function Header({ categories, logoAlt }: HeaderProps) {
 
           <nav className="flex-1 space-y-3 overflow-y-auto px-4 py-4" aria-label="بخش‌های علمی">
             {SCIENCE_MENU.map((section) => (
-              <section key={section.title} className="cosmic-surface rounded-[22px] p-3">
+              <section key={section.title} className="rounded-[22px] border border-separator/20 bg-white p-3 shadow-[0_8px_22px_rgba(17,24,39,0.045)]">
                 <div className="mb-2 flex items-start justify-between gap-2">
                   <div className="flex min-w-0 items-center gap-2">
                     <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[14px] bg-ios-blue-soft text-[18px]">{section.icon}</span>
@@ -242,7 +242,7 @@ export function Header({ categories, logoAlt }: HeaderProps) {
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {section.items.map((item) => (
-                    <Link key={item} to={searchHref(item)} onClick={closeMenu} className="cosmic-chip inline-flex items-center gap-1 rounded-full border px-2.5 py-1.5 text-[12px] font-semibold text-label-secondary transition-colors hover:text-label-primary">
+                    <Link key={item} to={searchHref(item)} onClick={closeMenu} className="inline-flex items-center gap-1 rounded-full border border-separator/20 bg-white px-2.5 py-1.5 text-[12px] font-medium text-label-secondary transition-colors hover:text-ios-blue">
                       <ChevronLeft className="h-3 w-3" />
                       {item}
                     </Link>
@@ -259,7 +259,7 @@ export function Header({ categories, logoAlt }: HeaderProps) {
 
 function MobileTopLink({ to, onClick, children }: { to: string; onClick: () => void; children: React.ReactNode }) {
   return (
-    <Link to={to} onClick={onClick} className="cosmic-chip rounded-[16px] border px-3 py-2.5 text-center text-[13px] font-bold text-label-primary transition-colors hover:text-ios-blue">
+    <Link to={to} onClick={onClick} className="rounded-[16px] border border-separator/20 bg-white px-3 py-2.5 text-center text-[13px] font-semibold text-label-primary transition-colors hover:text-ios-blue">
       {children}
     </Link>
   );

@@ -28,23 +28,23 @@
 ═══════════════════════════════════════════════════════════ */
 :root {
   color-scheme: light;
-  --color-bg-primary:       #D8DDE5;
+  --color-bg-primary:       #F0F3F8;
   --color-bg-secondary:     #FFFFFF;
   --color-bg-tertiary:      #FFFFFF;
-  --color-label-primary:    #101828;
-  --color-label-secondary:  rgba(16,24,40,0.68);
-  --color-label-tertiary:   rgba(16,24,40,0.42);
-  --color-label-quaternary: rgba(16,24,40,0.24);
+  --color-label-primary:    #111827;
+  --color-label-secondary:  rgba(17,24,39,0.64);
+  --color-label-tertiary:   rgba(17,24,39,0.40);
+  --color-label-quaternary: rgba(17,24,39,0.20);
   --color-fill-primary:     #FFFFFF;
   --color-fill-secondary:   #FFFFFF;
   --color-fill-tertiary:    rgba(255,255,255,0.92);
   --color-fill-quaternary:  rgba(255,255,255,0.86);
-  --color-separator:        rgba(60,74,98,0.22);
-  --color-separator-opaque: rgba(74,85,104,0.30);
-  --color-ios-blue:         #008CFF;
-  --color-ios-blue-hover:   #0147AB;
-  --color-ios-blue-soft:    rgba(1,143,255,0.14);
-  --color-ios-blue-border:  rgba(1,143,255,0.32);
+  --color-separator:        rgba(60,60,67,0.18);
+  --color-separator-opaque: rgba(60,60,67,0.25);
+  --color-ios-blue:         #007AFF;
+  --color-ios-blue-hover:   #006FE6;
+  --color-ios-blue-soft:    rgba(0,122,255,0.10);
+  --color-ios-blue-border:  rgba(0,122,255,0.22);
 
   /*
    * LOGO MAPPING — CORRECTED (light mode):
@@ -57,15 +57,6 @@
   --logo-frame-bg:     #000000;
   --logo-frame-border: rgba(255,255,255,0.10);
 
-  --halo-color: rgba(1,143,255,0.18);
-  --cosmic-pink: #FF00FF;
-  --cosmic-purple: #9000FF;
-  --cosmic-cyan: #01FFFF;
-  --cosmic-green: #37FD12;
-  --cosmic-yellow: #FFF500;
-  --cosmic-navy: #0147AB;
-  --cosmic-card: #FFFFFF;
-  --cosmic-card-strong: #FFFFFF;
 }
 
 .dark {
@@ -121,27 +112,10 @@
   html { scroll-behavior: smooth; }
   body {
     font-family: "IRANSansX", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background:
-      radial-gradient(circle at 12% 8%, rgba(255,0,255,0.11), transparent 28%),
-      radial-gradient(circle at 92% 14%, rgba(1,255,255,0.12), transparent 30%),
-      radial-gradient(circle at 84% 82%, rgba(55,253,18,0.08), transparent 28%),
-      linear-gradient(135deg, #D8DDE5 0%, #E1E6EE 46%, #D4DAE4 100%);
-    background-attachment: fixed;
+    background: #F0F3F8;
     color: var(--color-label-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-  }
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    opacity: 0.36;
-    background-image:
-      linear-gradient(120deg, transparent 0 38%, rgba(1,255,255,0.13) 39%, transparent 40%),
-      linear-gradient(28deg, transparent 0 58%, rgba(255,0,255,0.10) 59%, transparent 60%);
-    mask-image: radial-gradient(circle at 50% 20%, black, transparent 72%);
   }
   * { @apply border-separator; }
   h1,h2,h3,h4,h5,h6 { font-weight:700; letter-spacing:-0.01em; }
@@ -177,135 +151,43 @@
 
 
 /* ═══════════════════════════════════════════════════════════
-   COSMIC LIGHT SURFACE SYSTEM
+   MINIMAL iOS LIGHT SURFACE SYSTEM
 ═══════════════════════════════════════════════════════════ */
+.site-surface,
 .cosmic-surface {
   background: #FFFFFF;
-  border: 1px solid rgba(255,255,255,0.92);
-  box-shadow: 0 18px 48px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.95);
+  border: 1px solid rgba(60,60,67,0.12);
+  box-shadow: 0 10px 30px rgba(17,24,39,0.055);
 }
-.cosmic-glow {
-  position: relative;
-  isolation: isolate;
-}
-.cosmic-glow::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  z-index: -1;
-  border-radius: inherit;
-  background: linear-gradient(135deg, rgba(1,255,255,0.42), rgba(255,0,255,0.24), rgba(255,245,0,0.20));
-  opacity: 0.22;
-  filter: blur(14px);
-}
-.cosmic-chip:nth-child(5n+1) { --chip: var(--cosmic-cyan); }
-.cosmic-chip:nth-child(5n+2) { --chip: var(--cosmic-purple); }
-.cosmic-chip:nth-child(5n+3) { --chip: var(--cosmic-pink); }
-.cosmic-chip:nth-child(5n+4) { --chip: var(--cosmic-green); }
-.cosmic-chip:nth-child(5n+5) { --chip: var(--cosmic-yellow); }
+.cosmic-glow::before { display: none; }
 .cosmic-chip {
-  border-color: color-mix(in srgb, var(--chip) 40%, rgba(60,74,98,0.18));
-  background: linear-gradient(180deg, rgba(255,255,255,0.70), color-mix(in srgb, var(--chip) 12%, rgba(255,255,255,0.52)));
-  box-shadow: 0 8px 24px color-mix(in srgb, var(--chip) 18%, transparent);
+  border-color: rgba(60,60,67,0.16);
+  background: #FFFFFF;
+  box-shadow: none;
 }
-
-
-/* White box calibration over the cosmic gray background */
 .bg-bg-secondary\/60,
 .bg-bg-secondary\/70,
 .bg-bg-secondary\/40,
 .bg-fill-quaternary\/50,
 .bg-fill-quaternary\/60 {
   background-color: #FFFFFF !important;
-  box-shadow: 0 14px 38px rgba(15,23,42,0.08);
+  box-shadow: 0 10px 28px rgba(17,24,39,0.05);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   GLOBAL SOFT BLUE HALOS (top-right + bottom-left)
-   Extremely subtle atmospheric background glow.
-   z-index: 0 — behind all content.
-   pointer-events: none — never blocks interactions.
-═══════════════════════════════════════════════════════════ */
-.halo-wrap {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-.halo {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(90px);
-  opacity: 0.6;
-  will-change: transform;
-}
-.halo-tr {
-  width: 560px;
-  height: 560px;
-  top: -220px;
-  right: -180px;
-  background: radial-gradient(circle at 25% 25%, rgba(1,255,255,0.22) 0%, rgba(144,0,255,0.10) 42%, transparent 70%);
-  animation: halo-tr 20s ease-in-out infinite alternate;
-}
-.halo-bl {
-  width: 480px;
-  height: 480px;
-  bottom: -200px;
-  left: -160px;
-  background: radial-gradient(circle at 75% 75%, rgba(255,0,255,0.16) 0%, rgba(255,245,0,0.08) 44%, transparent 70%);
-  animation: halo-bl 26s ease-in-out infinite alternate;
-}
-@keyframes halo-tr {
-  0%   { transform: translate(0, 0)    scale(1);    }
-  50%  { transform: translate(-30px, 24px) scale(1.05); }
-  100% { transform: translate(-16px, 42px) scale(0.98); }
-}
-@keyframes halo-bl {
-  0%   { transform: translate(0, 0)    scale(1);    }
-  50%  { transform: translate(26px, -32px) scale(1.06); }
-  100% { transform: translate(40px, -16px) scale(0.96); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .halo { animation: none !important; }
-}
-@media (max-width: 640px) {
-  .halo { opacity: 0.35; }
-  .halo-tr { animation: none; }
-  .halo-bl { animation: none; }
-}
+/* Background halos disabled for the minimal iOS light theme */
+.halo-wrap, .halo { display: none !important; }
 
 /* ═══════════════════════════════════════════════════════════
    COMPONENTS
 ═══════════════════════════════════════════════════════════ */
 @layer components {
-  /* ── Glass panel ── */
-  .glass-panel {
-    background: rgba(255,255,255,0.70);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(0,122,255,0.18);
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-  }
-  .dark .glass-panel {
-    background: rgba(28,28,30,0.78);
-    border-color: rgba(10,132,255,0.22);
-    box-shadow: 0 4px 24px rgba(0,0,0,0.32);
-  }
-
-  /* ── Contact form glass box ── */
+  /* ── Plain iOS panels ── */
+  .glass-panel,
   .contact-glass {
-    background: rgba(255,255,255,0.80);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    border: 1px solid rgba(0,122,255,0.18);
+    background: #FFFFFF;
+    border: 1px solid rgba(60,60,67,0.14);
     border-radius: 20px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.10);
-  }
-  .dark .contact-glass {
-    background: rgba(28,28,30,0.88);
-    border-color: rgba(10,132,255,0.22);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.36);
+    box-shadow: 0 10px 30px rgba(17,24,39,0.06);
   }
 
   /* ── Article body ── */

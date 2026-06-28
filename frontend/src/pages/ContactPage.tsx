@@ -141,7 +141,7 @@ export function ContactPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="پیام مستقیم به ادمین">
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/35"
             onClick={closeForm}
             aria-hidden="true"
           />

@@ -12,7 +12,7 @@ const DOMAINS = ["فیزیک", "کیهان‌شناسی", "هوش مصنوعی",
 export function AboutPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-      <section className="relative overflow-hidden rounded-[34px] border border-white/45 bg-bg-secondary/70 p-5 shadow-[0_18px_60px_rgba(0,0,0,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-[#111216]/72 dark:shadow-[0_22px_70px_rgba(0,0,0,0.45)] sm:p-8">
+      <section className="site-surface relative overflow-hidden rounded-[30px] p-5 sm:p-8">
         <div className="absolute -left-16 -top-16 h-44 w-44 rounded-full bg-ios-blue/15 blur-3xl" />
         <div className="absolute -bottom-20 right-10 h-52 w-52 rounded-full bg-sky-400/10 blur-3xl" />
 

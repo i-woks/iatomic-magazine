@@ -62,7 +62,7 @@ export function HomePage() {
             <Link
               key={cat.id}
               to={`/category/${cat.slug}`}
-              className="cosmic-chip rounded-full border px-4 py-2 text-sm font-semibold text-label-secondary transition-colors hover:text-label-primary"
+              className="rounded-full border border-separator/20 bg-white px-4 py-2 text-sm font-medium text-label-secondary transition-colors hover:text-ios-blue"
             >
               {cat.name}
             </Link>
