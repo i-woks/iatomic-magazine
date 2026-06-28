@@ -3,18 +3,43 @@
  */
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Atom, BrainCircuit, Compass, FlaskConical, Home, Mail, Menu, Rocket, Search, Stethoscope, UserRound, X } from "lucide-react";
+import { Atom, BrainCircuit, ChevronLeft, Compass, FlaskConical, Home, Mail, Menu, Rocket, Search, Stethoscope, UserRound, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { cn } from "@/lib/utils";
 import type { Category } from "@/types";
 
 const SCIENCE_MENU = [
-  { title: "علوم پایه", icon: FlaskConical },
-  { title: "رایانه و هوش مصنوعی", icon: BrainCircuit },
-  { title: "مهندسی و فناوری", icon: Rocket },
-  { title: "پزشکی و علوم زیستی", icon: Stethoscope },
-  { title: "علوم انسانی و اجتماعی", icon: Compass },
+  {
+    title: "علوم پایه",
+    subtitle: "Fundamental Sciences",
+    icon: FlaskConical,
+    items: ["فیزیک", "شیمی", "زیست‌شناسی", "نجوم و اخترفیزیک", "علوم زمین", "ریاضیات", "آمار"],
+  },
+  {
+    title: "علوم رایانه و هوش مصنوعی",
+    subtitle: "Computer Science & AI",
+    icon: BrainCircuit,
+    items: ["علوم کامپیوتر", "هوش مصنوعی", "یادگیری ماشین", "یادگیری عمیق", "علم داده", "امنیت سایبری", "بینایی ماشین", "پردازش زبان طبیعی", "رباتیک", "رایانش ابری"],
+  },
+  {
+    title: "مهندسی و فناوری",
+    subtitle: "Engineering & Technology",
+    icon: Rocket,
+    items: ["مهندسی برق", "مهندسی مکانیک", "مهندسی عمران", "مهندسی کامپیوتر", "مهندسی هوافضا", "مهندسی مواد", "نانوفناوری", "انرژی", "اینترنت اشیا"],
+  },
+  {
+    title: "پزشکی و علوم زیستی",
+    subtitle: "Medicine & Life Sciences",
+    icon: Stethoscope,
+    items: ["پزشکی", "داروسازی", "دندان‌پزشکی", "ژنتیک", "بیوتکنولوژی", "علوم اعصاب", "بهداشت عمومی", "ایمونولوژی", "تغذیه"],
+  },
+  {
+    title: "علوم انسانی و اجتماعی",
+    subtitle: "Humanities & Social Sciences",
+    icon: Compass,
+    items: ["روان‌شناسی", "جامعه‌شناسی", "اقتصاد", "علوم سیاسی", "فلسفه", "تاریخ", "حقوق", "انسان‌شناسی", "آموزش"],
+  },
 ];
 
 const QUICK_LINKS = [
@@ -168,19 +193,38 @@ export function Header({ categories, logoAlt }: HeaderProps) {
             </div>
           </div>
 
-          <nav className="flex-1 overflow-y-auto px-4 py-4" aria-label="منوی موبایل">
-            <div className="mb-5 space-y-1.5">
+          <nav className="flex-1 space-y-3 overflow-y-auto px-4 py-4" aria-label="منوی موبایل">
+            <div className="grid grid-cols-2 gap-2">
               {QUICK_LINKS.map(({ to, label, icon: Icon }) => (
-                <MobileRow key={to} to={to} onClick={closeMenu} icon={Icon}>{label}</MobileRow>
+                <MobileTopLink key={to} to={to} onClick={closeMenu} icon={Icon}>{label}</MobileTopLink>
               ))}
             </div>
 
-            <div className="mb-2 px-1 text-[12px] font-bold text-label-primary">مسیرهای علمی اتمیک</div>
-            <div className="space-y-1.5">
-              {SCIENCE_MENU.map(({ title, icon: Icon }) => (
-                <MobileRow key={title} to={searchHref(title)} onClick={closeMenu} icon={Icon}>{title}</MobileRow>
-              ))}
-            </div>
+            <div className="pt-1 text-[12px] font-bold text-label-primary">مسیرهای علمی اتمیک</div>
+            {SCIENCE_MENU.map(({ title, subtitle, icon: Icon, items }) => (
+              <section key={title} className="rounded-[22px] border border-separator/20 bg-white p-3 shadow-[0_8px_22px_rgba(17,24,39,0.045)]">
+                <div className="mb-2 flex items-start justify-between gap-2">
+                  <div className="flex min-w-0 items-center gap-2">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[14px] bg-ios-blue-soft text-ios-blue">
+                      <Icon className="h-4.5 w-4.5" />
+                    </span>
+                    <div className="min-w-0">
+                      <h3 className="truncate text-sm font-extrabold text-label-primary">{title}</h3>
+                      <p className="truncate text-[10px] font-medium text-label-tertiary" dir="ltr">{subtitle}</p>
+                    </div>
+                  </div>
+                  <span className="rounded-full bg-fill-quaternary px-2 py-1 text-[10px] font-bold text-label-tertiary">{items.length}</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {items.map((item) => (
+                    <Link key={item} to={searchHref(item)} onClick={closeMenu} className="inline-flex items-center gap-1 rounded-full border border-separator/20 bg-white px-2.5 py-1.5 text-[12px] font-medium text-label-secondary transition-colors hover:text-ios-blue">
+                      <ChevronLeft className="h-3 w-3" />
+                      {item}
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            ))}
           </nav>
         </aside>
       </div>
@@ -188,10 +232,10 @@ export function Header({ categories, logoAlt }: HeaderProps) {
   );
 }
 
-function MobileRow({ to, onClick, icon: Icon, children }: { to: string; onClick: () => void; icon: React.ComponentType<{ className?: string }>; children: React.ReactNode }) {
+function MobileTopLink({ to, onClick, icon: Icon, children }: { to: string; onClick: () => void; icon: React.ComponentType<{ className?: string }>; children: React.ReactNode }) {
   return (
-    <Link to={to} onClick={onClick} className="group flex min-h-11 items-center gap-3 rounded-[16px] px-2.5 py-2 text-[13px] font-medium text-label-secondary transition-colors hover:bg-white hover:text-ios-blue">
-      <Icon className="h-4.5 w-4.5 shrink-0 text-label-tertiary transition-colors group-hover:text-ios-blue" />
+    <Link to={to} onClick={onClick} className="flex min-h-11 items-center justify-center gap-2 rounded-[16px] border border-separator/20 bg-white px-3 py-2.5 text-center text-[13px] font-semibold text-label-primary transition-colors hover:text-ios-blue">
+      <Icon className="h-4 w-4 text-label-tertiary" />
       <span>{children}</span>
     </Link>
   );
