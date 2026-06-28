@@ -58,30 +58,30 @@ export function Footer({ categories, instagramUrl, siteName }: FooterProps) {
           {/* Quote card: first on mobile, first/left on desktop */}
           <div className="order-1">
             <div className="rounded-[24px] border border-separator/30 bg-bg-primary/55 p-4 shadow-ios-sm backdrop-blur-xl">
-              <div className="flex items-start gap-3">
+              <div className="flex items-start gap-3.5">
                 <img
                   src="/images/richard-feynman.jpg"
                   alt="Richard Feynman"
-                  className="h-14 w-14 shrink-0 rounded-full border border-white/50 object-cover shadow-ios-sm dark:border-white/10"
+                  className="mt-0.5 h-14 w-14 shrink-0 rounded-full border border-white/50 object-cover shadow-ios-sm dark:border-white/10"
                   loading="lazy"
                 />
 
-                <div className="min-w-0 flex-1">
-                  <div className="mb-2 flex items-start justify-between gap-3">
-                    <div className="min-w-0">
+                <div className="min-w-0 flex-1 pr-1">
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <div className="min-w-0 translate-y-[3px]">
                       <p className="text-sm font-bold text-label-primary">Richard Feynman</p>
                       <p className="text-xs text-label-tertiary">Physicist</p>
                     </div>
-                    <Quote className="mt-0.5 h-3.5 w-3.5 shrink-0 text-ios-blue/45" strokeWidth={2.2} />
+                    <Quote className="mt-1 h-3 w-3 shrink-0 text-ios-blue/45" strokeWidth={2.2} />
                   </div>
 
-                  <blockquote className="text-sm leading-8 text-label-secondary">
-                    <p dir={isEnglish ? "ltr" : "rtl"} className={isEnglish ? "text-left font-medium text-label-primary" : "text-right"}>
+                  <blockquote className="pr-0.5 text-sm leading-[2.35] text-label-secondary">
+                    <p dir={isEnglish ? "ltr" : "rtl"} className={isEnglish ? "text-left font-medium text-label-primary" : "text-right text-[15px]"}>
                       {isEnglish ? QUOTE_EN : QUOTE_FA}{" "}
                       <button
                         type="button"
                         onClick={() => setQuoteLang(isEnglish ? "fa" : "en")}
-                        className="inline-flex translate-y-[1px] items-center gap-[3px] rounded-[8px] border border-separator/30 bg-fill-quaternary/90 px-1.5 py-[2px] text-[9px] font-semibold leading-none text-label-secondary transition-all hover:border-ios-blue-border hover:bg-ios-blue-soft hover:text-ios-blue"
+                        className="inline-flex -translate-y-[2px] items-center gap-[3px] rounded-[8px] border border-separator/30 bg-fill-quaternary/90 px-1.5 py-[2px] text-[9px] font-semibold leading-none text-label-secondary transition-all hover:border-ios-blue-border hover:bg-ios-blue-soft hover:text-ios-blue"
                         aria-label={isEnglish ? "نمایش ترجمه فارسی" : "نمایش متن انگلیسی"}
                         title={isEnglish ? "نمایش ترجمه فارسی" : "Translate to English"}
                       >
