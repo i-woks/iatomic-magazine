@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { ScrollManager } from "@/components/navigation/ScrollManager";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { AuthProvider } from "@/hooks/useAuth";
 import { PublicLayout } from "@/components/layout/PublicLayout";
@@ -28,6 +29,7 @@ export function App() {
     <ThemeProvider>
       <AuthProvider>
         <BrowserRouter>
+          <ScrollManager />
           <Routes>
             {/* Public */}
             <Route path="/" element={<PublicLayout />}>
