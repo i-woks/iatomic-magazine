@@ -239,7 +239,7 @@ export function Header({ categories, instagramUrl, telegramUrl, logoAlt }: Heade
           type="button"
           onClick={() => setMenuOpen(false)}
           className={cn(
-            "absolute right-[calc(3vw+min(84vw,300px)-48px)] top-[76px] z-[72] inline-flex h-10 w-10 items-center justify-center rounded-[16px] border border-white/45 bg-white/72 text-label-primary shadow-[0_10px_30px_rgba(0,0,0,0.12)] backdrop-blur-2xl transition-all duration-300 ease-[cubic-bezier(.2,.8,.2,1)] dark:border-white/10 dark:bg-[#1C1C1E]/78",
+            "absolute right-[calc(22px+min(68vw,248px)-44px)] top-[70px] z-[72] inline-flex h-10 w-10 items-center justify-center rounded-[16px] border border-white/45 bg-white/74 text-label-primary shadow-[0_10px_28px_rgba(0,0,0,0.12)] backdrop-blur-2xl transition-all duration-300 ease-[cubic-bezier(.2,.8,.2,1)] dark:border-white/10 dark:bg-[#1C1C1E]/78",
             menuOpen ? "translate-y-0 scale-100 opacity-100" : "-translate-y-2 scale-90 opacity-0"
           )}
           aria-label="بستن منو"
@@ -250,19 +250,15 @@ export function Header({ categories, instagramUrl, telegramUrl, logoAlt }: Heade
         <div
           ref={menuRef}
           className={cn(
-            "absolute right-3 top-[118px] w-[min(84vw,300px)] origin-top-right overflow-hidden rounded-[26px] border border-white/45 bg-white/76 shadow-[0_22px_58px_rgba(0,0,0,0.16)] backdrop-blur-2xl transition-all duration-300 ease-[cubic-bezier(.2,.8,.2,1)] dark:border-white/10 dark:bg-[#1C1C1E]/82 dark:shadow-[0_20px_50px_rgba(0,0,0,0.46)]",
+            "absolute right-[22px] top-[106px] w-[min(68vw,248px)] origin-top-right overflow-hidden rounded-[24px] border border-white/45 bg-white/76 shadow-[0_18px_46px_rgba(0,0,0,0.15)] backdrop-blur-2xl transition-all duration-300 ease-[cubic-bezier(.2,.8,.2,1)] dark:border-white/10 dark:bg-[#1C1C1E]/82 dark:shadow-[0_18px_44px_rgba(0,0,0,0.44)]",
             menuOpen ? "translate-y-0 scale-100 opacity-100" : "-translate-y-4 scale-[0.92] opacity-0"
           )}
         >
-          <nav className="flex max-h-[66vh] flex-col overflow-y-auto px-4 py-4" aria-label="منوی موبایل">
+          <nav className="flex flex-col px-2.5 py-2.5" aria-label="منوی موبایل">
             <MobileLink to="/" onClick={() => setMenuOpen(false)}>صفحه اصلی</MobileLink>
-            {categories.map(cat => (
-              <MobileLink key={cat.id} to={`/category/${cat.slug}`} onClick={() => setMenuOpen(false)}>
-                {cat.name}
-              </MobileLink>
-            ))}
+            <MobileLink to="/control/iatomic-panel" onClick={() => setMenuOpen(false)}>پروفایل</MobileLink>
+            <MobileLink to="/contact" onClick={() => setMenuOpen(false)}>ارتباط با اتمیک</MobileLink>
             <MobileLink to="/about" onClick={() => setMenuOpen(false)}>درباره ما</MobileLink>
-            <MobileLink to="/contact" onClick={() => setMenuOpen(false)}>تماس و لینک‌ها</MobileLink>
           </nav>
         </div>
       </div>
@@ -275,7 +271,7 @@ function MobileLink({ to, onClick, children }: { to: string; onClick: () => void
     <Link
       to={to}
       onClick={onClick}
-      className="rounded-[16px] px-3 py-3 text-[15px] font-semibold text-label-primary transition-colors hover:bg-fill-quaternary"
+      className="rounded-[15px] px-3 py-2 text-[15px] font-semibold leading-7 text-label-primary transition-colors hover:bg-fill-quaternary"
     >
       {children}
     </Link>
