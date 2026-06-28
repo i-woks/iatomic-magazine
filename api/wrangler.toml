@@ -31,7 +31,7 @@ binding = "CACHE"
 id = "edfb0874d80a45a8879f7fdb6775777f"
 
 [triggers]
-crons = ["30 5 * * *"]
+crons = ["*/15 * * * *", "30 5 * * *"]
 
 [env.production]
 name = "iatomic-api"
@@ -50,4 +50,4 @@ binding = "CACHE"
 id = "edfb0874d80a45a8879f7fdb6775777f"
 
 [env.production.triggers]
-crons = ["30 5 * * *"]
+crons = ["*/15 * * * *", "30 5 * * *"]

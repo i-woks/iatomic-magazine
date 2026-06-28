@@ -28,6 +28,7 @@ app.use(logger());
 app.use(optionalAuth);
 
 app.get("/health", (c) => c.json({ status: "ok", brand: "Atomic Magazine" }));
+app.get("/api/system/warmup", async (c) => c.json(await warmStorageBindings(c.env)));
 
 app.route("/api/auth", authRoutes);
 app.route("/api/posts", postsRoutes);
@@ -54,6 +55,16 @@ app.get("/media/:key{.+}", async (c) => {
   return new Response(obj.body, { headers });
 });
 
+async function warmStorageBindings(env: any) {
+  const db = createDb(env.DB);
+  await env.DB.prepare("SELECT 1").first();
+  const bucket = env.MEDIA_BUCKET;
+  if (bucket) {
+    await bucket.list({ limit: 1 });
+  }
+  return { ok: true, warmedAt: new Date().toISOString() };
+}
+
 async function sendTelegramDailyStatusReport(env: any) {
   const db = createDb(env.DB);
   const today = new Date().toISOString().slice(0, 10);
@@ -78,7 +89,10 @@ app.get("/", async (c) => {
 
 export default {
   fetch: app.fetch,
-  async scheduled(_event: ScheduledEvent, env: any, _ctx: ExecutionContext) {
-    await sendTelegramDailyStatusReport(env);
+  async scheduled(event: ScheduledEvent, env: any, _ctx: ExecutionContext) {
+    await warmStorageBindings(env);
+    if (event.cron === "30 5 * * *") {
+      await sendTelegramDailyStatusReport(env);
+    }
   },
 };

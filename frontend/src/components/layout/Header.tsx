@@ -152,7 +152,7 @@ export function Header({ categories, logoAlt }: HeaderProps) {
 
         <nav className="hidden items-center gap-1 lg:flex" aria-label="دسته‌بندی‌ها">
           {categories.slice(0, 6).map(cat => (
-            <Link key={cat.id} to={`/category/${cat.slug}`} className="rounded-full science-chip-accent rounded-full border px-3 py-2 text-[13px] font-medium text-label-secondary transition-colors">
+            <Link key={cat.id} to={`/category/${cat.slug}`} className="science-chip-accent rounded-full border px-3 py-2 text-[13px] font-medium text-label-secondary transition-colors">
               {cat.name}
             </Link>
           ))}
@@ -177,7 +177,7 @@ export function Header({ categories, logoAlt }: HeaderProps) {
       <div className={cn("fixed inset-0 z-[70] lg:hidden", menuOpen ? "visible" : "invisible pointer-events-none")} aria-hidden={!menuOpen}>
         <div className={cn("absolute inset-0 bg-slate-900/10 transition-opacity duration-240 ease-out", menuOpen ? "opacity-100" : "opacity-0")} onClick={closeMenu} />
 
-        <aside ref={menuRef} className={cn("absolute right-0 top-0 flex h-[100dvh] w-[min(88vw,340px)] origin-right flex-col overflow-hidden rounded-l-[26px] border-l border-separator/20 bg-bg-primary shadow-[-14px_0_38px_rgba(17,24,39,0.12)] transition-all duration-300 ease-[cubic-bezier(.2,.8,.2,1)]", menuOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0")} aria-label="منوی موبایل">
+        <aside ref={menuRef} className={cn("absolute right-0 top-0 flex h-[100dvh] w-[min(90vw,356px)] origin-right flex-col overflow-hidden rounded-l-[26px] border-l border-separator/20 bg-bg-primary shadow-[-14px_0_38px_rgba(17,24,39,0.12)] transition-all duration-300 ease-[cubic-bezier(.2,.8,.2,1)]", menuOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0")} aria-label="منوی موبایل">
           <div className="border-b border-separator/20 px-4 py-4">
             <div className="flex items-center justify-between gap-3">
               <Link to="/" onClick={closeMenu} className="flex min-w-0 items-center gap-2.5">
@@ -206,7 +206,7 @@ export function Header({ categories, logoAlt }: HeaderProps) {
                 <div className="mb-2 flex items-start justify-between gap-2">
                   <div className="flex min-w-0 items-center gap-2">
                     <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[14px] bg-ios-blue-soft science-accent-icon">
-                      <Icon className="h-4.5 w-4.5" />
+                      <Icon className="h-[18px] w-[18px]" />
                     </span>
                     <div className="min-w-0">
                       <h3 className="truncate text-sm font-extrabold text-label-primary">{title}</h3>
@@ -218,7 +218,7 @@ export function Header({ categories, logoAlt }: HeaderProps) {
                 <div className="flex flex-wrap gap-1.5">
                   {items.map((item) => (
                     <Link key={item} to={searchHref(item)} onClick={closeMenu} className="inline-flex items-center gap-1 rounded-full science-chip-accent border px-2.5 py-1.5 text-[12px] font-medium text-label-secondary transition-colors">
-                      <ChevronLeft className="h-3 w-3" />
+                      <ChevronLeft className="h-3 w-3 text-label-tertiary" />
                       {item}
                     </Link>
                   ))}
@@ -234,8 +234,8 @@ export function Header({ categories, logoAlt }: HeaderProps) {
 
 function MobileTopLink({ to, onClick, icon: Icon, children }: { to: string; onClick: () => void; icon: React.ComponentType<{ className?: string }>; children: React.ReactNode }) {
   return (
-    <Link to={to} onClick={onClick} className="flex min-h-11 items-center justify-center gap-2 rounded-[16px] border border-separator/20 bg-white px-3 py-2.5 text-center text-[13px] font-semibold text-label-primary transition-colors hover:text-ios-blue">
-      <Icon className="h-4 w-4 text-label-tertiary" />
+    <Link to={to} onClick={onClick} className="group flex min-h-11 items-center justify-center gap-2 rounded-[16px] border border-separator/20 bg-white px-3 py-2.5 text-center text-[13px] font-semibold text-label-primary transition-colors hover:border-ios-blue-border hover:text-ios-blue">
+      <Icon className="h-4 w-4 text-label-tertiary transition-colors group-hover:text-ios-blue" />
       <span>{children}</span>
     </Link>
   );
