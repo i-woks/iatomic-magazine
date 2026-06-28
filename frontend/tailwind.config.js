@@ -3,7 +3,7 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
-      fontFamily: { sans: ["Vazirmatn", "system-ui", "sans-serif"] },
+      fontFamily: { sans: ["IRANSansX", "system-ui", "sans-serif"] },
       colors: {
         ios: { blue: "var(--color-ios-blue)", "blue-hover": "var(--color-ios-blue-hover)", "blue-soft": "var(--color-ios-blue-soft)", "blue-border": "var(--color-ios-blue-border)" },
         bg: { primary: "var(--color-bg-primary)", secondary: "var(--color-bg-secondary)", tertiary: "var(--color-bg-tertiary)" },

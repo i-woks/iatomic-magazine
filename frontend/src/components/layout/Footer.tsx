@@ -55,7 +55,7 @@ export function Footer({ categories, instagramUrl, siteName }: FooterProps) {
   return (
     <footer className="border-t border-separator/40 bg-bg-secondary/40 pt-10 pb-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="rounded-[32px] border border-white/45 bg-bg-primary/72 p-4 shadow-[0_18px_55px_rgba(0,0,0,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-[#111216]/72 dark:shadow-[0_20px_58px_rgba(0,0,0,0.42)] sm:p-6">
+        <div className="cosmic-surface rounded-[32px] p-4 sm:p-6">
           <div className="grid gap-6 lg:grid-cols-[1.05fr_1.15fr_.8fr]">
             <div className="space-y-4">
               <Link to="/" className="inline-flex items-center gap-3" aria-label="صفحه اصلی Atomic">
@@ -91,14 +91,14 @@ export function Footer({ categories, instagramUrl, siteName }: FooterProps) {
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
                 {SCIENCE_GROUPS.map((group) => (
-                  <div key={group.title} className="rounded-[22px] border border-separator/25 bg-bg-secondary/55 p-3">
+                  <div key={group.title} className="cosmic-surface rounded-[22px] p-3">
                     <div className="mb-2 flex items-center gap-2">
                       <span className="grid h-8 w-8 place-items-center rounded-[13px] bg-ios-blue-soft text-base">{group.icon}</span>
                       <h5 className="text-sm font-bold text-label-primary">{group.title}</h5>
                     </div>
                     <div className="flex flex-wrap gap-1.5">
                       {group.items.map((item) => (
-                        <Link key={item} to={`/search?q=${encodeURIComponent(item)}`} className="rounded-full bg-bg-primary/70 px-2.5 py-1 text-[11px] font-semibold text-label-secondary transition-colors hover:bg-ios-blue-soft hover:text-ios-blue">
+                        <Link key={item} to={`/search?q=${encodeURIComponent(item)}`} className="cosmic-chip rounded-full border px-2.5 py-1 text-[11px] font-semibold text-label-secondary transition-colors hover:text-label-primary">
                           {item}
                         </Link>
                       ))}
@@ -121,7 +121,7 @@ export function Footer({ categories, instagramUrl, siteName }: FooterProps) {
                 </ul>
               </div>
 
-              <div className="rounded-[24px] border border-ios-blue-border bg-ios-blue-soft/75 p-4">
+              <div className="cosmic-surface cosmic-glow rounded-[24px] p-4">
                 <div className="mb-2 flex items-center gap-2">
                   <HeartHandshake className="h-5 w-5 text-ios-blue" />
                   <h4 className="text-sm font-extrabold text-label-primary">حمایت از اتمیک</h4>
