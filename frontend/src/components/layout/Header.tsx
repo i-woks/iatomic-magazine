@@ -222,20 +222,39 @@ export function Header({ categories, instagramUrl, telegramUrl, logoAlt }: Heade
       {/* Liquid-glass compact mobile menu */}
       <div
         className={cn(
-          "fixed inset-0 z-[70] lg:hidden transition-opacity duration-240",
+          "fixed inset-0 z-[70] lg:hidden transition-[opacity,backdrop-filter] duration-300 ease-out",
           menuOpen ? "visible opacity-100" : "invisible opacity-0 pointer-events-none"
         )}
         aria-hidden={!menuOpen}
       >
-        <div className="absolute inset-0 bg-black/6 backdrop-blur-[2px]" onClick={() => setMenuOpen(false)} />
+        <div
+          className={cn(
+            "absolute inset-0 bg-white/8 transition-all duration-300 ease-out dark:bg-black/10",
+            menuOpen ? "backdrop-blur-[6px]" : "backdrop-blur-0"
+          )}
+          onClick={() => setMenuOpen(false)}
+        />
+
+        <button
+          type="button"
+          onClick={() => setMenuOpen(false)}
+          className={cn(
+            "absolute right-[calc(3vw+min(84vw,300px)-48px)] top-[76px] z-[72] inline-flex h-10 w-10 items-center justify-center rounded-[16px] border border-white/45 bg-white/72 text-label-primary shadow-[0_10px_30px_rgba(0,0,0,0.12)] backdrop-blur-2xl transition-all duration-300 ease-[cubic-bezier(.2,.8,.2,1)] dark:border-white/10 dark:bg-[#1C1C1E]/78",
+            menuOpen ? "translate-y-0 scale-100 opacity-100" : "-translate-y-2 scale-90 opacity-0"
+          )}
+          aria-label="بستن منو"
+        >
+          <X className="h-5 w-5" />
+        </button>
+
         <div
           ref={menuRef}
           className={cn(
-            "absolute right-3 top-20 w-[min(84vw,320px)] overflow-hidden rounded-[28px] border border-white/45 bg-white/78 shadow-[0_20px_50px_rgba(0,0,0,0.14)] backdrop-blur-2xl transition-all duration-240 dark:border-white/10 dark:bg-[#1C1C1E]/82 dark:shadow-[0_18px_44px_rgba(0,0,0,0.42)]",
-            menuOpen ? "translate-y-0 scale-100" : "-translate-y-2 scale-[0.985]"
+            "absolute right-3 top-[118px] w-[min(84vw,300px)] origin-top-right overflow-hidden rounded-[26px] border border-white/45 bg-white/76 shadow-[0_22px_58px_rgba(0,0,0,0.16)] backdrop-blur-2xl transition-all duration-300 ease-[cubic-bezier(.2,.8,.2,1)] dark:border-white/10 dark:bg-[#1C1C1E]/82 dark:shadow-[0_20px_50px_rgba(0,0,0,0.46)]",
+            menuOpen ? "translate-y-0 scale-100 opacity-100" : "-translate-y-4 scale-[0.92] opacity-0"
           )}
         >
-          <nav className="flex max-h-[70vh] flex-col overflow-y-auto p-3" aria-label="منوی موبایل">
+          <nav className="flex max-h-[66vh] flex-col overflow-y-auto px-4 py-4" aria-label="منوی موبایل">
             <MobileLink to="/" onClick={() => setMenuOpen(false)}>صفحه اصلی</MobileLink>
             {categories.map(cat => (
               <MobileLink key={cat.id} to={`/category/${cat.slug}`} onClick={() => setMenuOpen(false)}>
@@ -256,7 +275,7 @@ function MobileLink({ to, onClick, children }: { to: string; onClick: () => void
     <Link
       to={to}
       onClick={onClick}
-      className="rounded-lg px-3 py-3 text-base font-medium text-label-primary transition-colors hover:bg-fill-quaternary"
+      className="rounded-[16px] px-3 py-3 text-[15px] font-semibold text-label-primary transition-colors hover:bg-fill-quaternary"
     >
       {children}
     </Link>
