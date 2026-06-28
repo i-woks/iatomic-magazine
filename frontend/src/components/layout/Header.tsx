@@ -97,6 +97,15 @@ export function Header({ categories, instagramUrl, telegramUrl, logoAlt }: Heade
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
   }, []);
+  useEffect(() => {
+    const body = document.body;
+    if (menuOpen) {
+      const previous = body.style.overflow;
+      body.style.overflow = "hidden";
+      return () => { body.style.overflow = previous; };
+    }
+  }, [menuOpen]);
+
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -210,25 +219,33 @@ export function Header({ categories, instagramUrl, telegramUrl, logoAlt }: Heade
         </div>
       </div>
 
-      {/* Mobile slide-down drawer */}
+      {/* Liquid-glass compact mobile menu */}
       <div
-        ref={menuRef}
         className={cn(
-          "absolute inset-x-0 top-16 border-b border-separator/40 bg-bg-primary/95 backdrop-blur-xl transition-all duration-240 lg:hidden",
+          "fixed inset-0 z-[70] lg:hidden transition-opacity duration-240",
           menuOpen ? "visible opacity-100" : "invisible opacity-0 pointer-events-none"
         )}
         aria-hidden={!menuOpen}
       >
-        <nav className="flex flex-col px-4 py-3 gap-0.5" aria-label="منوی موبایل">
-          <MobileLink to="/" onClick={() => setMenuOpen(false)}>صفحه اصلی</MobileLink>
-          {categories.map(cat => (
-            <MobileLink key={cat.id} to={`/category/${cat.slug}`} onClick={() => setMenuOpen(false)}>
-              {cat.name}
-            </MobileLink>
-          ))}
-          <MobileLink to="/about" onClick={() => setMenuOpen(false)}>درباره ما</MobileLink>
-          <MobileLink to="/contact" onClick={() => setMenuOpen(false)}>تماس و لینک‌ها</MobileLink>
-        </nav>
+        <div className="absolute inset-0 bg-black/6 backdrop-blur-[2px]" onClick={() => setMenuOpen(false)} />
+        <div
+          ref={menuRef}
+          className={cn(
+            "absolute right-3 top-20 w-[min(84vw,320px)] overflow-hidden rounded-[28px] border border-white/45 bg-white/78 shadow-[0_20px_50px_rgba(0,0,0,0.14)] backdrop-blur-2xl transition-all duration-240 dark:border-white/10 dark:bg-[#1C1C1E]/82 dark:shadow-[0_18px_44px_rgba(0,0,0,0.42)]",
+            menuOpen ? "translate-y-0 scale-100" : "-translate-y-2 scale-[0.985]"
+          )}
+        >
+          <nav className="flex max-h-[70vh] flex-col overflow-y-auto p-3" aria-label="منوی موبایل">
+            <MobileLink to="/" onClick={() => setMenuOpen(false)}>صفحه اصلی</MobileLink>
+            {categories.map(cat => (
+              <MobileLink key={cat.id} to={`/category/${cat.slug}`} onClick={() => setMenuOpen(false)}>
+                {cat.name}
+              </MobileLink>
+            ))}
+            <MobileLink to="/about" onClick={() => setMenuOpen(false)}>درباره ما</MobileLink>
+            <MobileLink to="/contact" onClick={() => setMenuOpen(false)}>تماس و لینک‌ها</MobileLink>
+          </nav>
+        </div>
       </div>
     </header>
   );
