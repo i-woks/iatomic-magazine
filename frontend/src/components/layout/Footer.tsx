@@ -1,15 +1,23 @@
 import { Link } from "react-router-dom";
-import { HeartHandshake, Instagram, Mail, Sparkles } from "lucide-react";
+import { Atom, BookOpen, BrainCircuit, Compass, FlaskConical, Home, Instagram, Mail, Rocket, Search, Sparkles, Stethoscope } from "lucide-react";
 import { TelegramIcon } from "./Header";
 import type { Category } from "@/types";
 
 const TELEGRAM_URL = "https://t.me/AtomicMagazine";
 
 const SCIENCE_GROUPS = [
-  { icon: "🔬", title: "علوم پایه", items: ["فیزیک", "شیمی", "زیست‌شناسی", "نجوم", "ریاضیات"] },
-  { icon: "💻", title: "رایانه و هوش مصنوعی", items: ["هوش مصنوعی", "علم داده", "امنیت سایبری", "رباتیک"] },
-  { icon: "⚙️", title: "مهندسی و فناوری", items: ["برق", "هوافضا", "نانوفناوری", "انرژی"] },
-  { icon: "🩺", title: "پزشکی و زیستی", items: ["پزشکی", "ژنتیک", "علوم اعصاب", "تغذیه"] },
+  { icon: FlaskConical, title: "علوم پایه" },
+  { icon: BrainCircuit, title: "رایانه و هوش مصنوعی" },
+  { icon: Rocket, title: "مهندسی و فناوری" },
+  { icon: Stethoscope, title: "پزشکی و علوم زیستی" },
+  { icon: Compass, title: "علوم انسانی و اجتماعی" },
+];
+
+const QUICK_LINKS = [
+  { to: "/", label: "صفحه اصلی", icon: Home },
+  { to: "/about", label: "درباره اتمیک", icon: Atom },
+  { to: "/contact", label: "ارتباط با اتمیک", icon: Mail },
+  { to: "/search", label: "جستجو در مجله", icon: Search },
 ];
 
 interface FooterProps {
@@ -21,14 +29,14 @@ interface FooterProps {
   logoAlt?: string | null;
 }
 
-export function Footer({ categories, instagramUrl, siteName }: FooterProps) {
+export function Footer({ instagramUrl, siteName }: FooterProps) {
   const socialIcons = (
     <div className="flex items-center gap-2.5">
       <a
         href={instagramUrl || "https://instagram.com/iatomic_"}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-fill-quaternary text-label-secondary transition-colors hover:bg-ios-blue-soft hover:text-ios-blue"
+        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-separator/25 bg-white text-label-secondary shadow-[0_8px_22px_rgba(15,23,42,0.06)] transition-colors hover:bg-ios-blue-soft hover:text-ios-blue"
         aria-label="اینستاگرام Atomic"
       >
         <Instagram className="h-5 w-5" />
@@ -37,14 +45,14 @@ export function Footer({ categories, instagramUrl, siteName }: FooterProps) {
         href={TELEGRAM_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-fill-quaternary text-label-secondary transition-colors hover:bg-ios-blue-soft hover:text-ios-blue"
+        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-separator/25 bg-white text-label-secondary shadow-[0_8px_22px_rgba(15,23,42,0.06)] transition-colors hover:bg-ios-blue-soft hover:text-ios-blue"
         aria-label="کانال تلگرام Atomic Magazine"
       >
         <TelegramIcon className="h-5 w-5" />
       </a>
       <a
         href="mailto:contact@iatomic.ir"
-        className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-fill-quaternary text-label-secondary transition-colors hover:bg-ios-blue-soft hover:text-ios-blue"
+        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-separator/25 bg-white text-label-secondary shadow-[0_8px_22px_rgba(15,23,42,0.06)] transition-colors hover:bg-ios-blue-soft hover:text-ios-blue"
         aria-label="ایمیل"
       >
         <Mail className="h-5 w-5" />
@@ -53,11 +61,12 @@ export function Footer({ categories, instagramUrl, siteName }: FooterProps) {
   );
 
   return (
-    <footer className="border-t border-separator/40 bg-bg-secondary/40 pt-10 pb-8">
+    <footer className="border-t border-separator/30 bg-transparent pt-10 pb-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="cosmic-surface rounded-[32px] p-4 sm:p-6">
-          <div className="grid gap-6 lg:grid-cols-[1.05fr_1.15fr_.8fr]">
-            <div className="space-y-4">
+        <div className="cosmic-surface rounded-[32px] p-5 sm:p-7 lg:p-8">
+          <div className="grid gap-8 lg:grid-cols-[1.08fr_1fr_.86fr] lg:items-start">
+            {/* Right column on desktop in RTL: intro */}
+            <div className="space-y-4 text-right">
               <Link to="/" className="inline-flex items-center gap-3" aria-label="صفحه اصلی Atomic">
                 <span className="relative grid h-12 w-12 place-items-center overflow-hidden rounded-[18px] border border-ios-blue-border bg-ios-blue-soft">
                   <img src="/logo-dark.jpg" alt="Atomic" className="logo-for-light h-full w-full object-contain p-1.5" draggable={false} />
@@ -69,13 +78,13 @@ export function Footer({ categories, instagramUrl, siteName }: FooterProps) {
                 </span>
               </Link>
 
-              <p className="max-w-sm text-sm leading-7 text-label-secondary">
+              <p className="max-w-sm text-sm leading-7 text-label-secondary lg:max-w-[24rem]">
                 اتمیک جایی برای مرور ساده، دقیق و الهام‌بخش علم است؛ از فیزیک و کیهان‌شناسی تا هوش مصنوعی، پزشکی و فناوری‌های نو.
               </p>
 
               <div className="flex flex-wrap gap-2">
                 {["علم روز", "تحلیل مستند", "فارسی و مینیمال"].map((tag) => (
-                  <span key={tag} className="rounded-full border border-separator/25 bg-fill-quaternary px-3 py-1.5 text-xs font-bold text-label-secondary">
+                  <span key={tag} className="rounded-full border border-separator/25 bg-white px-3 py-1.5 text-xs font-bold text-label-secondary shadow-[0_6px_18px_rgba(15,23,42,0.05)]">
                     {tag}
                   </span>
                 ))}
@@ -84,64 +93,54 @@ export function Footer({ categories, instagramUrl, siteName }: FooterProps) {
               {socialIcons}
             </div>
 
+            {/* Middle column: scientific paths without nested cards */}
             <div>
               <div className="mb-4 flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-ios-blue" />
                 <h4 className="text-sm font-extrabold text-label-primary">مسیرهای علمی اتمیک</h4>
               </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {SCIENCE_GROUPS.map((group) => (
-                  <div key={group.title} className="cosmic-surface rounded-[22px] p-3">
-                    <div className="mb-2 flex items-center gap-2">
-                      <span className="grid h-8 w-8 place-items-center rounded-[13px] bg-ios-blue-soft text-base">{group.icon}</span>
-                      <h5 className="text-sm font-bold text-label-primary">{group.title}</h5>
-                    </div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {group.items.map((item) => (
-                        <Link key={item} to={`/search?q=${encodeURIComponent(item)}`} className="cosmic-chip rounded-full border px-2.5 py-1 text-[11px] font-semibold text-label-secondary transition-colors hover:text-label-primary">
-                          {item}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
+              <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+                {SCIENCE_GROUPS.map(({ icon: Icon, title }, index) => (
+                  <li key={title}>
+                    <Link
+                      to={`/search?q=${encodeURIComponent(title)}`}
+                      className="cosmic-link-row group flex items-center gap-3 rounded-[18px] px-1 py-1 text-sm font-bold text-label-primary transition-colors hover:text-ios-blue"
+                    >
+                      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[14px] border border-separator/25 bg-white text-ios-blue shadow-[0_8px_22px_rgba(15,23,42,0.06)]" data-accent={index}>
+                        <Icon className="h-4.5 w-4.5" />
+                      </span>
+                      <span>{title}</span>
+                    </Link>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
 
-            <div className="space-y-4">
-              <div>
-                <h4 className="mb-3 text-sm font-extrabold text-label-primary">دسترسی سریع</h4>
-                <ul className="space-y-2.5">
-                  <li><Link to="/about" className="text-sm font-medium text-label-secondary transition-colors hover:text-ios-blue">درباره اتمیک</Link></li>
-                  <li><Link to="/contact" className="text-sm font-medium text-label-secondary transition-colors hover:text-ios-blue">ارتباط با اتمیک</Link></li>
-                  <li><Link to="/search" className="text-sm font-medium text-label-secondary transition-colors hover:text-ios-blue">جستجو در مجله</Link></li>
-                  {categories.slice(0, 3).map((cat) => (
-                    <li key={cat.id}><Link to={`/category/${cat.slug}`} className="text-sm font-medium text-label-secondary transition-colors hover:text-ios-blue">{cat.name}</Link></li>
-                  ))}
-                </ul>
+            {/* Left column on desktop in RTL: quick links */}
+            <div>
+              <div className="mb-4 flex items-center gap-2">
+                <BookOpen className="h-5 w-5 text-ios-blue" />
+                <h4 className="text-sm font-extrabold text-label-primary">دسترسی سریع</h4>
               </div>
-
-              <div className="cosmic-surface cosmic-glow rounded-[24px] p-4">
-                <div className="mb-2 flex items-center gap-2">
-                  <HeartHandshake className="h-5 w-5 text-ios-blue" />
-                  <h4 className="text-sm font-extrabold text-label-primary">حمایت از اتمیک</h4>
-                </div>
-                <p className="text-xs leading-6 text-label-secondary">
-                  ساختار حمایت مالی آماده‌سازی می‌شود؛ اطلاعات پرداخت و متن نهایی را بعداً تنظیم می‌کنیم.
-                </p>
-                <div className="mt-3 grid grid-cols-3 gap-1.5 text-center text-[11px] font-bold text-ios-blue">
-                  <span className="rounded-full bg-bg-primary/70 py-1.5">قهوه</span>
-                  <span className="rounded-full bg-bg-primary/70 py-1.5">ماهانه</span>
-                  <span className="rounded-full bg-bg-primary/70 py-1.5">دلخواه</span>
-                </div>
-              </div>
+              <ul className="space-y-3">
+                {QUICK_LINKS.map(({ to, label, icon: Icon }) => (
+                  <li key={to}>
+                    <Link to={to} className="group flex items-center gap-3 rounded-[18px] px-1 py-1 text-sm font-bold text-label-secondary transition-colors hover:text-ios-blue">
+                      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[14px] border border-separator/25 bg-white text-ios-blue shadow-[0_8px_22px_rgba(15,23,42,0.06)]">
+                        <Icon className="h-4.5 w-4.5" />
+                      </span>
+                      <span>{label}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
 
         <div className="mt-6 flex flex-col items-center justify-between gap-3 border-t border-separator/30 pt-5 text-xs text-label-tertiary sm:flex-row">
           <p>© {new Date().getFullYear()} {siteName || "Atomic"}. تمامی حقوق محفوظ است.</p>
-          <p>طراحی سبک، علمی و سازگار با تجربه موبایل</p>
+          <p>طراحی سبک، علمی و سازگار با همه دستگاه‌ها</p>
         </div>
       </div>
     </footer>

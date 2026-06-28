@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"; import { Clock, Calendar } from "lucide-react"; import { Badge } from "@/components/ui/Badge"; import { cn, toPersianDate, persianNumber } from "@/lib/utils"; import type { Post } from "@/types";
 export function ArticleCard({ post, featured, className }: { post: Post; featured?: boolean; className?: string }) {
   return (
-    <article className={cn("group cosmic-surface cosmic-glow relative overflow-hidden rounded-[22px] shadow-ios transition-all duration-240 hover:-translate-y-0.5 hover:shadow-ios-lg", featured && "md:grid md:grid-cols-2 md:gap-0", className)}>
+    <article className={cn("group cosmic-surface relative overflow-hidden rounded-[22px] shadow-ios transition-all duration-240 hover:-translate-y-0.5 hover:shadow-ios-lg", featured && "md:grid md:grid-cols-2 md:gap-0", className)}>
       <Link to={`/article/${post.slug}`} className="block overflow-hidden">
         <div className={cn("aspect-[16/10] bg-fill-secondary transition-transform duration-240 group-hover:scale-[1.02]", featured && "md:aspect-auto md:h-full")}>
           {post.coverImage ? <img src={post.coverImage.url} alt={post.title} loading="lazy" className="h-full w-full object-cover" /> : <div className="flex h-full w-full items-center justify-center text-label-tertiary"><span className="text-sm">Atomic</span></div>}

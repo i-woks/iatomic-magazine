@@ -29,16 +29,16 @@
 :root {
   color-scheme: light;
   --color-bg-primary:       #D8DDE5;
-  --color-bg-secondary:     rgba(246,248,252,0.72);
-  --color-bg-tertiary:      rgba(255,255,255,0.86);
+  --color-bg-secondary:     #FFFFFF;
+  --color-bg-tertiary:      #FFFFFF;
   --color-label-primary:    #101828;
   --color-label-secondary:  rgba(16,24,40,0.68);
   --color-label-tertiary:   rgba(16,24,40,0.42);
   --color-label-quaternary: rgba(16,24,40,0.24);
-  --color-fill-primary:     rgba(255,255,255,0.58);
-  --color-fill-secondary:   rgba(255,255,255,0.44);
-  --color-fill-tertiary:    rgba(255,255,255,0.34);
-  --color-fill-quaternary:  rgba(255,255,255,0.30);
+  --color-fill-primary:     #FFFFFF;
+  --color-fill-secondary:   #FFFFFF;
+  --color-fill-tertiary:    rgba(255,255,255,0.92);
+  --color-fill-quaternary:  rgba(255,255,255,0.86);
   --color-separator:        rgba(60,74,98,0.22);
   --color-separator-opaque: rgba(74,85,104,0.30);
   --color-ios-blue:         #008CFF;
@@ -64,8 +64,8 @@
   --cosmic-green: #37FD12;
   --cosmic-yellow: #FFF500;
   --cosmic-navy: #0147AB;
-  --cosmic-card: rgba(247,249,253,0.72);
-  --cosmic-card-strong: rgba(255,255,255,0.88);
+  --cosmic-card: #FFFFFF;
+  --cosmic-card-strong: #FFFFFF;
 }
 
 .dark {
@@ -180,11 +180,9 @@
    COSMIC LIGHT SURFACE SYSTEM
 ═══════════════════════════════════════════════════════════ */
 .cosmic-surface {
-  background: linear-gradient(145deg, rgba(255,255,255,0.74), rgba(242,246,252,0.58));
-  border: 1px solid rgba(255,255,255,0.68);
-  box-shadow: 0 18px 55px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.66);
-  backdrop-filter: blur(20px) saturate(150%);
-  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  background: #FFFFFF;
+  border: 1px solid rgba(255,255,255,0.92);
+  box-shadow: 0 18px 48px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.95);
 }
 .cosmic-glow {
   position: relative;
@@ -197,8 +195,8 @@
   z-index: -1;
   border-radius: inherit;
   background: linear-gradient(135deg, rgba(1,255,255,0.42), rgba(255,0,255,0.24), rgba(255,245,0,0.20));
-  opacity: 0.42;
-  filter: blur(16px);
+  opacity: 0.22;
+  filter: blur(14px);
 }
 .cosmic-chip:nth-child(5n+1) { --chip: var(--cosmic-cyan); }
 .cosmic-chip:nth-child(5n+2) { --chip: var(--cosmic-purple); }
@@ -209,6 +207,17 @@
   border-color: color-mix(in srgb, var(--chip) 40%, rgba(60,74,98,0.18));
   background: linear-gradient(180deg, rgba(255,255,255,0.70), color-mix(in srgb, var(--chip) 12%, rgba(255,255,255,0.52)));
   box-shadow: 0 8px 24px color-mix(in srgb, var(--chip) 18%, transparent);
+}
+
+
+/* White box calibration over the cosmic gray background */
+.bg-bg-secondary\/60,
+.bg-bg-secondary\/70,
+.bg-bg-secondary\/40,
+.bg-fill-quaternary\/50,
+.bg-fill-quaternary\/60 {
+  background-color: #FFFFFF !important;
+  box-shadow: 0 14px 38px rgba(15,23,42,0.08);
 }
 
 /* ═══════════════════════════════════════════════════════════
