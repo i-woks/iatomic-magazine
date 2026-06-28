@@ -1,9 +1,12 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Instagram, Mail, Quote } from "lucide-react";
+import { Instagram, Languages, Mail, Quote } from "lucide-react";
 import { TelegramIcon } from "./Header";
 import type { Category } from "@/types";
 
 const TELEGRAM_URL = "https://t.me/AtomicMagazine";
+const QUOTE_FA = "«ترجیح می‌دهم پرسش‌هایی داشته باشم که هنوز پاسخی برایشان نیست، تا پاسخ‌هایی که نتوان آن‌ها را به چالش کشید.»";
+const QUOTE_EN = "“I would rather have questions that can't be answered than answers that can't be questioned.”";
 
 interface FooterProps {
   categories: Category[];
@@ -15,6 +18,9 @@ interface FooterProps {
 }
 
 export function Footer({ categories, instagramUrl, siteName }: FooterProps) {
+  const [quoteLang, setQuoteLang] = useState<"fa" | "en">("fa");
+  const isEnglish = quoteLang === "en";
+
   return (
     <footer className="border-t border-separator/40 bg-bg-secondary/40 pt-12 pb-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -32,16 +38,29 @@ export function Footer({ categories, instagramUrl, siteName }: FooterProps) {
                   <p className="text-sm font-bold text-label-primary">Richard Feynman</p>
                   <p className="text-xs text-label-tertiary">Physicist</p>
                 </div>
-                <Quote className="mr-auto h-5 w-5 shrink-0 text-ios-blue/70" />
+                <Quote className="mr-auto h-4 w-4 shrink-0 text-ios-blue/55" strokeWidth={2.2} />
               </div>
-              <blockquote className="space-y-3 text-sm leading-7 text-label-secondary">
-                <p dir="ltr" className="text-left font-medium text-label-primary">
-                  “I would rather have questions that can't be answered than answers that can't be questioned.”
-                </p>
-                <p>
-                  «ترجیح می‌دهم پرسش‌هایی داشته باشم که هنوز پاسخی برایشان نیست، تا پاسخ‌هایی که نتوان آن‌ها را به چالش کشید.»
+              <blockquote className="text-sm leading-7 text-label-secondary">
+                <p
+                  key={quoteLang}
+                  dir={isEnglish ? "ltr" : "rtl"}
+                  className={`min-h-[84px] transition-all duration-300 ${isEnglish ? "text-left font-medium text-label-primary" : "text-right"}`}
+                >
+                  {isEnglish ? QUOTE_EN : QUOTE_FA}
                 </p>
               </blockquote>
+              <div className="mt-3 flex items-center justify-end">
+                <button
+                  type="button"
+                  onClick={() => setQuoteLang(isEnglish ? "fa" : "en")}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-separator/40 bg-fill-quaternary px-2.5 py-1 text-[11px] font-medium text-label-secondary transition-all hover:border-ios-blue-border hover:bg-ios-blue-soft hover:text-ios-blue"
+                  aria-label={isEnglish ? "نمایش ترجمه فارسی" : "نمایش متن انگلیسی"}
+                  title={isEnglish ? "نمایش ترجمه فارسی" : "Translate to English"}
+                >
+                  <Languages className="h-3.5 w-3.5" />
+                  <span>{isEnglish ? "FA" : "EN"}</span>
+                </button>
+              </div>
             </div>
             <div className="flex items-center gap-3">
               <a
