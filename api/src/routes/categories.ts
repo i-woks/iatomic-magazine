@@ -7,7 +7,7 @@ import { requireAuth } from "../middleware/auth";
 import { toSlug } from "../lib/helpers";
 import { createApp } from "../lib/hono";
 const app = createApp();
-const schema = z.object({ name: z.string().min(1).max(100), slug: z.string().min(1).max(120).optional(), description: z.string().max(500).optional().nullable(), accentColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/).default("#007AFF"), sortOrder: z.number().default(0) });
+const schema = z.object({ name: z.string().min(1).max(100), slug: z.string().min(1).max(120).optional(), description: z.string().max(500).optional().nullable(), accentColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/).default("#00A8FF"), sortOrder: z.number().default(0) });
 app.get("/", async (c) => {
   const db = createDb(c.env.DB); const items = await db.select({ id: categories.id, name: categories.name, slug: categories.slug, description: categories.description, accentColor: categories.accentColor, sortOrder: categories.sortOrder, postCount: sql<number>`count(${posts.id})`.as("post_count") }).from(categories).leftJoin(posts, eq(posts.categoryId, categories.id)).groupBy(categories.id).orderBy(categories.sortOrder, desc(categories.id));
   return c.json({ data: items });

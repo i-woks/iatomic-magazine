@@ -16,7 +16,7 @@ export const categories = sqliteTable("categories", {
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
   description: text("description"),
-  accentColor: text("accent_color").notNull().default("#007AFF"),
+  accentColor: text("accent_color").notNull().default("#00A8FF"),
   sortOrder: integer("sort_order", { mode: "number" }).notNull().default(0),
   createdAt: text("created_at").notNull().default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: text("updated_at").notNull().default(sql`(CURRENT_TIMESTAMP)`),

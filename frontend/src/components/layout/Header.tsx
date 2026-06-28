@@ -152,7 +152,7 @@ export function Header({ categories, logoAlt }: HeaderProps) {
 
         <nav className="hidden items-center gap-1 lg:flex" aria-label="دسته‌بندی‌ها">
           {categories.slice(0, 6).map(cat => (
-            <Link key={cat.id} to={`/category/${cat.slug}`} className="rounded-full border border-separator/20 bg-white px-3 py-2 text-[13px] font-medium text-label-secondary transition-colors hover:text-ios-blue">
+            <Link key={cat.id} to={`/category/${cat.slug}`} className="rounded-full science-chip-accent rounded-full border px-3 py-2 text-[13px] font-medium text-label-secondary transition-colors">
               {cat.name}
             </Link>
           ))}
@@ -205,7 +205,7 @@ export function Header({ categories, logoAlt }: HeaderProps) {
               <section key={title} className="rounded-[22px] border border-separator/20 bg-white p-3 shadow-[0_8px_22px_rgba(17,24,39,0.045)]">
                 <div className="mb-2 flex items-start justify-between gap-2">
                   <div className="flex min-w-0 items-center gap-2">
-                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[14px] bg-ios-blue-soft text-ios-blue">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[14px] bg-ios-blue-soft science-accent-icon">
                       <Icon className="h-4.5 w-4.5" />
                     </span>
                     <div className="min-w-0">
@@ -217,7 +217,7 @@ export function Header({ categories, logoAlt }: HeaderProps) {
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {items.map((item) => (
-                    <Link key={item} to={searchHref(item)} onClick={closeMenu} className="inline-flex items-center gap-1 rounded-full border border-separator/20 bg-white px-2.5 py-1.5 text-[12px] font-medium text-label-secondary transition-colors hover:text-ios-blue">
+                    <Link key={item} to={searchHref(item)} onClick={closeMenu} className="inline-flex items-center gap-1 rounded-full science-chip-accent border px-2.5 py-1.5 text-[12px] font-medium text-label-secondary transition-colors">
                       <ChevronLeft className="h-3 w-3" />
                       {item}
                     </Link>

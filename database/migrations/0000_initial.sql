@@ -13,7 +13,7 @@ CREATE TABLE `categories` (
 	`name` text NOT NULL,
 	`slug` text NOT NULL,
 	`description` text,
-	`accent_color` text DEFAULT '#007AFF' NOT NULL,
+	`accent_color` text DEFAULT '#00A8FF' NOT NULL,
 	`sort_order` integer DEFAULT 0 NOT NULL,
 	`created_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	`updated_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL

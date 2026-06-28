@@ -28,23 +28,34 @@
 ═══════════════════════════════════════════════════════════ */
 :root {
   color-scheme: light;
-  --color-bg-primary:       #F0F3F8;
+  --color-bg-primary:       #F5F7F6;
   --color-bg-secondary:     #FFFFFF;
   --color-bg-tertiary:      #FFFFFF;
-  --color-label-primary:    #111827;
-  --color-label-secondary:  rgba(17,24,39,0.64);
-  --color-label-tertiary:   rgba(17,24,39,0.40);
-  --color-label-quaternary: rgba(17,24,39,0.20);
+  --color-label-primary:    #121A14;
+  --color-label-secondary:  rgba(18,26,20,0.66);
+  --color-label-tertiary:   rgba(18,26,20,0.42);
+  --color-label-quaternary: rgba(18,26,20,0.20);
   --color-fill-primary:     #FFFFFF;
   --color-fill-secondary:   #FFFFFF;
   --color-fill-tertiary:    rgba(255,255,255,0.92);
   --color-fill-quaternary:  rgba(255,255,255,0.86);
-  --color-separator:        rgba(60,60,67,0.18);
-  --color-separator-opaque: rgba(60,60,67,0.25);
-  --color-ios-blue:         #007AFF;
-  --color-ios-blue-hover:   #006FE6;
-  --color-ios-blue-soft:    rgba(0,122,255,0.10);
-  --color-ios-blue-border:  rgba(0,122,255,0.22);
+  --color-separator:        rgba(38,50,56,0.16);
+  --color-separator-opaque: rgba(38,50,56,0.24);
+  --color-ios-blue:         #00A8FF;
+  --color-ios-blue-hover:   #1565C0;
+  --color-ios-blue-soft:    rgba(0,168,255,0.10);
+  --color-ios-blue-border:  rgba(0,168,255,0.24);
+  --science-green:         #16C172;
+  --science-green-soft:    rgba(22,193,114,0.11);
+  --science-cyan:          #26C6DA;
+  --science-blue:          #00A8FF;
+  --science-navy:          #0A183D;
+  --science-purple:        #8E24AA;
+  --science-amber:         #FFD300;
+  --science-orange:        #FF8B00;
+  --science-red:           #E71C1C;
+  --science-surface:       #FFFFFF;
+  --science-surface-muted: #EBEEF2;
 
   /*
    * LOGO MAPPING — CORRECTED (light mode):
@@ -112,7 +123,7 @@
   html { scroll-behavior: smooth; }
   body {
     font-family: "IRANSansX", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: #F0F3F8;
+    background: #F5F7F6;
     color: var(--color-label-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -157,7 +168,7 @@
 .cosmic-surface {
   background: #FFFFFF;
   border: 1px solid rgba(60,60,67,0.12);
-  box-shadow: 0 10px 30px rgba(17,24,39,0.055);
+  box-shadow: 0 10px 30px rgba(10,24,61,0.055);
 }
 .cosmic-glow::before { display: none; }
 .cosmic-chip {
@@ -171,7 +182,18 @@
 .bg-fill-quaternary\/50,
 .bg-fill-quaternary\/60 {
   background-color: #FFFFFF !important;
-  box-shadow: 0 10px 28px rgba(17,24,39,0.05);
+  box-shadow: 0 10px 28px rgba(10,24,61,0.05);
+}
+
+
+.science-accent-icon { color: var(--science-blue); }
+.science-chip-accent {
+  background: linear-gradient(180deg, #FFFFFF, #F8FAF9);
+  border-color: rgba(38,50,56,0.16);
+}
+.science-chip-accent:hover {
+  border-color: rgba(0,168,255,0.28);
+  color: var(--science-blue);
 }
 
 /* Background halos disabled for the minimal iOS light theme */
@@ -187,7 +209,7 @@
     background: #FFFFFF;
     border: 1px solid rgba(60,60,67,0.14);
     border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(17,24,39,0.06);
+    box-shadow: 0 10px 30px rgba(10,24,61,0.06);
   }
 
   /* ── Article body ── */
