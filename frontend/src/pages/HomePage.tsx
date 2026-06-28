@@ -85,14 +85,6 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Featured/selected placeholder */}
-      <section className="glass-card mb-10 rounded-ios-lg p-6">
-        <h2 className="mb-2 text-lg font-bold text-label-primary">مقالات برگزیده Atomic</h2>
-        <p className="text-sm text-label-secondary">
-          مقالات تحلیلی و آموزشی در حوزه فیزیک، کیهان‌شناسی، کوانتوم و علم روز. با Atomic همراه باشید.
-        </p>
-      </section>
-
       {/* Focused science section */}
       <section className="mb-10">
         <h2 className="mb-4 text-lg font-bold text-label-primary">فیزیک و کوانتوم</h2>
