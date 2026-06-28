@@ -144,12 +144,29 @@
 .atomic-wordmark {
   font-family: "Karixby", "IRANSansX", ui-sans-serif, system-ui, -apple-system,
     BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 17px;
+  font-size: 21px;
   font-weight: 700;
   letter-spacing: 0.14em;
   color: var(--color-label-primary);
   white-space: nowrap;
   user-select: none;
+}
+
+
+.atomic-logo-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.atomic-logo-mark img {
+  display: block;
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+@media (max-width: 640px) {
+  .atomic-wordmark { font-size: 20px; }
+  .atomic-logo-mark img { width: 31px; height: 31px; }
 }
 
 /* ═══════════════════════════════════════════════════════════

@@ -3,7 +3,7 @@
  */
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Atom, BrainCircuit, ChevronLeft, Compass, FlaskConical, Home, Mail, Menu, Rocket, Search, Stethoscope, UserRound, X } from "lucide-react";
+import { Atom, BrainCircuit, ChevronLeft, Compass, FlaskConical, Home, Mail, Menu, Rocket, Search, Stethoscope, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { cn } from "@/lib/utils";
@@ -44,7 +44,6 @@ const SCIENCE_MENU = [
 
 const QUICK_LINKS = [
   { to: "/", label: "صفحه اصلی", icon: Home },
-  { to: "/control/iatomic-panel", label: "پروفایل", icon: UserRound },
   { to: "/contact", label: "ارتباط با اتمیک", icon: Mail },
   { to: "/about", label: "درباره ما", icon: Atom },
 ];
@@ -67,9 +66,9 @@ export function TelegramIcon({ className }: { className?: string }) {
 
 function HeaderLogo({ alt }: { alt: string }) {
   return (
-    <div className="logo-frame relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-[14px] border border-separator/20 bg-black shadow-[0_2px_10px_rgba(0,0,0,0.08)]">
-      <img src="/images/atomic-orbit-logo.png" alt={alt} className="h-full w-full object-cover" draggable={false} />
-    </div>
+    <span className="atomic-logo-mark shrink-0" aria-hidden="false">
+      <img src="/images/atomic-mark-black.png" alt={alt} draggable={false} />
+    </span>
   );
 }
 
@@ -177,8 +176,8 @@ export function Header({ categories, logoAlt }: HeaderProps) {
       <div className={cn("fixed inset-0 z-[70] lg:hidden", menuOpen ? "visible" : "invisible pointer-events-none")} aria-hidden={!menuOpen}>
         <div className={cn("absolute inset-0 bg-slate-900/10 transition-opacity duration-240 ease-out", menuOpen ? "opacity-100" : "opacity-0")} onClick={closeMenu} />
 
-        <aside ref={menuRef} className={cn("absolute right-0 top-0 flex h-[100dvh] w-[min(90vw,356px)] origin-right flex-col overflow-hidden rounded-l-[26px] border-l border-separator/20 bg-bg-primary shadow-[-14px_0_38px_rgba(17,24,39,0.12)] transition-all duration-300 ease-[cubic-bezier(.2,.8,.2,1)]", menuOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0")} aria-label="منوی موبایل">
-          <div className="border-b border-separator/20 px-4 py-4">
+        <aside ref={menuRef} className={cn("absolute right-0 top-0 flex h-[100dvh] w-[min(90vw,352px)] origin-right flex-col overflow-hidden rounded-l-[24px] border-l border-separator/20 bg-bg-primary shadow-[-14px_0_38px_rgba(17,24,39,0.12)] transition-all duration-300 ease-[cubic-bezier(.2,.8,.2,1)]", menuOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0")} aria-label="منوی موبایل">
+          <div className="border-b border-separator/20 px-3.5 py-3.5">
             <div className="flex items-center justify-between gap-3">
               <Link to="/" onClick={closeMenu} className="flex min-w-0 items-center gap-2.5">
                 <HeaderLogo alt={alt} />
@@ -193,7 +192,7 @@ export function Header({ categories, logoAlt }: HeaderProps) {
             </div>
           </div>
 
-          <nav className="flex-1 space-y-3 overflow-y-auto px-4 py-4" aria-label="منوی موبایل">
+          <nav className="flex-1 space-y-3 overflow-y-auto px-3.5 py-3.5" aria-label="منوی موبایل">
             <div className="grid grid-cols-2 gap-2">
               {QUICK_LINKS.map(({ to, label, icon: Icon }) => (
                 <MobileTopLink key={to} to={to} onClick={closeMenu} icon={Icon}>{label}</MobileTopLink>
@@ -202,22 +201,22 @@ export function Header({ categories, logoAlt }: HeaderProps) {
 
             <div className="pt-1 text-[12px] font-bold text-label-primary">مسیرهای علمی اتمیک</div>
             {SCIENCE_MENU.map(({ title, subtitle, icon: Icon, items }) => (
-              <section key={title} className="rounded-[22px] border border-separator/20 bg-white p-3 shadow-[0_8px_22px_rgba(17,24,39,0.045)]">
+              <section key={title} className="rounded-[20px] border border-separator/20 bg-white p-3 shadow-[0_7px_18px_rgba(10,24,61,0.04)]">
                 <div className="mb-2 flex items-start justify-between gap-2">
                   <div className="flex min-w-0 items-center gap-2">
-                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[14px] bg-ios-blue-soft science-accent-icon">
+                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-[14px] bg-ios-blue-soft science-accent-icon">
                       <Icon className="h-[18px] w-[18px]" />
                     </span>
                     <div className="min-w-0">
-                      <h3 className="truncate text-sm font-extrabold text-label-primary">{title}</h3>
-                      <p className="truncate text-[10px] font-medium text-label-tertiary" dir="ltr">{subtitle}</p>
+                      <h3 className="truncate text-[13px] font-bold text-label-primary">{title}</h3>
+                      <p className="truncate text-[10px] font-normal text-label-tertiary" dir="ltr">{subtitle}</p>
                     </div>
                   </div>
                   <span className="rounded-full bg-fill-quaternary px-2 py-1 text-[10px] font-bold text-label-tertiary">{items.length}</span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {items.map((item) => (
-                    <Link key={item} to={searchHref(item)} onClick={closeMenu} className="inline-flex items-center gap-1 rounded-full science-chip-accent border px-2.5 py-1.5 text-[12px] font-medium text-label-secondary transition-colors">
+                    <Link key={item} to={searchHref(item)} onClick={closeMenu} className="inline-flex items-center gap-1 rounded-full science-chip-accent border px-2 py-1 text-[11px] font-medium text-label-secondary transition-colors">
                       <ChevronLeft className="h-3 w-3 text-label-tertiary" />
                       {item}
                     </Link>
@@ -233,8 +232,16 @@ export function Header({ categories, logoAlt }: HeaderProps) {
 }
 
 function MobileTopLink({ to, onClick, icon: Icon, children }: { to: string; onClick: () => void; icon: React.ComponentType<{ className?: string }>; children: React.ReactNode }) {
+  const featured = to === "/";
   return (
-    <Link to={to} onClick={onClick} className="group flex min-h-11 items-center justify-center gap-2 rounded-[16px] border border-separator/20 bg-white px-3 py-2.5 text-center text-[13px] font-semibold text-label-primary transition-colors hover:border-ios-blue-border hover:text-ios-blue">
+    <Link
+      to={to}
+      onClick={onClick}
+      className={cn(
+        "group flex min-h-11 items-center justify-center gap-2 rounded-[16px] border border-separator/20 bg-white px-3 py-2.5 text-center text-[13px] font-semibold text-label-primary transition-colors hover:border-ios-blue-border hover:text-ios-blue",
+        featured && "col-span-2 min-h-[52px] text-[14px]"
+      )}
+    >
       <Icon className="h-4 w-4 text-label-tertiary transition-colors group-hover:text-ios-blue" />
       <span>{children}</span>
     </Link>

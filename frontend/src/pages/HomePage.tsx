@@ -29,7 +29,7 @@ export function HomePage() {
     return (
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <Skeleton className="h-80 w-full rounded-ios-lg" />
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <Skeleton className="h-72" />
           <Skeleton className="h-72" />
           <Skeleton className="h-72" />
@@ -39,7 +39,7 @@ export function HomePage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl px-3 py-4 sm:px-6 sm:py-6 lg:px-8">
       {/* Donation widget */}
       <section className="mb-6">
         <DonationWidget />
@@ -47,13 +47,13 @@ export function HomePage() {
 
       {/* Hero */}
       {featured && (
-        <section className="mb-10">
+        <section className="mb-8">
           <ArticleCard post={featured} />
         </section>
       )}
 
       {/* Categories */}
-      <section className="mb-10">
+      <section className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-label-primary">دسته‌بندی‌ها</h2>
         </div>
@@ -62,7 +62,7 @@ export function HomePage() {
             <Link
               key={cat.id}
               to={`/category/${cat.slug}`}
-              className="rounded-full border border-separator/20 bg-white px-4 py-2 text-sm font-medium text-label-secondary transition-colors hover:text-ios-blue"
+              className="rounded-full border border-separator/20 bg-white px-3 py-1.5 text-[13px] font-medium text-label-secondary transition-colors hover:text-ios-blue"
             >
               {cat.name}
             </Link>
@@ -71,14 +71,14 @@ export function HomePage() {
       </section>
 
       {/* Recent articles */}
-      <section className="mb-10">
+      <section className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-label-primary">جدیدترین مقالات</h2>
           <Link to="/search">
             <Button variant="ghost" size="sm">مشاهده همه</Button>
           </Link>
         </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {recent.map((post) => (
             <ArticleCard key={post.id} post={post} />
           ))}
@@ -86,9 +86,9 @@ export function HomePage() {
       </section>
 
       {/* Focused science section */}
-      <section className="mb-10">
+      <section className="mb-8">
         <h2 className="mb-4 text-lg font-bold text-label-primary">فیزیک و کوانتوم</h2>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {recent
             .filter((p) => p.category?.slug === "physics" || p.category?.slug === "quantum")
             .slice(0, 3)

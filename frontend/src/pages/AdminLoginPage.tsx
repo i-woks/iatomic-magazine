@@ -43,11 +43,8 @@ export function AdminLoginPage() {
       <div className="glass-panel w-full max-w-sm rounded-[24px] p-8 shadow-ios-lg">
         {/* Logo */}
         <div className="mb-6 flex flex-col items-center gap-3">
-          <div className="logo-frame flex h-20 w-20 items-center justify-center rounded-[22px] overflow-hidden shadow-ios">
-            {/* Dark theme logo */}
-            <img src="/logo-dark.jpg" alt="Atomic" className="logo-dark h-full w-full object-contain p-2" />
-            {/* Light theme logo */}
-            <img src="/logo-light.jpg" alt="Atomic" className="logo-light h-full w-full object-contain p-2" />
+          <div className="atomic-logo-mark">
+            <img src="/images/atomic-mark-black.png" alt="Atomic" draggable={false} />
           </div>
           <h1 className="text-xl font-bold text-label-primary">ورود مدیر Atomic</h1>
         </div>
