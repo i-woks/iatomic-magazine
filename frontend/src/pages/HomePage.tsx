@@ -109,7 +109,7 @@ export function HomePage() {
       <ShowcaseRow
         title="جدیدترین مقالات"
         posts={newest}
-        viewAllLink="/search"
+        viewAllLink="/search?recent=week"
       />
 
       {/* Showcase: User favorites */}

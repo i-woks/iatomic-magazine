@@ -12,6 +12,7 @@ const SUGGESTIONS = ["فیزیک کوانتوم", "هوش مصنوعی", "ژنت
 export function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
+  const recent = searchParams.get("recent");
   const [query, setQuery] = useState(initialQuery);
   const [inputValue, setInputValue] = useState(initialQuery);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -20,17 +21,22 @@ export function SearchPage() {
 
   useEffect(() => {
     setQuery(initialQuery);
-    if (!initialQuery) {
+    if (!initialQuery && recent !== "week") {
       setPosts([]);
       return;
     }
     setLoading(true);
     setError(null);
-    fetchPosts({ q: initialQuery, limit: 24 })
-      .then((res) => setPosts(res.data))
+    fetchPosts({ q: initialQuery || undefined, limit: recent === "week" ? 50 : 24 })
+      .then((res) => {
+        const data = recent === "week"
+          ? res.data.filter((p) => p.publishedAt && Date.now() - new Date(p.publishedAt).getTime() <= 7 * 24 * 60 * 60 * 1000)
+          : res.data;
+        setPosts(data);
+      })
       .catch((err) => setError(err.message || "خطا در جستجو"))
       .finally(() => setLoading(false));
-  }, [initialQuery]);
+  }, [initialQuery, recent]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,7 +94,7 @@ export function SearchPage() {
       {!loading && !error && query && posts.length > 0 && (
         <>
           <p className="mb-4 text-sm text-label-secondary">
-            {`${persianNumber(posts.length)} نتیجه برای «${query}»`}
+            {recent === "week" ? `${persianNumber(posts.length)} مقاله منتشرشده در ۷ روز گذشته` : `${persianNumber(posts.length)} نتیجه برای «${query}»`}
           </p>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {posts.map((post) => (
@@ -108,7 +114,7 @@ export function SearchPage() {
         </div>
       )}
 
-      {!loading && !query && (
+      {!loading && !query && recent !== "week" && (
         <div className="rounded-[24px] border border-separator/30 bg-white px-6 py-12 text-center">
           <span className="grid h-14 w-14 mx-auto place-items-center rounded-full" style={{ background: "rgba(21,101,192,0.08)", color: "var(--sci-science-blue)" }}>
             <Sparkles className="h-7 w-7" />
