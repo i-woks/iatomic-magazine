@@ -120,3 +120,13 @@ export const incrementPostView = (slug: string) =>
   fetchApi<{ success: boolean }>(`/posts/${slug}/view`, { method: "POST" });
 export const likePost = (slug: string) =>
   fetchApi<{ success: boolean; likeCount: number }>(`/posts/${slug}/like`, { method: "POST" });
+
+// ── Integrations ──────────────────────────────────────────────────────
+export interface IntegrationStatus {
+  bigData: { apiKeyConfigured: boolean; endpointConfigured: boolean };
+  pandaStack: { apiKeyConfigured: boolean; mode: string };
+  cloudflare: { d1Configured: boolean; r2Configured: boolean; kvConfigured: boolean };
+  checkedAt: string;
+}
+export const fetchIntegrationStatus = () =>
+  fetchApi<{ data: IntegrationStatus }>("/integrations/status");
