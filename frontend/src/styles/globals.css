@@ -345,3 +345,135 @@
   .header-search input { background:transparent; border:none; outline:none; width:100%; font-size:13px; color:var(--color-label-primary); }
   .header-search input::placeholder { color:var(--color-label-quaternary); }
 }
+
+/* ── Phase 4 vivacity refinements inspired by Toolschi-style soft cards ── */
+@layer components {
+  .header-search-icon {
+    display:inline-grid;
+    place-items:center;
+    width:42px;
+    height:42px;
+    border-radius:9999px;
+    color:var(--sci-science-blue);
+    background:linear-gradient(180deg, rgba(0,168,255,.10), rgba(25,230,140,.06));
+    border:1px solid rgba(21,101,192,.18);
+    box-shadow:0 8px 22px rgba(21,101,192,.08);
+    transition:transform .14s ease, box-shadow .14s ease, background .14s ease;
+  }
+  .header-search-icon:hover { transform:translateY(-1px); box-shadow:0 12px 28px rgba(21,101,192,.12); background:rgba(0,168,255,.12); }
+
+  .atomic-wordmark { color:var(--sci-science-blue); text-shadow:0 6px 22px rgba(21,101,192,.12); }
+  .atomic-logo-mark img { filter:drop-shadow(0 8px 18px rgba(21,101,192,.16)); }
+  .footer-wordmark { color:var(--sci-science-blue); opacity:.76; }
+
+  .main-branch-badge {
+    border:1px solid;
+    border-bottom-width:2px;
+    box-shadow:none !important;
+    transform:none !important;
+  }
+
+  .article-layout {
+    display:grid;
+    grid-template-columns:82px minmax(0,1fr);
+    gap:1rem;
+    direction:ltr;
+    align-items:start;
+  }
+  .article-main { direction:rtl; min-width:0; }
+  .article-actions-rail {
+    position:sticky;
+    top:92px;
+    display:flex;
+    flex-direction:column;
+    gap:.55rem;
+    direction:rtl;
+  }
+  .article-actions-mobile {
+    display:flex;
+    flex-wrap:nowrap;
+    gap:.45rem;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    padding-bottom:.25rem;
+  }
+  .article-actions-mobile::-webkit-scrollbar { display:none; }
+  .article-actions-mobile .action-box { flex:1 0 0; min-width:58px; padding:.46rem .34rem; }
+
+  .article-hero {
+    border:1px solid rgba(21,101,192,.14);
+    box-shadow:0 18px 48px rgba(10,24,61,.10);
+    background:linear-gradient(135deg, rgba(21,101,192,.08), rgba(0,207,166,.08));
+  }
+
+  .article-content-card {
+    border:1px solid rgba(38,50,56,.13);
+    border-radius:28px;
+    background:linear-gradient(180deg,#fff,rgba(248,250,249,.92));
+    box-shadow:0 16px 42px rgba(10,24,61,.075);
+    padding:clamp(1.15rem, 3vw, 2.15rem);
+  }
+  .article-content-card .article-body { line-height:2.15; font-size:1.06rem; }
+  .article-content-card .article-body h2 {
+    position:relative;
+    padding-right:.85rem;
+    margin-top:2.2rem;
+  }
+  .article-content-card .article-body h2::before {
+    content:"";
+    position:absolute;
+    right:0;
+    top:.42em;
+    width:4px;
+    height:1.15em;
+    border-radius:999px;
+    background:linear-gradient(180deg,var(--sci-science-blue),var(--sci-data-cyan));
+  }
+  .article-content-card .article-body blockquote {
+    border:0;
+    border-radius:18px;
+    background:rgba(21,101,192,.06);
+    padding:1rem 1.1rem;
+    color:var(--color-label-secondary);
+  }
+  .article-sources-inline {
+    margin-top:2rem;
+    padding-top:1.25rem;
+    border-top:1px dashed rgba(38,50,56,.18);
+  }
+  .article-sources-inline h2 {
+    margin-bottom:.85rem;
+    font-size:.92rem;
+    font-weight:800;
+    color:var(--color-label-primary);
+  }
+  .article-sources-inline a {
+    display:inline-flex;
+    align-items:center;
+    border-radius:999px;
+    border:1px solid rgba(21,101,192,.18);
+    background:rgba(21,101,192,.07);
+    color:var(--sci-science-blue);
+    padding:.36rem .75rem;
+    font-size:.78rem;
+    font-weight:700;
+    text-decoration:none;
+  }
+
+  .action-box {
+    min-width:58px;
+    background:linear-gradient(180deg,#fff,#F8FAF9);
+    border-color:rgba(38,50,56,.13);
+  }
+}
+
+@media (max-width:1023px) {
+  .article-layout { display:block; direction:rtl; }
+}
+
+@media (max-width:430px) {
+  .article-actions-mobile { gap:.35rem; }
+  .article-actions-mobile .action-box { min-width:54px; font-size:10px; padding:.42rem .24rem; }
+  .article-actions-mobile .action-box svg { width:16px; height:16px; }
+}

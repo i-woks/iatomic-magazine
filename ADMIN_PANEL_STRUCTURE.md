@@ -30,11 +30,11 @@ Editor fields:
 ## 3. Main science branches
 The 5 canonical branches (fixed, color-coded — see `frontend/src/lib/mainBranches.ts`):
 
-1. **فیزیک** — Physics — `#1565C0`
-2. **شیمی** — Chemistry — `#00CFA6`
-3. **زیست‌شناسی / پزشکی** — Biology / Medicine — `#2E7D32`
-4. **زمین و فضا** — Earth & Space — `#FF6F00`
-5. **هوش مصنوعی / فناوری / داده** — AI / Technology / Data — `#6A1B9A`
+1. **علوم پایه** — Fundamental Sciences — `#1565C0`
+2. **علوم رایانه و هوش مصنوعی** — Computer Science & AI — `#6A1B9A`
+3. **مهندسی و فناوری** — Engineering & Technology — `#00CFA6`
+4. **پزشکی و علوم زیستی** — Medicine & Life Sciences — `#2E7D32`
+5. **علوم انسانی و اجتماعی** — Humanities & Social Sciences — `#FF6F00`
 
 These map onto the existing `categories` table (compatibility layer). The card's colored tag = main branch / category accent color.
 

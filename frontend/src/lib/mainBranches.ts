@@ -1,23 +1,20 @@
 /**
- * The 5 canonical main science branches.
- * These drive the colored tag shown on article cards and the editor's
- * "main branch" selector. They form a compatibility layer over the existing
- * `categories` table: a category whose name matches a branch inherits its
- * brand color; otherwise the category's own accentColor is used.
+ * Five canonical top-level branches for Atomic Magazine.
+ * Main colored chip = one of these branches; subtopics live in related gray tags.
  */
 export interface MainBranch {
   id: string;
-  name: string;       // Persian display name
+  name: string;
   english: string;
-  color: string;      // brand accent
+  color: string;
 }
 
 export const MAIN_BRANCHES: MainBranch[] = [
-  { id: "physics", name: "فیزیک", english: "Physics", color: "#1565C0" },
-  { id: "chemistry", name: "شیمی", english: "Chemistry", color: "#00CFA6" },
-  { id: "bio-med", name: "زیست‌شناسی / پزشکی", english: "Biology / Medicine", color: "#2E7D32" },
-  { id: "earth-space", name: "زمین و فضا", english: "Earth & Space", color: "#FF6F00" },
-  { id: "ai-tech", name: "هوش مصنوعی / فناوری / داده", english: "AI / Technology / Data", color: "#6A1B9A" },
+  { id: "fundamental", name: "علوم پایه", english: "Fundamental Sciences", color: "#1565C0" },
+  { id: "cs-ai", name: "علوم رایانه و هوش مصنوعی", english: "Computer Science & AI", color: "#6A1B9A" },
+  { id: "engineering", name: "مهندسی و فناوری", english: "Engineering & Technology", color: "#00CFA6" },
+  { id: "medicine-life", name: "پزشکی و علوم زیستی", english: "Medicine & Life Sciences", color: "#2E7D32" },
+  { id: "humanities", name: "علوم انسانی و اجتماعی", english: "Humanities & Social Sciences", color: "#FF6F00" },
 ];
 
 /** Resolve the accent color for a main-branch / category label. */

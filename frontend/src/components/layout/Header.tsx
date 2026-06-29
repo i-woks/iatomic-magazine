@@ -2,7 +2,7 @@
  * Atomic Header — minimal RTL, iOS-light, right-side mobile drawer.
  */
 import { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Atom, BrainCircuit, ChevronLeft, Compass, FlaskConical, Home, Mail, Menu, Rocket, Search, Stethoscope, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
@@ -75,12 +75,9 @@ const searchHref = (label: string) => `/search?q=${encodeURIComponent(label)}`;
 
 export function Header({ categories, logoAlt }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [query, setQuery] = useState("");
   const [scrolled, setScrolled] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const menuBtnRef = useRef<HTMLButtonElement>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
   const alt = logoAlt || "Atomic Logo";
 
   useEffect(() => {
@@ -120,14 +117,6 @@ export function Header({ categories, logoAlt }: HeaderProps) {
 
   const closeMenu = () => setMenuOpen(false);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (query.trim()) {
-      navigate(`/search?q=${encodeURIComponent(query.trim())}`);
-      searchInputRef.current?.blur();
-    }
-  };
-
   return (
     <header className={cn("fixed inset-x-0 top-0 z-50 border-b border-transparent transition-all duration-240", scrolled && "border-separator/25 bg-bg-primary shadow-[0_6px_20px_rgba(17,24,39,0.04)]")}>
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -150,25 +139,15 @@ export function Header({ categories, logoAlt }: HeaderProps) {
           ))}
         </nav>
 
-        {/* Permanent, always-visible search field — calibrated across breakpoints */}
-        <div className="flex items-center">
-          <form onSubmit={handleSearch} className="header-search w-[44vw] max-w-[180px] sm:max-w-[240px] lg:w-64 lg:max-w-none">
-            <Search className="h-[18px] w-[18px] shrink-0 text-label-tertiary" strokeWidth={1.75} aria-hidden="true" />
-            <input
-              ref={searchInputRef}
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-              placeholder="جستجو در مجله…"
-              aria-label="جستجو"
-              enterKeyHint="search"
-            />
-            {query && (
-              <button type="button" onClick={() => setQuery("")} className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-label-tertiary transition-colors hover:text-label-primary" aria-label="پاک کردن جستجو">
-                <X className="h-4 w-4" />
-              </button>
-            )}
-          </form>
-        </div>
+        {/* Minimal search icon — links to the dedicated calibrated search page */}
+        <Link
+          to="/search"
+          className="header-search-icon"
+          aria-label="جستجو در مجله"
+          title="جستجو"
+        >
+          <Search className="h-[19px] w-[19px]" strokeWidth={1.8} aria-hidden="true" />
+        </Link>
       </div>
 
       <div className={cn("fixed inset-0 z-[70] lg:hidden", menuOpen ? "visible" : "invisible pointer-events-none")} aria-hidden={!menuOpen}>
