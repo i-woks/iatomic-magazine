@@ -11,6 +11,9 @@ import settingsRoutes from "./routes/settings";
 import aiRoutes from "./routes/ai";
 import adsRoutes from "./routes/ads";
 import contactRoutes from "./routes/contact";
+import showcaseRoutes from "./routes/showcase";
+import interactionsRoutes from "./routes/interactions";
+import { bigdataRouter } from "./routes/bigdata";
 import { createDb } from "./db";
 import { contactMessages, posts } from "./db/schema";
 import { eq, sql } from "drizzle-orm";
@@ -32,6 +35,8 @@ app.get("/api/system/warmup", async (c) => c.json(await warmStorageBindings(c.en
 
 app.route("/api/auth", authRoutes);
 app.route("/api/posts", postsRoutes);
+app.route("/api/posts/showcase", showcaseRoutes);
+app.route("/api/posts", interactionsRoutes);
 app.route("/api/categories", categoriesRoutes);
 app.route("/api/tags", tagsRoutes);
 app.route("/api/media", mediaRoutes);
@@ -39,6 +44,7 @@ app.route("/api/settings", settingsRoutes);
 app.route("/api/ai", aiRoutes);
 app.route("/api/ads", adsRoutes);
 app.route("/api/public/contact", contactRoutes);
+app.route("/api/bigdata", bigdataRouter);
 
 // R2 media proxy
 app.get("/media/:key{.+}", async (c) => {

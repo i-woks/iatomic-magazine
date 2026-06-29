@@ -1,29 +1,36 @@
 import { useEffect, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { ArticleCard } from "@/components/ArticleCard";
+import { ShowcaseRow } from "@/components/ShowcaseRow";
 import { DonationWidget } from "@/components/DonationWidget";
-
-import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { fetchFeaturedPost, fetchPosts } from "@/lib/api";
+import { fetchFeaturedPost, fetchNewestPosts, fetchUserFavoritePosts, fetchTopWeekPosts } from "@/lib/api";
 import type { Post, Category, SiteSettings } from "@/types";
 
 export function HomePage() {
-  const { categories, settings } = useOutletContext<{ categories: Category[]; settings: SiteSettings }>();
+  const { categories } = useOutletContext<{ categories: Category[]; settings: SiteSettings }>();
   const [featured, setFeatured] = useState<Post | null>(null);
-  const [recent, setRecent] = useState<Post[]>([]);
+  const [newest, setNewest] = useState<Post[]>([]);
+  const [userFavorites, setUserFavorites] = useState<Post[]>([]);
+  const [topWeek, setTopWeek] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const count = settings?.homepagePostCount || 12;
-    Promise.all([fetchFeaturedPost(), fetchPosts({ limit: count })])
-      .then(([f, r]) => {
+    Promise.all([
+      fetchFeaturedPost(),
+      fetchNewestPosts(),
+      fetchUserFavoritePosts(),
+      fetchTopWeekPosts(),
+    ])
+      .then(([f, n, u, t]) => {
         setFeatured(f.data);
-        setRecent(r.data.filter((p) => !featured || p.id !== featured.id));
+        setNewest(n.data);
+        setUserFavorites(u.data);
+        setTopWeek(t.data);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [settings?.homepagePostCount]);
+  }, []);
 
   if (loading) {
     return (
@@ -48,55 +55,53 @@ export function HomePage() {
       {/* Hero */}
       {featured && (
         <section className="mb-8">
-          <ArticleCard post={featured} />
+          <ArticleCard post={featured} featured />
         </section>
       )}
 
-      {/* Categories */}
+      {/* Categories - renamed to علاقه‌مندی‌ها */}
       <section className="mb-8">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-label-primary">دسته‌بندی‌ها</h2>
+          <h2 className="text-lg font-bold text-label-primary">علاقه‌مندی‌ها</h2>
         </div>
         <div className="flex flex-wrap gap-2">
           {categories.map((cat) => (
             <Link
               key={cat.id}
               to={`/category/${cat.slug}`}
-              className="rounded-full border border-separator/20 bg-white px-3 py-1.5 text-[13px] font-medium text-label-secondary transition-colors hover:text-ios-blue"
+              className="group rounded-full border border-separator/20 bg-white px-4 py-2 text-sm font-medium text-label-secondary transition-all hover:border-transparent hover:shadow-ios"
+              style={{
+                borderBottomColor: cat.accentColor,
+                borderBottomWidth: '2px',
+              }}
             >
-              {cat.name}
+              <span className="transition-colors group-hover:text-label-primary" style={{ color: cat.accentColor }}>
+                {cat.name}
+              </span>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* Recent articles */}
-      <section className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-label-primary">جدیدترین مقالات</h2>
-          <Link to="/search">
-            <Button variant="ghost" size="sm">مشاهده همه</Button>
-          </Link>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {recent.map((post) => (
-            <ArticleCard key={post.id} post={post} />
-          ))}
-        </div>
-      </section>
+      {/* Showcase: Newest articles */}
+      <ShowcaseRow
+        title="جدیدترین مقالات"
+        posts={newest}
+        viewAllLink="/search"
+      />
 
-      {/* Focused science section */}
-      <section className="mb-8">
-        <h2 className="mb-4 text-lg font-bold text-label-primary">فیزیک و کوانتوم</h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {recent
-            .filter((p) => p.category?.slug === "physics" || p.category?.slug === "quantum")
-            .slice(0, 3)
-            .map((post) => (
-              <ArticleCard key={post.id} post={post} />
-            ))}
-        </div>
-      </section>
+      {/* Showcase: User favorites */}
+      <ShowcaseRow
+        title="مقالات برگزیده از دید کاربران"
+        posts={userFavorites}
+      />
+
+      {/* Showcase: Top week */}
+      <ShowcaseRow
+        title="مقالات برتر هفته"
+        posts={topWeek}
+      />
     </div>
   );
 }
+

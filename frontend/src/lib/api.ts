@@ -98,3 +98,14 @@ export const updateContactMessageStatus = (id: number, status: ContactMessage["s
   fetchApi<{ ok: boolean }>(`/public/contact/admin/messages/${id}`, { method: "PUT", body: JSON.stringify({ status }) });
 export const deleteContactMessage = (id: number) =>
   fetchApi<{ ok: boolean }>(`/public/contact/admin/messages/${id}`, { method: "DELETE" });
+
+// ── Showcase endpoints ────────────────────────────────────────────────
+export const fetchNewestPosts = () => fetchApi<{ data: Post[] }>("/posts/showcase/newest");
+export const fetchUserFavoritePosts = () => fetchApi<{ data: Post[] }>("/posts/showcase/user-favorites");
+export const fetchTopWeekPosts = () => fetchApi<{ data: Post[] }>("/posts/showcase/top-week");
+
+// ── Post interactions ─────────────────────────────────────────────────
+export const incrementPostView = (slug: string) =>
+  fetchApi<{ success: boolean }>(`/posts/${slug}/view`, { method: "POST" });
+export const likePost = (slug: string) =>
+  fetchApi<{ success: boolean; likeCount: number }>(`/posts/${slug}/like`, { method: "POST" });

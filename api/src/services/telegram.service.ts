@@ -114,3 +114,46 @@ export function safeTelegramErrorMessage(code: TelegramSendResult extends infer 
       return "ارسال پیام با خطا مواجه شد. لطفاً دوباره تلاش کنید.";
   }
 }
+
+export function buildArticleCardKeyboard(articleUrl: string) {
+  return {
+    inline_keyboard: [
+      [{ text: "📖 مشاهده مقاله", url: articleUrl }],
+      [{ text: "📊 آمار", callback_data: "stats" }, { text: "📢 اشتراک‌گذاری", callback_data: "share" }],
+    ],
+  };
+}
+
+export function buildLatestTopLinksKeyboard(siteUrl: string) {
+  return {
+    inline_keyboard: [
+      [{ text: "🆕 آخرین مقالات", url: `${siteUrl}` }],
+      [{ text: "🔥 پربازدیدترین", url: `${siteUrl}/top` }, { text: "❤️ محبوب‌ترین", url: `${siteUrl}/popular` }],
+    ],
+  };
+}
+
+export function buildReportFlowKeyboard() {
+  return {
+    inline_keyboard: [
+      [{ text: "✅ بررسی شد", callback_data: "report_reviewed" }],
+      [{ text: "🗑 آرشیو", callback_data: "report_archived" }, { text: "❌ رد", callback_data: "report_dismiss" }],
+    ],
+  };
+}
+
+export function formatArticleNotification(input: {
+  title: string;
+  excerpt: string;
+  categoryName: string;
+  articleUrl: string;
+}) {
+  return [
+    "✨ <b>مقاله جدید منتشر شد!</b>",
+    "",
+    `📝 <b>${escapeHtml(input.title)}</b>`,
+    `🏷 ${escapeHtml(input.categoryName)}`,
+    "",
+    escapeHtml(input.excerpt),
+  ].join("\n");
+}

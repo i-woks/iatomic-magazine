@@ -48,6 +48,12 @@ export interface Post {
   metaDescription: string | null;
   canonicalUrl: string | null;
   sources: string | null;
+  videoUrl: string | null;
+  videoPoster: string | null;
+  telegramDiscussionUrl: string | null;
+  viewCount: number;
+  likeCount: number;
+  featured: boolean;
   publishedAt: string | null;
   createdAt: string;
   updatedAt: string;
