@@ -116,7 +116,7 @@ export function Header({ categories, logoAlt }: HeaderProps) {
   const closeMenu = () => setMenuOpen(false);
 
   return (
-    <header className={cn("fixed inset-x-0 top-0 z-50 border-b border-transparent transition-all duration-240", scrolled && "border-separator/25 bg-bg-primary shadow-[0_6px_20px_rgba(17,24,39,0.04)]")}>
+    <header className={cn("fixed inset-x-0 top-0 z-50 border-b border-separator/15 bg-white transition-all duration-240", scrolled && "shadow-[0_6px_20px_rgba(17,24,39,0.04)]")}>
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3">
           <Button ref={menuBtnRef} variant="ghost" size="icon" className="rounded-full lg:hidden" aria-label="منو" aria-expanded={menuOpen} onClick={() => setMenuOpen(s => !s)}>{menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</Button>

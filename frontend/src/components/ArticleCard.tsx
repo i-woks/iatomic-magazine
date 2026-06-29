@@ -26,7 +26,7 @@ export function ArticleCard({ post, featured, className }: { post: Post; feature
               variant="default"
               style={{
                 color: branchColor(post.category.name, post.category.accentColor),
-                borderBottom: `2px solid ${branchColor(post.category.name, post.category.accentColor)}`,
+                borderBottom: "none",
               }}
             >
               {post.category.name}

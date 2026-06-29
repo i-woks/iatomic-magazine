@@ -159,7 +159,7 @@ export function ArticlePage() {
         <span className="flex items-center gap-1"><Clock className="h-4 w-4" />{persianNumber(post.readingTime)} دقیقه مطالعه</span>
         {post.author && <span>{post.author.name}</span>}
         {post.category && (
-          <Badge variant="default" className="main-branch-badge" style={{ color: accent, backgroundColor: `${accent}14`, borderColor: `${accent}30` }}>
+          <Badge variant="default" className="main-branch-badge" style={{ color: accent, backgroundColor: `${accent}14`, borderColor: `${accent}30`, borderBottom: "none" }}>
             {post.category.name}
           </Badge>
         )}

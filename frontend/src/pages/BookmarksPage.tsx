@@ -59,7 +59,7 @@ export function BookmarksPage() {
               </Link>
               <div className="p-4">
                 {b.categoryName && (
-                  <span className="inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium" style={{ color: branchColor(b.categoryName, b.accentColor || undefined), borderBottom: `2px solid ${branchColor(b.categoryName, b.accentColor || undefined)}` }}>
+                  <span className="inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium" style={{ color: branchColor(b.categoryName, b.accentColor || undefined), borderBottom: "none" }}>
                     {b.categoryName}
                   </span>
                 )}

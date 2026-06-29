@@ -757,3 +757,7 @@
 @media (max-width:520px) {
   .footer-copy-box { white-space:normal; max-width:100%; }
 }
+
+@layer components {
+  .main-branch-badge { border-bottom-width:1px !important; box-shadow:none !important; }
+}
