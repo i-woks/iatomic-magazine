@@ -44,13 +44,16 @@ async function attach(db: ReturnType<typeof createDb>, items: (typeof posts.$inf
   const tids = [...new Set(pts.map(pt => pt.tagId))];
   const tgs = tids.length ? await db.select().from(tags).where(inArray(tags.id, tids)) : [];
 
-  return items.map(p => ({
-    ...p,
-    category: cats.find(c => c.id === p.categoryId) ?? null,
-    author: authors.find(a => a.id === p.authorId) ?? null,
-    coverImage: covers.find(m => m.id === p.coverImageId) ?? null,
-    tags: tgs.filter(t => pts.some(pt => pt.postId === p.id && pt.tagId === t.id)),
-  }));
+  return items.map(p => {
+    const author = authors.find(a => a.id === p.authorId);
+    return {
+      ...p,
+      category: cats.find(c => c.id === p.categoryId) ?? null,
+      author: author ? { id: author.id, name: author.name, email: author.email, role: author.role } : null,
+      coverImage: covers.find(m => m.id === p.coverImageId) ?? null,
+      tags: tgs.filter(t => pts.some(pt => pt.postId === p.id && pt.tagId === t.id)),
+    };
+  });
 }
 
 // Newest articles: published in last 48 hours, sorted newest first

@@ -17,7 +17,16 @@ async function attach(db: ReturnType<typeof createDb>, items: (typeof posts.$inf
   const covers = covids.length ? await db.select().from(media).where(inArray(media.id, covids)) : [];
   const pts = pids.length ? await db.select().from(postTags).where(inArray(postTags.postId, pids)) : [];
   const tids = [...new Set(pts.map(pt => pt.tagId))]; const tgs = tids.length ? await db.select().from(tags).where(inArray(tags.id, tids)) : [];
-  return items.map(p => ({ ...p, category: cats.find(c => c.id === p.categoryId) ?? null, author: authors.find(a => a.id === p.authorId) ?? null, coverImage: covers.find(m => m.id === p.coverImageId) ?? null, tags: tgs.filter(t => pts.some(pt => pt.postId === p.id && pt.tagId === t.id)) }));
+  return items.map(p => {
+    const author = authors.find(a => a.id === p.authorId);
+    return {
+      ...p,
+      category: cats.find(c => c.id === p.categoryId) ?? null,
+      author: author ? { id: author.id, name: author.name, email: author.email, role: author.role } : null,
+      coverImage: covers.find(m => m.id === p.coverImageId) ?? null,
+      tags: tgs.filter(t => pts.some(pt => pt.postId === p.id && pt.tagId === t.id))
+    };
+  });
 }
 app.get("/", zValidator("query", listSchema), async (c) => {
   const { page, limit, category, q } = c.req.valid("query"); const db = createDb(c.env.DB); const offset = (page - 1) * limit;
