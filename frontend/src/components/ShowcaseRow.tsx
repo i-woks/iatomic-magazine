@@ -43,8 +43,8 @@ export function ShowcaseRow({ title, posts, viewAllLink }: { title: string; post
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {posts.map((post) => (
-          <div key={post.id} className="min-w-[280px] sm:min-w-[320px] snap-start">
-            <ArticleCard post={post} />
+          <div key={post.id} className="flex min-w-[280px] snap-start sm:min-w-[320px]">
+            <ArticleCard post={post} className="h-full w-full" />
           </div>
         ))}
       </div>

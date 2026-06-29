@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Clock, Calendar, Share2, ChevronRight, Eye, Heart, MessageCircle, Bookmark } from "lucide-react";
+import { Clock, Calendar, Share2, ChevronRight, Eye, Heart, MessageCircle, Bookmark, Image as ImageIcon } from "lucide-react";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { ArticleCard } from "@/components/ArticleCard";
 import { VideoPlayer } from "@/components/VideoPlayer";
@@ -82,8 +82,8 @@ export function ArticlePage() {
       }).filter(Boolean) as SourceLink[]
     : [];
 
-  const ActionButtons = ({ rail = false }: { rail?: boolean }) => (
-    <div className={cn(rail ? "article-actions-rail" : "article-actions-mobile")} role="group" aria-label="کنش‌های مقاله">
+  const ActionButtons = () => (
+    <div className="article-actions-inline" role="group" aria-label="کنش‌های مقاله">
       <button type="button" onClick={handleLike} disabled={liked} className={cn("action-box", liked && "is-liked")} aria-pressed={liked} aria-label="پسندیدن">
         <Heart className={cn("h-[18px] w-[18px]", liked && "fill-current")} />
         <span>{persianNumber(post.likeCount)}</span>
@@ -115,9 +115,11 @@ export function ArticlePage() {
   );
 
   const accent = branchColor(post.category?.name, post.category?.accentColor || undefined);
+  const coverUrl = post.coverImage?.url;
+  const secondaryImage = post.videoPoster || coverUrl;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8">
       <nav className="mb-4 flex items-center gap-2 text-sm text-label-tertiary">
         <Link to="/" className="hover:text-ios-blue">خانه</Link>
         <ChevronRight className="h-4 w-4 rotate-180" />
@@ -130,74 +132,82 @@ export function ArticlePage() {
         <span className="text-label-secondary">{post.title}</span>
       </nav>
 
-      <div className="article-layout">
-        <aside className="hidden lg:block">
-          <ActionButtons rail />
-        </aside>
-
-        <main className="article-main">
-          {post.coverImage && (
-            <div className="article-hero mb-6 overflow-hidden rounded-[28px]">
-              <img src={post.coverImage.url} alt={post.title} className="w-full object-cover" loading="eager" />
-            </div>
-          )}
-
-          <div className="mb-4 flex flex-wrap items-center gap-3 text-sm text-label-secondary">
-            <span className="flex items-center gap-1"><Calendar className="h-4 w-4" />{post.publishedAt ? toPersianDate(post.publishedAt) : "—"}</span>
-            <span className="flex items-center gap-1"><Clock className="h-4 w-4" />{persianNumber(post.readingTime)} دقیقه مطالعه</span>
-            {post.author && <span>{post.author.name}</span>}
-            {post.category && (
-              <Badge variant="default" className="main-branch-badge" style={{ color: accent, backgroundColor: `${accent}14`, borderColor: `${accent}30` }}>
-                {post.category.name}
-              </Badge>
-            )}
-            {(post.tags ?? []).map((t) => (
-              <Link key={t.id} to={`/search?q=${encodeURIComponent(t.name)}`} className="related-chip">{t.name}</Link>
-            ))}
+      {coverUrl && (
+        <section className="article-media-gallery mb-6" aria-label="تصاویر مقاله">
+          <div className="article-media-main">
+            <img src={coverUrl} alt={post.title} loading="eager" />
           </div>
-
-          <header className="mb-5">
-            <h1 className="text-3xl font-black leading-tight text-label-primary sm:text-4xl">{post.title}</h1>
-          </header>
-
-          <div className="mb-7 lg:hidden">
-            <ActionButtons />
-          </div>
-
-          {post.videoUrl && (
-            <div className="mb-8">
-              <VideoPlayer videoUrl={post.videoUrl} posterUrl={post.videoPoster || post.coverImage?.url} title={post.title} />
+          <div className="article-media-pair">
+            <div className="article-media-small">
+              <img src={secondaryImage} alt={`${post.title} - تصویر مرتبط`} loading="lazy" />
             </div>
-          )}
+            <div className="article-media-small article-media-gradient" style={{ background: `linear-gradient(135deg, ${accent}22, rgba(0,207,166,.16), rgba(255,211,0,.16))` }}>
+              <ImageIcon className="h-6 w-6" style={{ color: accent }} />
+              <span>تصویر مرتبط با مقاله</span>
+            </div>
+          </div>
+        </section>
+      )}
 
-          <section className="article-content-card mb-10">
-            <article>
-              <MarkdownRenderer content={post.content} />
-            </article>
-            {parsedSources.length > 0 && (
-              <div className="article-sources-inline">
-                <h2>منابع و پیوندهای مرتبط</h2>
-                <div className="flex flex-wrap gap-2">
-                  {parsedSources.map((source) => (
-                    <a key={`${source.name}-${source.url}`} href={source.url} target="_blank" rel="noopener noreferrer">
-                      {source.name}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
-          </section>
-
-          {related.length > 0 && (
-            <section>
-              <h2 className="mb-4 text-lg font-bold text-label-primary">مقالات مرتبط</h2>
-              <div className="grid gap-6 sm:grid-cols-2">
-                {related.map(p => <ArticleCard key={p.id} post={p} />)}
-              </div>
-            </section>
-          )}
-        </main>
+      <div className="mb-4 flex flex-wrap items-center gap-3 text-sm text-label-secondary">
+        <span className="flex items-center gap-1"><Calendar className="h-4 w-4" />{post.publishedAt ? toPersianDate(post.publishedAt) : "—"}</span>
+        <span className="flex items-center gap-1"><Clock className="h-4 w-4" />{persianNumber(post.readingTime)} دقیقه مطالعه</span>
+        {post.author && <span>{post.author.name}</span>}
+        {post.category && (
+          <Badge variant="default" className="main-branch-badge" style={{ color: accent, backgroundColor: `${accent}14`, borderColor: `${accent}30` }}>
+            {post.category.name}
+          </Badge>
+        )}
+        {(post.tags ?? []).map((t) => (
+          <Link key={t.id} to={`/search?q=${encodeURIComponent(t.name)}`} className="related-chip">{t.name}</Link>
+        ))}
       </div>
+
+      <header className="mb-5">
+        <h1 className="text-3xl font-black leading-tight text-label-primary sm:text-4xl">{post.title}</h1>
+      </header>
+
+      <section className="article-content-card mb-10">
+        <article>
+          <MarkdownRenderer content={post.content} />
+        </article>
+
+        {post.videoUrl && (
+          <div className="article-video-section">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <h2>ویدئوی مرتبط</h2>
+              <span>بدون ذخیره‌سازی فایل، فقط از لینک منبع</span>
+            </div>
+            <VideoPlayer videoUrl={post.videoUrl} posterUrl={post.videoPoster || post.coverImage?.url} title={post.title} />
+          </div>
+        )}
+
+        <div className="article-actions-section">
+          <ActionButtons />
+        </div>
+
+        {parsedSources.length > 0 && (
+          <div className="article-sources-inline">
+            <h2>منابع و پیوندهای مرتبط</h2>
+            <div className="flex flex-wrap gap-2">
+              {parsedSources.map((source) => (
+                <a key={`${source.name}-${source.url}`} href={source.url} target="_blank" rel="noopener noreferrer">
+                  {source.name}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+
+      {related.length > 0 && (
+        <section>
+          <h2 className="mb-4 text-lg font-bold text-label-primary">مقالات مرتبط</h2>
+          <div className="grid gap-6 sm:grid-cols-2">
+            {related.map(p => <ArticleCard key={p.id} post={p} />)}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

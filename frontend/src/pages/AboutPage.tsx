@@ -1,4 +1,4 @@
-import { Atom, Bot, CheckCircle2, HeartHandshake, Shield, Sparkles, Zap } from "lucide-react";
+import { Atom, Bot, CheckCircle2, Shield, Sparkles, Zap } from "lucide-react";
 
 const VALUES = [
   { icon: Atom, title: "دقت علمی", desc: "هر ادعای علمی باید قابل پیگیری، منبع‌پذیر و روشن باشد." },
@@ -7,14 +7,15 @@ const VALUES = [
   { icon: Shield, title: "اعتماد محتوایی", desc: "محتوای جعلی، اغراق‌آمیز و بی‌منبع جایی در اتمیک ندارد." },
 ];
 
-const DOMAINS = ["فیزیک", "کیهان‌شناسی", "هوش مصنوعی", "پزشکی", "مهندسی", "علوم انسانی"];
+const DOMAINS = ["علوم پایه", "هوش مصنوعی", "مهندسی", "پزشکی", "علوم انسانی"];
 
 export function AboutPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
       <section className="site-surface relative overflow-hidden rounded-[30px] p-5 sm:p-8">
         <div className="absolute -left-16 -top-16 h-44 w-44 rounded-full bg-ios-blue/15 blur-3xl" />
-        <div className="absolute -bottom-20 right-10 h-52 w-52 rounded-full bg-sky-400/10 blur-3xl" />
+        <div className="absolute -bottom-20 right-10 h-52 w-52 rounded-full bg-sci-data-cyan/10 blur-3xl" />
+        <div className="absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-yellow-300/10 blur-3xl" />
 
         <div className="relative grid gap-8 lg:grid-cols-[1.15fr_.85fr] lg:items-center">
           <div>
@@ -23,10 +24,10 @@ export function AboutPage() {
               درباره مجله علمی اتمیک
             </div>
             <h1 className="text-3xl font-black leading-[1.5] text-label-primary sm:text-4xl">
-              اتمیک؛ یک خانه مینیمال برای علم دقیق، قابل فهم و فارسی
+              اتمیک؛ یک خانه سرزنده و دقیق برای علم فارسی
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-8 text-label-secondary">
-              اتمیک تلاش می‌کند علم را از حالت پراکنده و پیچیده خارج کند و آن را در قالبی تمیز، منظم و قابل اعتماد به فارسی‌زبانان ارائه دهد؛ از فیزیک و کیهان تا هوش مصنوعی، پزشکی و فناوری.
+              اتمیک علم را در قالبی مینیمال اما زنده ارائه می‌کند: کارت‌های روشن، هاله‌های رنگی کنترل‌شده، منابع قابل پیگیری و دسته‌بندی علمی منظم برای اینکه خواندن مقاله علمی خشک و سنگین نباشد.
             </p>
 
             <div className="mt-6 flex flex-wrap gap-2">
@@ -41,12 +42,12 @@ export function AboutPage() {
           <div className="rounded-[28px] border border-separator/25 bg-bg-primary/70 p-4">
             <div className="grid grid-cols-2 gap-3">
               {[
-                ["۵+", "شاخه علمی"],
-                ["۲ AI", "بازبینی محتوا"],
+                ["۵", "شاخه اصلی"],
+                ["۴۴+", "زیرشاخه علمی"],
                 ["RTL", "تجربه فارسی"],
-                ["۲۴/۷", "پایش خودکار"],
-              ].map(([num, label]) => (
-                <div key={label} className="rounded-[22px] bg-fill-quaternary p-4 text-center">
+                ["AI", "پردازش کمکی"],
+              ].map(([num, label], index) => (
+                <div key={label} className="rounded-[22px] p-4 text-center" style={{ background: ["rgba(21,101,192,.08)", "rgba(0,207,166,.09)", "rgba(106,27,154,.08)", "rgba(255,211,0,.16)"][index] }}>
                   <div className="text-2xl font-black text-ios-blue">{num}</div>
                   <div className="mt-1 text-xs font-bold text-label-secondary">{label}</div>
                 </div>
@@ -68,35 +69,18 @@ export function AboutPage() {
         ))}
       </section>
 
-      <section className="mt-6 grid gap-5 lg:grid-cols-[1fr_.85fr]">
-        <div className="rounded-[30px] border border-separator/25 bg-bg-secondary/60 p-6">
-          <div className="mb-4 flex items-center gap-2">
-            <CheckCircle2 className="h-5 w-5 text-ios-blue" />
-            <h2 className="text-xl font-black text-label-primary">روش کار اتمیک</h2>
-          </div>
-          <div className="space-y-4 text-sm leading-8 text-label-secondary">
-            <p>
-              محتواهای اتمیک با نگاه تحلیلی و آموزشی آماده می‌شوند. هدف ما تولید متن‌هایی است که هم برای مخاطب عمومی قابل فهم باشد و هم از نظر علمی بی‌پایه و سطحی نباشد.
-            </p>
-            <p>
-              در سازوکار خودکارسازی، مقاله بین دو هوش مصنوعی برای بررسی، نقد و کاهش خطای محتوایی جابه‌جا می‌شود و سپس خروجی نهایی با رویکرد محافظه‌کارانه و مستند آماده انتشار می‌گردد.
-            </p>
-          </div>
+      <section className="mt-6 rounded-[30px] border border-separator/25 bg-bg-secondary/60 p-6">
+        <div className="mb-4 flex items-center gap-2">
+          <CheckCircle2 className="h-5 w-5 text-ios-blue" />
+          <h2 className="text-xl font-black text-label-primary">روش کار اتمیک</h2>
         </div>
-
-        <div className="rounded-[30px] border border-ios-blue-border bg-ios-blue-soft/75 p-6">
-          <div className="mb-4 flex items-center gap-2">
-            <HeartHandshake className="h-5 w-5 text-ios-blue" />
-            <h2 className="text-xl font-black text-label-primary">حمایت از اتمیک</h2>
-          </div>
-          <p className="text-sm leading-8 text-label-secondary">
-            بخش حمایت مالی به‌زودی با اطلاعات پرداخت، متن اختصاصی و مبالغ پیشنهادی شما کامل می‌شود. فعلاً ساختار طراحی آماده است تا بعداً بدون تغییرات سنگین فعال شود.
+        <div className="space-y-4 text-sm leading-8 text-label-secondary">
+          <p>
+            محتواهای اتمیک با نگاه تحلیلی و آموزشی آماده می‌شوند. هدف ما تولید متن‌هایی است که هم برای مخاطب عمومی قابل فهم باشد و هم از نظر علمی بی‌پایه و سطحی نباشد.
           </p>
-          <div className="mt-5 grid grid-cols-3 gap-2 text-center text-xs font-extrabold text-ios-blue">
-            <span className="rounded-full bg-bg-primary/75 py-2">قهوه</span>
-            <span className="rounded-full bg-bg-primary/75 py-2">حمایت ماهانه</span>
-            <span className="rounded-full bg-bg-primary/75 py-2">مبلغ دلخواه</span>
-          </div>
+          <p>
+            در سازوکار خودکارسازی، مقاله بین ابزارهای پردازشی و هوش مصنوعی برای نظم‌دهی، پیشنهاد تگ و کاهش خطای محتوایی جابه‌جا می‌شود؛ اما خروجی نهایی باید منبع‌پذیر و قابل بازبینی باقی بماند.
+          </p>
         </div>
       </section>
 
@@ -106,7 +90,7 @@ export function AboutPage() {
           <h2 className="text-xl font-black text-label-primary">مسیر بعدی</h2>
         </div>
         <p className="text-sm leading-8 text-label-secondary">
-          اتمیک قرار است به یک مرجع سبک، منظم و موبایل‌محور برای محتوای علمی فارسی تبدیل شود؛ با دسته‌بندی‌های گسترده‌تر، صفحه‌های اختصاصی‌تر، حمایت مالی شفاف و تجربه کاربری دقیق‌تر.
+          اتمیک قرار است به یک مرجع سبک، منظم و موبایل‌محور برای محتوای علمی فارسی تبدیل شود؛ با دسته‌بندی دقیق، ربات تلگرام فعال، پردازش هوشمند و تجربه کاربری زنده اما خلوت.
         </p>
       </section>
     </div>
