@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Clock, Calendar, Eye, Heart } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { cn, toPersianDate, persianNumber } from "@/lib/utils";
+import { branchColor } from "@/lib/mainBranches";
 import type { Post } from "@/types";
 
 export function ArticleCard({ post, featured, className }: { post: Post; featured?: boolean; className?: string }) {
@@ -24,13 +25,17 @@ export function ArticleCard({ post, featured, className }: { post: Post; feature
             <Badge
               variant="default"
               style={{
-                color: post.category.accentColor,
-                borderBottom: `2px solid ${post.category.accentColor}`,
+                color: branchColor(post.category.name, post.category.accentColor),
+                borderBottom: `2px solid ${branchColor(post.category.name, post.category.accentColor)}`,
               }}
             >
               {post.category.name}
             </Badge>
           )}
+          {/* related (sub) tags — small neutral gray chips */}
+          {(post.tags ?? []).slice(0, 2).map((t) => (
+            <span key={t.id} className="related-chip">{t.name}</span>
+          ))}
           <span className="flex items-center gap-1 text-xs text-label-tertiary">
             <Calendar className="h-3.5 w-3.5" />
             {post.publishedAt ? toPersianDate(post.publishedAt) : "—"}

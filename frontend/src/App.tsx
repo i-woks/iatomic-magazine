@@ -8,6 +8,7 @@ import { HomePage } from "@/pages/HomePage";
 import { ArticlePage } from "@/pages/ArticlePage";
 import { CategoryPage } from "@/pages/CategoryPage";
 import { SearchPage } from "@/pages/SearchPage";
+import { BookmarksPage } from "@/pages/BookmarksPage";
 import { AboutPage } from "@/pages/AboutPage";
 import { ContactPage } from "@/pages/ContactPage";
 import { AdminLoginPage } from "@/pages/AdminLoginPage";
@@ -19,6 +20,7 @@ import { AdminMediaPage } from "@/pages/AdminMediaPage";
 import { AdminSettingsPage } from "@/pages/AdminSettingsPage";
 import { AdminAiAutomationPage } from "@/pages/AdminAiAutomationPage";
 import { AdminAdsPage } from "@/pages/AdminAdsPage";
+import { AdminTelegramPage } from "@/pages/AdminTelegramPage";
 import { AdminContactMessagesPage } from "@/pages/AdminContactMessagesPage";
 
 const ADMIN_BASE_PATH = import.meta.env.VITE_ADMIN_BASE_PATH || "/control/iatomic-panel";
@@ -37,6 +39,7 @@ export function App() {
               <Route path="article/:slug" element={<ArticlePage />} />
               <Route path="category/:slug" element={<CategoryPage />} />
               <Route path="search" element={<SearchPage />} />
+              <Route path="bookmarks" element={<BookmarksPage />} />
               <Route path="about" element={<AboutPage />} />
               <Route path="contact" element={<ContactPage />} />
             </Route>
@@ -49,6 +52,7 @@ export function App() {
               <Route path="categories" element={<AdminCategoriesPage />} />
               <Route path="media" element={<AdminMediaPage />} />
               <Route path="ads" element={<AdminAdsPage />} />
+              <Route path="telegram" element={<AdminTelegramPage />} />
               <Route path="ai-automation" element={<AdminAiAutomationPage />} />
               <Route path="settings" element={<AdminSettingsPage />} />
               <Route path="contact-messages" element={<AdminContactMessagesPage />} />

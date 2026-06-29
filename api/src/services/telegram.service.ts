@@ -115,11 +115,41 @@ export function safeTelegramErrorMessage(code: TelegramSendResult extends infer 
   }
 }
 
-export function buildArticleCardKeyboard(articleUrl: string) {
+/* ── Inline keyboard helpers ─────────────────────────────────────── */
+
+/** Per-article card keyboard: open, discuss, report, share. */
+export function buildArticleCardKeyboard(input: {
+  articleUrl: string;
+  discussionUrl?: string | null;
+  siteUrl?: string;
+}) {
+  const rows: Array<Array<{ text: string; url?: string; callback_data?: string }>> = [
+    [{ text: "📖 مشاهده مقاله", url: input.articleUrl }],
+  ];
+  if (input.discussionUrl) {
+    rows.push([{ text: "💬 بحث در تلگرام", url: input.discussionUrl }]);
+  }
+  rows.push([
+    { text: "🔖 ذخیره", callback_data: "bookmark" },
+    { text: "📢 اشتراک‌گذاری", callback_data: "share" },
+  ]);
+  rows.push([{ text: "⚠️ گزارش اشکال", callback_data: "report_issue" }]);
+  return { inline_keyboard: rows };
+}
+
+/** Main menu / latest-top/interests/help keyboard. */
+export function buildMainMenuKeyboard(siteUrl: string) {
   return {
     inline_keyboard: [
-      [{ text: "📖 مشاهده مقاله", url: articleUrl }],
-      [{ text: "📊 آمار", callback_data: "stats" }, { text: "📢 اشتراک‌گذاری", callback_data: "share" }],
+      [{ text: "🆕 جدیدترین مقالات", url: `${siteUrl}` }],
+      [
+        { text: "🔥 برترین هفته", callback_data: "top_week" },
+        { text: "❤️ محبوب‌ترین", callback_data: "popular" },
+      ],
+      [
+        { text: "🔖 علاقه‌مندی‌ها", url: `${siteUrl}/bookmarks` },
+        { text: "❓ راهنما", callback_data: "help" },
+      ],
     ],
   };
 }
@@ -128,7 +158,8 @@ export function buildLatestTopLinksKeyboard(siteUrl: string) {
   return {
     inline_keyboard: [
       [{ text: "🆕 آخرین مقالات", url: `${siteUrl}` }],
-      [{ text: "🔥 پربازدیدترین", url: `${siteUrl}/top` }, { text: "❤️ محبوب‌ترین", url: `${siteUrl}/popular` }],
+      [{ text: "🔥 پربازدیدترین", callback_data: "top_week" }, { text: "❤️ محبوب‌ترین", callback_data: "popular" }],
+      [{ text: "🔖 علاقه‌مندی‌ها", url: `${siteUrl}/bookmarks` }, { text: "❓ راهنما", callback_data: "help" }],
     ],
   };
 }
@@ -147,13 +178,37 @@ export function formatArticleNotification(input: {
   excerpt: string;
   categoryName: string;
   articleUrl: string;
+  readingTime?: number;
 }) {
-  return [
-    "✨ <b>مقاله جدید منتشر شد!</b>",
-    "",
+  const lines = [
+    "✨ <b>مقاله جدید در اتمیک منتشر شد</b>",
+    "━━━━━━━━━━━━━━",
     `📝 <b>${escapeHtml(input.title)}</b>`,
-    `🏷 ${escapeHtml(input.categoryName)}`,
+    `🏷 ${escapeHtml(input.categoryName)}` + (input.readingTime ? `   ⏱ ${input.readingTime} دقیقه` : ""),
     "",
-    escapeHtml(input.excerpt),
+    `«${escapeHtml(truncate(input.excerpt, 240))}»`,
+    "",
+    "🔬 <i>علم، ساده و دقیق — با اتمیک</i>",
+  ];
+  return lines.join("\n");
+}
+
+/** Concise help/welcome copy in the science brand tone. */
+export function formatHelpMessage() {
+  return [
+    "🤖 <b>ربات مجلهٔ علمی اتمیک</b>",
+    "━━━━━━━━━━━━━━",
+    "به دنیای علم خوش آمدید! از دکمه‌های زیر استفاده کنید:",
+    "",
+    "🆕 <b>جدیدترین</b> — تازه‌ترین مقالات",
+    "🔥 <b>برترین هفته</b> — پرطرفدارترین‌ها",
+    "🔖 <b>علاقه‌مندی‌ها</b> — مقالات ذخیره‌شده",
+    "💬 <b>بحث</b> — گفت‌وگو دربارهٔ هر مقاله",
+    "⚠️ <b>گزارش اشکال</b> — اطلاع‌رسانی مشکل محتوا",
   ].join("\n");
+}
+
+function truncate(text: string, max: number): string {
+  const t = text.trim();
+  return t.length <= max ? t : t.slice(0, max - 1).trimEnd() + "…";
 }

@@ -40,6 +40,8 @@ export const deleteCategory = (id: number) =>
 
 // ── Tags ──────────────────────────────────────────────────────────────
 export const fetchTags = () => fetchApi<{ data: Tag[] }>("/tags");
+export const createTag = (name: string) =>
+  fetchApi<{ data: Tag }>("/tags", { method: "POST", body: JSON.stringify({ name }) });
 
 // ── Posts ─────────────────────────────────────────────────────────────
 export const fetchFeaturedPost = () => fetchApi<{ data: Post | null }>("/posts/featured");
@@ -92,6 +94,15 @@ export const sendTelegramTestMessage = () =>
   fetchApi<{ ok: boolean; error?: string }>("/public/contact/admin/telegram/test", { method: "POST" });
 export const sendTelegramStatusReport = () =>
   fetchApi<{ ok: boolean; error?: string }>("/public/contact/admin/telegram/status-report", { method: "POST" });
+export interface TelegramConfig extends TelegramStatus {
+  webhookSecretConfigured: boolean;
+  enabled: boolean;
+  templates: { articleNotification: string; contactMessage: string; help: string };
+  keyboards: { mainMenu: unknown; articleCard: unknown };
+  buttonStyles: Array<{ key: string; label: string; type: string }>;
+}
+export const fetchTelegramConfig = () =>
+  fetchApi<{ data: TelegramConfig }>("/telegram/admin/config");
 export const fetchContactMessages = () =>
   fetchApi<{ data: ContactMessage[] }>("/public/contact/admin/messages");
 export const updateContactMessageStatus = (id: number, status: ContactMessage["status"]) =>

@@ -13,15 +13,12 @@ import { sql } from "drizzle-orm";
 const app = createApp();
 
 /* ── ALLOWED DESTINATIONS (anti open-redirect) ──────────────────── */
-const ALLOWED_HOSTS = [
-  "daramet.com", "t.me", "instagram.com", "iatomic.pages.dev",
-  "iatomic-api.iwok3m.workers.dev",
-];
 function isSafeUrl(url: string): boolean {
   try {
     const u = new URL(url);
-    if (u.protocol !== "https:" && u.protocol !== "http:") return false;
-    return ALLOWED_HOSTS.some(h => u.hostname === h || u.hostname.endsWith("." + h));
+    // Ad click-through links are intentionally external, but must be web URLs only.
+    // This blocks javascript:, data:, file:, etc. while allowing admin-defined sponsors.
+    return u.protocol === "https:" || u.protocol === "http:";
   } catch { return false; }
 }
 

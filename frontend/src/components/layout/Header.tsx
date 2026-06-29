@@ -5,7 +5,6 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Atom, BrainCircuit, ChevronLeft, Compass, FlaskConical, Home, Mail, Menu, Rocket, Search, Stethoscope, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
 import { cn } from "@/lib/utils";
 import type { Category } from "@/types";
 
@@ -76,7 +75,6 @@ const searchHref = (label: string) => `/search?q=${encodeURIComponent(label)}`;
 
 export function Header({ categories, logoAlt }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [scrolled, setScrolled] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -92,10 +90,6 @@ export function Header({ categories, logoAlt }: HeaderProps) {
   }, []);
 
   useEffect(() => {
-    if (searchOpen) searchInputRef.current?.focus();
-  }, [searchOpen]);
-
-  useEffect(() => {
     if (!menuOpen) return;
     const handler = (e: MouseEvent) => {
       if (
@@ -109,7 +103,7 @@ export function Header({ categories, logoAlt }: HeaderProps) {
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") { setMenuOpen(false); setSearchOpen(false); }
+      if (e.key === "Escape") { setMenuOpen(false); }
     };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
@@ -130,8 +124,7 @@ export function Header({ categories, logoAlt }: HeaderProps) {
     e.preventDefault();
     if (query.trim()) {
       navigate(`/search?q=${encodeURIComponent(query.trim())}`);
-      setSearchOpen(false);
-      setQuery("");
+      searchInputRef.current?.blur();
     }
   };
 
@@ -157,19 +150,24 @@ export function Header({ categories, logoAlt }: HeaderProps) {
           ))}
         </nav>
 
-        <div className="flex items-center gap-1">
-          {searchOpen ? (
-            <form onSubmit={handleSearch} className="flex items-center gap-2">
-              <Input ref={searchInputRef} value={query} onChange={e => setQuery(e.target.value)} placeholder="جستجو..." className="h-9 w-36 sm:w-52" aria-label="جستجو" />
-              <Button type="button" variant="ghost" size="icon" className="rounded-full" onClick={() => { setSearchOpen(false); setQuery(""); }} aria-label="بستن جستجو">
-                <X className="h-5 w-5" />
-              </Button>
-            </form>
-          ) : (
-            <Button variant="ghost" size="icon" className="rounded-full bg-white shadow-[0_6px_18px_rgba(17,24,39,0.05)]" aria-label="جستجو" onClick={() => setSearchOpen(true)}>
-              <Search className="h-5 w-5" />
-            </Button>
-          )}
+        {/* Permanent, always-visible search field — calibrated across breakpoints */}
+        <div className="flex items-center">
+          <form onSubmit={handleSearch} className="header-search w-[44vw] max-w-[180px] sm:max-w-[240px] lg:w-64 lg:max-w-none">
+            <Search className="h-[18px] w-[18px] shrink-0 text-label-tertiary" strokeWidth={1.75} aria-hidden="true" />
+            <input
+              ref={searchInputRef}
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              placeholder="جستجو در مجله…"
+              aria-label="جستجو"
+              enterKeyHint="search"
+            />
+            {query && (
+              <button type="button" onClick={() => setQuery("")} className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-label-tertiary transition-colors hover:text-label-primary" aria-label="پاک کردن جستجو">
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </form>
         </div>
       </div>
 

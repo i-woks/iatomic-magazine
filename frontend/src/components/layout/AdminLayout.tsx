@@ -1,5 +1,5 @@
 import { Link, Navigate, useLocation, Outlet } from "react-router-dom";
-import { LayoutDashboard, FileText, Tags, Image, Settings, LogOut, Bot, Megaphone, Mail } from "lucide-react";
+import { LayoutDashboard, FileText, Tags, Image, Settings, LogOut, Bot, Megaphone, Mail, Send } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Logo } from "./Logo";
 import { useAuth } from "@/hooks/useAuth";
@@ -13,6 +13,7 @@ const nav = [
   { to: "categories",   label: "دسته‌بندی‌ها",  icon: Tags },
   { to: "media",        label: "رسانه",          icon: Image },
   { to: "ads",          label: "آگهی‌ها",        icon: Megaphone },
+  { to: "telegram",     label: "ربات تلگرام",    icon: Send },
   { to: "ai-automation",label: "هوش مصنوعی",    icon: Bot },
   { to: "contact-messages", label: "پیام‌های کاربران", icon: Mail },
   { to: "settings",     label: "تنظیمات",        icon: Settings },

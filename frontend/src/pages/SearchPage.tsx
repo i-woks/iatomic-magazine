@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Search, AlertCircle } from "lucide-react";
+import { Search, AlertCircle, X, Sparkles } from "lucide-react";
 import { ArticleCard } from "@/components/ArticleCard";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { fetchPosts } from "@/lib/api";
 import { persianNumber } from "@/lib/utils";
 import type { Post } from "@/types";
+
+const SUGGESTIONS = ["فیزیک کوانتوم", "هوش مصنوعی", "ژنتیک", "نجوم", "یادگیری ماشین", "علوم اعصاب"];
 
 export function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -40,20 +40,34 @@ export function SearchPage() {
     }
   };
 
+  const runSuggestion = (term: string) => {
+    setInputValue(term);
+    setQuery(term);
+    setSearchParams({ q: term });
+  };
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-      <h1 className="mb-4 text-2xl font-bold text-label-primary">جستجو</h1>
+      <div className="mb-6 flex items-center gap-2">
+        <Search className="h-5 w-5" style={{ color: "var(--sci-science-blue)" }} />
+        <h1 className="text-2xl font-bold text-label-primary">جستجو در مجله</h1>
+      </div>
 
-      <form onSubmit={handleSubmit} className="mb-8 flex max-w-xl gap-2">
-        <Input
+      <form onSubmit={handleSubmit} className="header-search mb-6 h-12 max-w-xl px-4">
+        <Search className="h-5 w-5 shrink-0 text-label-tertiary" strokeWidth={1.75} />
+        <input
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          placeholder="عنوان یا موضوع مقاله..."
-          className="h-12"
+          placeholder="عنوان یا موضوع مقاله…"
+          aria-label="عبارت جستجو"
+          enterKeyHint="search"
+          autoFocus
         />
-        <Button type="submit" className="h-12 px-6">
-          <Search className="h-5 w-5" />
-        </Button>
+        {inputValue && (
+          <button type="button" onClick={() => setInputValue("")} className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-label-tertiary hover:text-label-primary" aria-label="پاک کردن">
+            <X className="h-4 w-4" />
+          </button>
+        )}
       </form>
 
       {loading && (
@@ -71,10 +85,10 @@ export function SearchPage() {
         </div>
       )}
 
-      {!loading && !error && query && (
+      {!loading && !error && query && posts.length > 0 && (
         <>
           <p className="mb-4 text-sm text-label-secondary">
-            {posts.length === 0 ? "نتیجه‌ای یافت نشد." : `${persianNumber(posts.length)} نتیجه برای «${query}»`}
+            {`${persianNumber(posts.length)} نتیجه برای «${query}»`}
           </p>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {posts.map((post) => (
@@ -84,8 +98,31 @@ export function SearchPage() {
         </>
       )}
 
+      {!loading && !error && query && posts.length === 0 && (
+        <div className="flex flex-col items-center justify-center rounded-[24px] border border-separator/30 bg-white px-6 py-16 text-center">
+          <span className="grid h-14 w-14 place-items-center rounded-full" style={{ background: "rgba(21,101,192,0.08)", color: "var(--sci-science-blue)" }}>
+            <Search className="h-7 w-7" />
+          </span>
+          <h2 className="mt-4 text-lg font-bold text-label-primary">نتیجه‌ای برای «{query}» یافت نشد</h2>
+          <p className="mt-2 text-sm text-label-secondary">عبارت دیگری را امتحان کنید یا یکی از موضوعات پیشنهادی را انتخاب کنید.</p>
+        </div>
+      )}
+
       {!loading && !query && (
-        <p className="text-label-secondary">برای جستجو عبارت مورد نظر خود را وارد کنید.</p>
+        <div className="rounded-[24px] border border-separator/30 bg-white px-6 py-12 text-center">
+          <span className="grid h-14 w-14 mx-auto place-items-center rounded-full" style={{ background: "rgba(21,101,192,0.08)", color: "var(--sci-science-blue)" }}>
+            <Sparkles className="h-7 w-7" />
+          </span>
+          <p className="mt-4 text-sm font-semibold text-label-primary">عبارت مورد نظر خود را وارد کنید</p>
+          <p className="mt-1 text-[13px] text-label-secondary">یا از موضوعات پرطرفدار شروع کنید:</p>
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
+            {SUGGESTIONS.map((s) => (
+              <button key={s} type="button" onClick={() => runSuggestion(s)} className="science-chip-accent rounded-full border px-3.5 py-1.5 text-[13px] font-medium text-label-secondary transition-colors">
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );

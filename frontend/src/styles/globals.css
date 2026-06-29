@@ -57,6 +57,32 @@
   --science-surface:       #FFFFFF;
   --science-surface-muted: #EBEEF2;
 
+  /* ── Science Advanced Palette (design tokens) ── */
+  --sci-discovery-green: #19E68C;
+  --sci-growth-green:    #0B683A;
+  --sci-lime:            #37F012;
+  --sci-data-cyan:       #00CFA6;
+  --sci-aqua:            #00E6AB;
+  --sci-yellow:          #FFD300;
+  --sci-gold:            #FFB800;
+  --sci-physics-navy:    #0A183D;
+  --sci-deep-blue:       #0F3460;
+  --sci-science-blue:    #1565C0;
+  --sci-ai-indigo:       #1A237E;
+  --sci-signal-blue:     #2F80ED;
+  --sci-sky:             #00A8FF;
+  --sci-neural-purple:   #4A148C;
+  --sci-ml-purple:       #6A1B9A;
+  --sci-violet:          #8E24AA;
+  --sci-electric-violet: #A655F7;
+  --sci-alert-red:       #E71C1C;
+  --sci-energy-red:      #F44336;
+  --sci-rose:            #FF1744;
+  --sci-focus-orange:    #FF6F00;
+  --sci-bio-green:       #2E7D32;
+  --sci-medicine-green:  #43A047;
+  --sci-leaf:            #66BB6A;
+
   /*
    * LOGO MAPPING — CORRECTED (light mode):
    *   Light/day  → logo-dark.jpg  = black background, white mark  ✓
@@ -160,14 +186,17 @@
 }
 .atomic-logo-mark img {
   display: block;
-  width: 34px;
-  height: 34px;
+  width: 42px;
+  height: 42px;
   object-fit: contain;
 }
 @media (max-width: 640px) {
   .atomic-wordmark { font-size: 20px; }
-  .atomic-logo-mark img { width: 31px; height: 31px; }
+  .atomic-logo-mark img { width: 37px; height: 37px; }
 }
+/* Footer keeps a slightly larger mark while the English wordmark stays subordinate */
+.footer-logo-mark img { width: 46px; height: 46px; }
+.footer-wordmark { font-size: 13px; letter-spacing: 0.12em; opacity: 0.72; }
 
 /* ═══════════════════════════════════════════════════════════
    LOGO FRAME
@@ -261,4 +290,58 @@
 
   /* ── Ad zone (invisible when empty) ── */
   .ad-zone:empty { display:none !important; }
+
+  /* ── Related (sub) tag chip — small neutral gray ── */
+  .related-chip {
+    display:inline-flex; align-items:center; gap:0.25rem;
+    border-radius:9999px;
+    border:1px solid var(--color-separator);
+    background:var(--color-fill-quaternary);
+    padding:0.1rem 0.55rem;
+    font-size:11px; font-weight:500;
+    color:var(--color-label-tertiary);
+    transition:color .12s ease, border-color .12s ease;
+  }
+  .related-chip:hover { color:var(--color-label-secondary); border-color:var(--color-separator-opaque); }
+
+  /* ── Compact article action box ── */
+  .action-box {
+    display:inline-flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:0.15rem;
+    min-width:64px; padding:0.5rem 0.6rem;
+    border-radius:14px;
+    border:1px solid var(--color-separator);
+    background:var(--color-bg-secondary);
+    color:var(--color-label-secondary);
+    font-size:11px; font-weight:600;
+    box-shadow:0 4px 14px rgba(10,24,61,0.04);
+    transition:transform .14s ease, border-color .14s ease, color .14s ease, background .14s ease;
+    cursor:pointer;
+  }
+  .action-box:hover { transform:translateY(-1px); border-color:var(--color-separator-opaque); }
+  .action-box:disabled { cursor:default; }
+  .action-box.is-liked { color:var(--sci-energy-red); border-color:rgba(244,67,54,0.35); background:rgba(244,67,54,0.07); }
+  .action-box.is-bookmarked { color:var(--sci-science-blue); border-color:rgba(21,101,192,0.35); background:rgba(21,101,192,0.07); }
+
+  /* ── Science gradient accent (used sparingly for headers/hero) ── */
+  .sci-gradient-text {
+    background:linear-gradient(90deg, var(--sci-science-blue), var(--sci-data-cyan));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+
+  /* ── Header search field ── */
+  .header-search {
+    display:flex; align-items:center; gap:0.4rem;
+    height:40px; border-radius:9999px;
+    border:1px solid var(--color-separator);
+    background:var(--color-bg-secondary);
+    padding:0 0.4rem 0 0.85rem;
+    transition:border-color .14s ease, box-shadow .14s ease;
+  }
+  .header-search:focus-within {
+    border-color:var(--sci-science-blue);
+    box-shadow:0 0 0 3px rgba(21,101,192,0.12);
+  }
+  .header-search input { background:transparent; border:none; outline:none; width:100%; font-size:13px; color:var(--color-label-primary); }
+  .header-search input::placeholder { color:var(--color-label-quaternary); }
 }

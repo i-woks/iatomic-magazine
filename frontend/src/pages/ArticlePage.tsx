@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Clock, Calendar, Share2, ChevronRight, Eye, Heart, MessageCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, Calendar, Share2, ChevronRight, Eye, Heart, MessageCircle, Bookmark } from "lucide-react";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { ArticleCard } from "@/components/ArticleCard";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { fetchPost, fetchRelatedPosts, fetchAdjacentPosts, incrementPostView, likePost } from "@/lib/api";
-import { toPersianDate, persianNumber } from "@/lib/utils";
+import { toPersianDate, persianNumber, cn } from "@/lib/utils";
+import { useBookmarks } from "@/hooks/useBookmarks";
+import { branchColor } from "@/lib/mainBranches";
 import type { Post } from "@/types";
 
 export function ArticlePage() {
@@ -18,6 +19,8 @@ export function ArticlePage() {
   const [adjacent, setAdjacent] = useState<{ prev: { id: number; title: string; slug: string } | null; next: { id: number; title: string; slug: string } | null }>({ prev: null, next: null });
   const [loading, setLoading] = useState(true);
   const [liked, setLiked] = useState(false);
+  const { isBookmarked, toggle } = useBookmarks();
+  const bookmarked = post ? isBookmarked(post.id) : false;
 
   useEffect(() => {
     if (!slug) return;
@@ -115,10 +118,15 @@ export function ArticlePage() {
         </span>
         {post.author && <span>{post.author.name}</span>}
         {post.category && (
-          <Badge variant="default" style={{ color: post.category.accentColor, borderBottom: `2px solid ${post.category.accentColor}` }}>
+          <Badge variant="default" style={{ color: branchColor(post.category.name, post.category.accentColor), borderBottom: `2px solid ${branchColor(post.category.name, post.category.accentColor)}` }}>
             {post.category.name}
           </Badge>
         )}
+        {(post.tags ?? []).map((t) => (
+          <Link key={t.id} to={`/search?q=${encodeURIComponent(t.name)}`} className="related-chip">
+            {t.name}
+          </Link>
+        ))}
       </div>
 
       {/* Title */}
@@ -155,28 +163,63 @@ export function ArticlePage() {
         </section>
       )}
 
-      {/* Actions */}
-      <div className="mb-10 flex flex-wrap items-center gap-3">
-        <Button variant="outline" onClick={handleLike} disabled={liked} className="gap-2">
-          <Heart className={liked ? "h-4 w-4 fill-current text-science-red" : "h-4 w-4"} />
-          <span>{persianNumber(post.likeCount)} پسندیدن</span>
-        </Button>
-        <Button variant="outline" onClick={share} className="gap-2">
-          <Share2 className="h-4 w-4" />
-          اشتراک‌گذاری
-        </Button>
-        <div className="flex items-center gap-1 text-sm text-label-tertiary">
-          <Eye className="h-4 w-4" />
-          <span>{persianNumber(post.viewCount)} بازدید</span>
-        </div>
-        {post.telegramDiscussionUrl && (
-          <a href={post.telegramDiscussionUrl} target="_blank" rel="noopener noreferrer">
-            <Button variant="outline" className="gap-2">
-              <MessageCircle className="h-4 w-4" />
-              بحث در تلگرام
-            </Button>
+      {/* Actions — compact minimalist boxes (RTL row, ordered right→left) */}
+      <div className="mb-10 flex flex-wrap items-stretch gap-2.5" role="group" aria-label="کنش‌های مقاله">
+        {/* 1. پسندیدن */}
+        <button
+          type="button"
+          onClick={handleLike}
+          disabled={liked}
+          className={cn("action-box", liked && "is-liked")}
+          aria-pressed={liked}
+          aria-label="پسندیدن"
+        >
+          <Heart className={cn("h-[18px] w-[18px]", liked && "fill-current")} />
+          <span>{persianNumber(post.likeCount)}</span>
+        </button>
+
+        {/* 2. بوکمارک */}
+        <button
+          type="button"
+          onClick={() => toggle(post)}
+          className={cn("action-box", bookmarked && "is-bookmarked")}
+          aria-pressed={bookmarked}
+          aria-label="بوکمارک"
+        >
+          <Bookmark className={cn("h-[18px] w-[18px]", bookmarked && "fill-current")} />
+          <span>بوکمارک</span>
+        </button>
+
+        {/* 3. بحث در تلگرام */}
+        {post.telegramDiscussionUrl ? (
+          <a
+            href={post.telegramDiscussionUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="action-box"
+            aria-label="بحث در تلگرام"
+          >
+            <MessageCircle className="h-[18px] w-[18px]" />
+            <span>تلگرام</span>
           </a>
+        ) : (
+          <span className="action-box opacity-40" aria-disabled="true">
+            <MessageCircle className="h-[18px] w-[18px]" />
+            <span>تلگرام</span>
+          </span>
         )}
+
+        {/* 4. اشتراک‌گذاری */}
+        <button type="button" onClick={share} className="action-box" aria-label="اشتراک‌گذاری">
+          <Share2 className="h-[18px] w-[18px]" />
+          <span>اشتراک</span>
+        </button>
+
+        {/* 5. تعداد بازدید */}
+        <span className="action-box" aria-label="تعداد بازدید">
+          <Eye className="h-[18px] w-[18px]" />
+          <span>{persianNumber(post.viewCount)}</span>
+        </span>
       </div>
 
       {/* Navigation */}

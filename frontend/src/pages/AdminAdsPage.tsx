@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
-import { Plus, Edit, Trash2, AlertCircle, RefreshCw } from "lucide-react";
+import { Plus, Edit, Trash2, AlertCircle, RefreshCw, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Select } from "@/components/ui/Select";
+import { fetchMedia } from "@/lib/api";
+import type { MediaItem } from "@/types";
 
 
 const API_URL = import.meta.env.VITE_API_URL || "";
@@ -17,6 +19,7 @@ interface Ad {
   label: string;
   placement: string;
   status: AdStatus;
+  media_id?: number | null;
   media_url?: string | null;
   destination_url?: string | null;
   alt?: string | null;
@@ -43,6 +46,7 @@ const PLACEMENTS = [
 const EMPTY_FORM = {
   type: "manual_banner" as AdType, label: "", placement: "homepage_top_above_donation",
   status: "inactive" as AdStatus, destinationUrl: "", alt: "",
+  mediaId: "" as number | "",
   width: "", height: "",
   aspectRatio: "", priority: "0", startsAt: "", endsAt: "",
 };
@@ -56,6 +60,8 @@ export function AdminAdsPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [resetConfirm, setResetConfirm] = useState<number | null>(null);
+  const [media, setMedia] = useState<MediaItem[]>([]);
+  const [mediaOpen, setMediaOpen] = useState(false);
 
   const loadAds = () => {
     setLoading(true);
@@ -64,21 +70,23 @@ export function AdminAdsPage() {
       .catch(() => {}).finally(() => setLoading(false));
   };
 
-  useEffect(() => { loadAds(); }, []);
+  useEffect(() => { loadAds(); fetchMedia().then(m => setMedia(m.data)).catch(() => {}); }, []);
 
-  const setF = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }));
+  const setF = (k: string, v: string | number) => setForm(f => ({ ...f, [k]: v }));
+  const selectedMedia = media.find(m => m.id === form.mediaId);
+  const isVideo = (url?: string | null) => !!url && /\.(mp4|webm)$/i.test(url);
 
-  const openNew = () => { setForm({ ...EMPTY_FORM }); setEditId(null); setShowForm(true); setError(null); };
+  const openNew = () => { setForm({ ...EMPTY_FORM }); setEditId(null); setShowForm(true); setMediaOpen(false); setError(null); };
   const openEdit = (ad: Ad) => {
     setForm({
       type: ad.type, label: ad.label, placement: ad.placement, status: ad.status,
       destinationUrl: ad.destination_url || "", alt: ad.alt || "",
-      
+      mediaId: ad.media_id ?? "",
       width: ad.width ? String(ad.width) : "", height: ad.height ? String(ad.height) : "",
       aspectRatio: ad.aspect_ratio || "", priority: String(ad.priority),
       startsAt: ad.starts_at || "", endsAt: ad.ends_at || "",
     });
-    setEditId(ad.id); setShowForm(true); setError(null);
+    setEditId(ad.id); setShowForm(true); setMediaOpen(false); setError(null);
   };
 
   const save = async () => {
@@ -86,6 +94,7 @@ export function AdminAdsPage() {
     const body: Record<string, unknown> = {
       type: form.type, label: form.label, placement: form.placement, status: form.status,
       destinationUrl: form.destinationUrl || null, alt: form.alt || null,
+      mediaId: form.mediaId === "" ? null : Number(form.mediaId),
       width: form.width ? parseInt(form.width) : null, height: form.height ? parseInt(form.height) : null,
       aspectRatio: form.aspectRatio || null, priority: parseInt(form.priority) || 0,
       startsAt: form.startsAt || null, endsAt: form.endsAt || null,
@@ -148,9 +157,31 @@ export function AdminAdsPage() {
               </Select>
             </div>
             {form.type === "manual_banner" && <>
-              <div className="space-y-1.5"><Label>آدرس مقصد (URL)</Label><Input value={form.destinationUrl} onChange={e => setF("destinationUrl", e.target.value)} placeholder="https://..." dir="ltr" /></div>
-              <div className="space-y-1.5"><Label>متن جایگزین (Alt)</Label><Input value={form.alt} onChange={e => setF("alt", e.target.value)} placeholder="توضیح تصویر" /></div>
+              <div className="space-y-1.5"><Label>آدرس مقصد / لینک کلیک (URL)</Label><Input value={form.destinationUrl} onChange={e => setF("destinationUrl", e.target.value)} placeholder="https://..." dir="ltr" /></div>
+              <div className="space-y-1.5"><Label>متن جایگزین (Alt)</Label><Input value={form.alt} onChange={e => setF("alt", e.target.value)} placeholder="توضیح تصویر یا ویدیو" /></div>
             </>}
+            <div className="space-y-1.5 md:col-span-2">
+              <Label>رسانه آگهی (تصویر یا ویدیو)</Label>
+              <div className="flex flex-wrap items-center gap-3">
+                <Button type="button" variant="outline" onClick={() => setMediaOpen(o => !o)} className="gap-2"><ImageIcon className="h-4 w-4" />{form.mediaId ? "تغییر رسانه" : "انتخاب رسانه"}</Button>
+                {form.mediaId && <Button type="button" variant="ghost" onClick={() => setF("mediaId", "")}>حذف رسانه</Button>}
+                {selectedMedia && (isVideo(selectedMedia.url)
+                  ? <video src={selectedMedia.url} muted className="h-16 rounded-ios object-cover" />
+                  : <img src={selectedMedia.url} alt={selectedMedia.alt || ""} className="h-16 rounded-ios object-cover" />)}
+              </div>
+              {mediaOpen && (
+                <div className="mt-2 rounded-ios border border-separator/30 bg-bg-primary/60 p-3">
+                  <div className="grid max-h-56 grid-cols-3 gap-2 overflow-y-auto sm:grid-cols-5">
+                    {media.length === 0 && <p className="col-span-full text-sm text-label-tertiary">رسانه‌ای موجود نیست. از بخش «رسانه» آپلود کنید.</p>}
+                    {media.map(m => (
+                      <button key={m.id} type="button" onClick={() => { setF("mediaId", m.id); setMediaOpen(false); }} className={`overflow-hidden rounded-ios border-2 p-0.5 transition-colors ${form.mediaId === m.id ? "border-ios-blue" : "border-transparent"}`}>
+                        {isVideo(m.url) ? <video src={m.url} muted className="h-16 w-full object-cover" /> : <img src={m.url} alt={m.alt || ""} className="h-16 w-full object-cover" />}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
             <div className="space-y-1.5"><Label>اولویت</Label><Input type="number" value={form.priority} onChange={e => setF("priority", e.target.value)} dir="ltr" /></div>
             <div className="space-y-1.5"><Label>نسبت ابعاد (مثلاً 16/9)</Label><Input value={form.aspectRatio} onChange={e => setF("aspectRatio", e.target.value)} placeholder="16/9" dir="ltr" /></div>
             <div className="space-y-1.5"><Label>شروع نمایش</Label><Input type="datetime-local" value={form.startsAt} onChange={e => setF("startsAt", e.target.value)} dir="ltr" /></div>

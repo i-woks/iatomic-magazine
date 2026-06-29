@@ -11,6 +11,7 @@ import settingsRoutes from "./routes/settings";
 import aiRoutes from "./routes/ai";
 import adsRoutes from "./routes/ads";
 import contactRoutes from "./routes/contact";
+import telegramRoutes from "./routes/telegram";
 import showcaseRoutes from "./routes/showcase";
 import interactionsRoutes from "./routes/interactions";
 import { bigdataRouter } from "./routes/bigdata";
@@ -44,6 +45,7 @@ app.route("/api/settings", settingsRoutes);
 app.route("/api/ai", aiRoutes);
 app.route("/api/ads", adsRoutes);
 app.route("/api/public/contact", contactRoutes);
+app.route("/api/telegram", telegramRoutes);
 app.route("/api/bigdata", bigdataRouter);
 
 // R2 media proxy

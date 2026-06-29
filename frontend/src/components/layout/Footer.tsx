@@ -51,12 +51,12 @@ export function Footer({ instagramUrl, siteName }: FooterProps) {
           <div className="grid gap-7 md:grid-cols-3 md:items-start md:gap-10">
             <section className="space-y-3 text-right">
               <Link to="/" className="inline-flex items-center gap-3" aria-label="صفحه اصلی Atomic">
-                <span className="atomic-logo-mark">
+                <span className="atomic-logo-mark footer-logo-mark">
                   <img src="/images/atomic-mark-black.png" alt="Atomic" draggable={false} />
                 </span>
                 <span>
-                  <span className="atomic-wordmark block text-[17px]">ATOMIC</span>
-                  <span className="block text-[11px] font-medium text-label-tertiary">مجله علمی فارسی</span>
+                  <span className="atomic-wordmark footer-wordmark block">ATOMIC</span>
+                  <span className="block text-[12px] font-bold text-label-primary">مجله علمی فارسی</span>
                 </span>
               </Link>
 
