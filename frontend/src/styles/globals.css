@@ -724,3 +724,36 @@
     transition-duration:.01ms !important;
   }
 }
+
+@layer components {
+  .footer-copy-box {
+    flex:0 0 auto;
+    max-width:max-content;
+    white-space:nowrap;
+  }
+  .about-value-halo {
+    position:absolute;
+    left:-28px;
+    top:-28px;
+    width:86px;
+    height:86px;
+    border-radius:999px;
+    filter:blur(22px);
+    pointer-events:none;
+  }
+  .about-panel-halo {
+    position:absolute;
+    left:-42px;
+    top:-42px;
+    width:130px;
+    height:130px;
+    border-radius:999px;
+    background:rgba(0,207,166,.12);
+    filter:blur(28px);
+    pointer-events:none;
+  }
+}
+
+@media (max-width:520px) {
+  .footer-copy-box { white-space:normal; max-width:100%; }
+}

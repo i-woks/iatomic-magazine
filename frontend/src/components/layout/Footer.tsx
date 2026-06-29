@@ -95,12 +95,12 @@ export function Footer({ instagramUrl, siteName }: FooterProps) {
           </div>
         </div>
 
-        <div className="mt-5 grid gap-2 pt-4 text-[11px] sm:grid-cols-2">
-          <div className="footer-copy-box" style={{ "--copy-color": "#1565C0" } as CSSProperties}>
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-2 pt-4 text-[11px]">
+          <div className="footer-copy-box w-fit" style={{ "--copy-color": "#1565C0" } as CSSProperties}>
             <CheckCircle2 className="h-4 w-4" />
             <span>© {new Date().getFullYear()} {siteName || "Atomic"}. تمامی حقوق محفوظ است.</span>
           </div>
-          <div className="footer-copy-box" style={{ "--copy-color": "#00CFA6" } as CSSProperties}>
+          <div className="footer-copy-box w-fit" style={{ "--copy-color": "#00CFA6" } as CSSProperties}>
             <Palette className="h-4 w-4" />
             <span>طراحی سبک، علمی و سازگار با همه دستگاه‌ها</span>
           </div>

@@ -47,21 +47,23 @@ export function AboutPage() {
 
       <section className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {VALUES.map(({ icon: Icon, color, title, desc }) => (
-          <div key={title} className="rounded-[26px] border border-separator/25 bg-bg-secondary/60 p-5 shadow-ios-sm">
-            <div className="mb-3 flex items-center gap-2">
+          <div key={title} className="about-value-card relative overflow-hidden rounded-[26px] border border-separator/25 bg-bg-secondary/60 p-5 shadow-ios-sm">
+            <div className="about-value-halo" style={{ backgroundColor: `${color}18` }} />
+            <div className="relative mb-3 flex items-center gap-2">
               <span className="grid h-10 w-10 place-items-center rounded-[16px]" style={{ backgroundColor: `${color}14`, color }}>
                 <Icon className="h-5 w-5" />
               </span>
               <h2 className="font-extrabold text-label-primary">{title}</h2>
             </div>
-            <p className="text-sm leading-7 text-label-secondary">{desc}</p>
+            <p className="relative text-sm leading-7 text-label-secondary">{desc}</p>
           </div>
         ))}
       </section>
 
-      <section className="mt-6 rounded-[30px] border border-separator/25 bg-bg-secondary/60 p-6">
-        <div className="mb-4 flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-ios-blue" /><h2 className="text-xl font-black text-label-primary">روش کار اتمیک</h2></div>
-        <div className="space-y-4 text-sm leading-8 text-label-secondary">
+      <section className="about-glow-panel relative mt-6 overflow-hidden rounded-[30px] border border-separator/25 bg-bg-secondary/60 p-6">
+        <div className="about-panel-halo" />
+        <div className="relative mb-4 flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-ios-blue" /><h2 className="text-xl font-black text-label-primary">روش کار اتمیک</h2></div>
+        <div className="relative space-y-4 text-sm leading-8 text-label-secondary">
           <p>محتواهای اتمیک با نگاه تحلیلی و آموزشی آماده می‌شوند. هدف ما تولید متن‌هایی است که هم برای مخاطب عمومی قابل فهم باشد و هم از نظر علمی بی‌پایه و سطحی نباشد.</p>
           <p>در سازوکار خودکارسازی، مقاله بین ابزارهای پردازشی و هوش مصنوعی برای نظم‌دهی، پیشنهاد تگ و کاهش خطای محتوایی جابه‌جا می‌شود؛ اما خروجی نهایی باید منبع‌پذیر و قابل بازبینی باقی بماند.</p>
         </div>

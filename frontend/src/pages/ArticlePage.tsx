@@ -214,11 +214,11 @@ export function ArticlePage() {
         <div className="flex items-center gap-3">
           <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-ios-blue-soft text-ios-blue"><Heart className="h-5 w-5" /></span>
           <div>
-            <h3>از انتشار علم فارسی حمایت کن</h3>
-            <p>اگر این مقاله برایتان مفید بود، اتمیک را به یک دوست علاقه‌مند به علم معرفی کنید.</p>
+            <h3>حمایت مالی از اتمیک</h3>
+            <p>اگر این مقاله برایتان مفید بود، با یک حمایت کوچک به ادامه تولید محتوای علمی فارسی کمک کنید.</p>
           </div>
         </div>
-        <Link to="/contact">همراهی با اتمیک</Link>
+        <a href="https://daramet.com/iatomic" target="_blank" rel="noopener noreferrer">حمایت مالی</a>
       </div>
 
       {related.length > 0 && (
