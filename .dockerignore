@@ -1,0 +1,13 @@
+.git
+node_modules
+frontend/node_modules
+api/node_modules
+server/node_modules
+frontend/dist
+server/dist
+api/dist
+.wrangler
+*.log
+claude_*.jsonl
+.env
+.env.*
