@@ -125,7 +125,7 @@ export function Header({ categories, logoAlt }: HeaderProps) {
         <nav className="hidden items-center gap-1 lg:flex" aria-label="دسته‌بندی‌ها">
           {categories.slice(0, 6).map(cat => <Link key={cat.id} to={`/category/${cat.slug}`} className="science-chip-accent rounded-full border px-3 py-2 text-[13px] font-medium text-label-secondary transition-colors">{cat.name}</Link>)}
         </nav>
-        <Link to="/search" className="header-search-icon" aria-label="جستجو در مجله" title="جستجو"><Search className="h-[19px] w-[19px]" strokeWidth={1.8} aria-hidden="true" /></Link>
+        <Link to="/search" className="header-search-icon" aria-label="جستجو در مجله" title="جستجو"><Search className="h-[17px] w-[17px]" strokeWidth={1.85} aria-hidden="true" /></Link>
       </div>
 
       <div className={cn("fixed inset-0 z-[70] lg:hidden", menuOpen ? "visible" : "invisible pointer-events-none")} aria-hidden={!menuOpen}>

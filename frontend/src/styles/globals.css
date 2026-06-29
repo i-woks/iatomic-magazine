@@ -351,16 +351,16 @@
   .header-search-icon {
     display:inline-grid;
     place-items:center;
-    width:42px;
-    height:42px;
+    width:38px;
+    height:38px;
     border-radius:9999px;
     color:var(--sci-science-blue);
     background:linear-gradient(180deg, rgba(0,168,255,.10), rgba(25,230,140,.06));
     border:1px solid rgba(21,101,192,.18);
-    box-shadow:0 8px 22px rgba(21,101,192,.08);
+    box-shadow:0 6px 18px rgba(21,101,192,.07);
     transition:transform .14s ease, box-shadow .14s ease, background .14s ease;
   }
-  .header-search-icon:hover { transform:translateY(-1px); box-shadow:0 12px 28px rgba(21,101,192,.12); background:rgba(0,168,255,.12); }
+  .header-search-icon:hover { transform:translateY(-1px); box-shadow:0 9px 22px rgba(21,101,192,.11); background:rgba(0,168,255,.12); }
 
   .atomic-wordmark { color:var(--sci-science-blue); text-shadow:0 6px 22px rgba(21,101,192,.12); }
   .atomic-logo-mark img { filter:drop-shadow(0 8px 18px rgba(21,101,192,.16)); }
