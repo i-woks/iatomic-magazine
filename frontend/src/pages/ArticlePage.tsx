@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Clock, Calendar, Share2, ChevronRight, Eye, Heart, MessageCircle, Bookmark, Image as ImageIcon } from "lucide-react";
+import { Clock, Calendar, Share2, ChevronRight, Eye, Heart, MessageCircle, Bookmark } from "lucide-react";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { ArticleCard } from "@/components/ArticleCard";
 import { VideoPlayer } from "@/components/VideoPlayer";
@@ -115,8 +115,9 @@ export function ArticlePage() {
   );
 
   const accent = branchColor(post.category?.name, post.category?.accentColor || undefined);
-  const coverUrl = post.coverImage?.url;
-  const secondaryImage = post.videoPoster || coverUrl;
+  const videoMarker = "[[video]]";
+  const hasVideoMarker = Boolean(post.videoUrl && post.content.includes(videoMarker));
+  const [beforeVideo, afterVideo] = hasVideoMarker ? post.content.split(videoMarker) : [post.content, ""];
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8">
@@ -131,23 +132,6 @@ export function ArticlePage() {
         )}
         <span className="text-label-secondary">{post.title}</span>
       </nav>
-
-      {coverUrl && (
-        <section className="article-media-gallery mb-6" aria-label="تصاویر مقاله">
-          <div className="article-media-main">
-            <img src={coverUrl} alt={post.title} loading="eager" />
-          </div>
-          <div className="article-media-pair">
-            <div className="article-media-small">
-              <img src={secondaryImage} alt={`${post.title} - تصویر مرتبط`} loading="lazy" />
-            </div>
-            <div className="article-media-small article-media-gradient" style={{ background: `linear-gradient(135deg, ${accent}22, rgba(0,207,166,.16), rgba(255,211,0,.16))` }}>
-              <ImageIcon className="h-6 w-6" style={{ color: accent }} />
-              <span>تصویر مرتبط با مقاله</span>
-            </div>
-          </div>
-        </section>
-      )}
 
       <div className="mb-4 flex flex-wrap items-center gap-3 text-sm text-label-secondary">
         <span className="flex items-center gap-1"><Calendar className="h-4 w-4" />{post.publishedAt ? toPersianDate(post.publishedAt) : "—"}</span>
@@ -169,17 +153,23 @@ export function ArticlePage() {
 
       <section className="article-content-card mb-10">
         <article>
-          <MarkdownRenderer content={post.content} />
+          <MarkdownRenderer content={beforeVideo} />
         </article>
 
         {post.videoUrl && (
           <div className="article-video-section">
             <div className="mb-3 flex items-center justify-between gap-3">
               <h2>ویدئوی مرتبط</h2>
-              <span>بدون ذخیره‌سازی فایل، فقط از لینک منبع</span>
+              <span>جایگاه با مارکر [[video]] در متن کنترل می‌شود</span>
             </div>
             <VideoPlayer videoUrl={post.videoUrl} posterUrl={post.videoPoster || post.coverImage?.url} title={post.title} />
           </div>
+        )}
+
+        {hasVideoMarker && afterVideo.trim() && (
+          <article className="mt-6">
+            <MarkdownRenderer content={afterVideo} />
+          </article>
         )}
 
         <div className="article-actions-section">
