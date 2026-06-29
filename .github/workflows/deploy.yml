@@ -53,7 +53,7 @@ jobs:
         run: npm run build
         working-directory: frontend
         env:
-          VITE_API_URL: "https://iatomic-api.iwok3m.workers.dev"
+          VITE_API_URL: "https://iatomic-api.iatomic-magazine.workers.dev"
           VITE_ADMIN_BASE_PATH: "/control/iatomic-panel"
 
       - name: Upload frontend dist
