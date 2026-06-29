@@ -1,14 +1,14 @@
 import { useRef, useState } from "react";
-import { Play, Pause, Volume2, VolumeX } from "lucide-react";
+import { Captions, ExternalLink, Pause, Play, Volume2, VolumeX } from "lucide-react";
 
-function youtubeEmbed(url: string): string | null {
+function youtubeInfo(url: string): { embed: string; watch: string } | null {
   try {
     const u = new URL(url);
     let id = "";
     if (u.hostname.includes("youtu.be")) id = u.pathname.slice(1);
     if (u.hostname.includes("youtube.com")) id = u.searchParams.get("v") || u.pathname.split("/").filter(Boolean).pop() || "";
     id = id.replace(/[^a-zA-Z0-9_-]/g, "");
-    return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
+    return id ? { embed: `https://www.youtube-nocookie.com/embed/${id}?enablejsapi=1&rel=0&modestbranding=1`, watch: `https://www.youtube.com/watch?v=${id}` } : null;
   } catch {
     return null;
   }
@@ -16,30 +16,22 @@ function youtubeEmbed(url: string): string | null {
 
 export function VideoPlayer({ videoUrl, posterUrl, title = "ویدئوی مقاله" }: { videoUrl: string; posterUrl?: string; title?: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
-  const embed = youtubeEmbed(videoUrl);
+  const [translationOpen, setTranslationOpen] = useState(false);
+  const yt = youtubeInfo(videoUrl);
 
-  if (embed) {
-    return (
-      <div className="relative overflow-hidden rounded-[24px] border border-separator/20 bg-black shadow-ios-lg">
-        <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between bg-gradient-to-b from-black/55 to-transparent px-4 py-3 text-xs font-bold text-white/90">
-          <span>{title}</span>
-          <span className="rounded-full bg-white/12 px-2 py-1">YouTube</span>
-        </div>
-        <iframe
-          src={embed}
-          title={title}
-          className="aspect-video w-full"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerPolicy="strict-origin-when-cross-origin"
-          allowFullScreen
-        />
-      </div>
-    );
-  }
+  const postYoutube = (func: "playVideo" | "pauseVideo" | "mute" | "unMute") => {
+    iframeRef.current?.contentWindow?.postMessage(JSON.stringify({ event: "command", func, args: [] }), "*");
+  };
 
   const togglePlay = () => {
+    if (yt) {
+      postYoutube(playing ? "pauseVideo" : "playVideo");
+      setPlaying(v => !v);
+      return;
+    }
     if (!videoRef.current) return;
     if (playing) videoRef.current.pause();
     else videoRef.current.play();
@@ -47,26 +39,63 @@ export function VideoPlayer({ videoUrl, posterUrl, title = "ویدئوی مقا�
   };
 
   const toggleMute = () => {
+    if (yt) {
+      postYoutube(muted ? "unMute" : "mute");
+      setMuted(v => !v);
+      return;
+    }
     if (!videoRef.current) return;
     videoRef.current.muted = !muted;
     setMuted(!muted);
   };
 
   return (
-    <div className="group relative overflow-hidden rounded-[24px] border border-separator/20 bg-black shadow-ios-lg">
-      <video ref={videoRef} src={videoUrl} poster={posterUrl} className="w-full" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} controls={false} playsInline>
-        <track kind="captions" />
-      </video>
-      <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity group-hover:opacity-100">
-        <button onClick={togglePlay} className="rounded-full bg-white/90 p-4 text-black shadow-ios-lg transition-transform hover:scale-110" aria-label={playing ? "Pause" : "Play"}>
-          {playing ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
-        </button>
+    <div className="custom-video-player overflow-hidden rounded-[24px] border border-separator/20 bg-black shadow-ios-lg">
+      <div className="relative">
+        {yt ? (
+          <iframe
+            ref={iframeRef}
+            src={yt.embed}
+            title={title}
+            className="aspect-video w-full"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          />
+        ) : (
+          <video ref={videoRef} src={videoUrl} poster={posterUrl} className="w-full" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} controls={false} playsInline>
+            <track kind="captions" />
+          </video>
+        )}
       </div>
-      <div className="absolute bottom-4 right-4 opacity-0 transition-opacity group-hover:opacity-100">
-        <button onClick={toggleMute} className="rounded-full bg-white/90 p-2 text-black shadow-ios" aria-label={muted ? "Unmute" : "Mute"}>
+
+      <div className="custom-video-controls">
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-xs font-extrabold text-white/90">{title}</div>
+          <div className="text-[10px] font-bold text-white/45">پلیر اختصاصی اتمیک</div>
+        </div>
+        <button type="button" onClick={togglePlay} aria-label={playing ? "توقف" : "پخش"}>
+          {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+        </button>
+        <button type="button" onClick={toggleMute} aria-label={muted ? "فعال کردن صدا" : "قطع صدا"}>
           {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
         </button>
+        <button type="button" onClick={() => setTranslationOpen(v => !v)} aria-label="ترجمه فارسی">
+          <Captions className="h-4 w-4" />
+          <span className="hidden sm:inline">ترجمه</span>
+        </button>
+        {yt && (
+          <a href={yt.watch} target="_blank" rel="noopener noreferrer" aria-label="باز کردن در یوتوب">
+            <ExternalLink className="h-4 w-4" />
+          </a>
+        )}
       </div>
+
+      {translationOpen && (
+        <div className="custom-video-translation">
+          ترجمه فارسی و خلاصه ویدئو از مسیر پردازش محتوای اتمیک نمایش داده می‌شود. این بخش برای اتصال به API ترجمه/زیرنویس آماده است.
+        </div>
+      )}
     </div>
   );
 }

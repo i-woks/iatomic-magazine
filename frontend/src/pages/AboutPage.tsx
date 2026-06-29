@@ -1,10 +1,10 @@
 import { Atom, Bot, CheckCircle2, Shield, Sparkles, Zap } from "lucide-react";
 
 const VALUES = [
-  { icon: Atom, title: "دقت علمی", desc: "هر ادعای علمی باید قابل پیگیری، منبع‌پذیر و روشن باشد." },
-  { icon: Sparkles, title: "بیان ساده", desc: "مفاهیم دشوار را بدون قربانی کردن دقت، قابل فهم می‌کنیم." },
-  { icon: Bot, title: "همکاری هوش مصنوعی", desc: "AI برای نظم، بررسی و سرعت کمک می‌کند؛ نه برای انتشار بی‌مسئولانه." },
-  { icon: Shield, title: "اعتماد محتوایی", desc: "محتوای جعلی، اغراق‌آمیز و بی‌منبع جایی در اتمیک ندارد." },
+  { icon: Atom, color: "#1565C0", title: "دقت علمی", desc: "هر ادعای علمی باید قابل پیگیری، منبع‌پذیر و روشن باشد." },
+  { icon: Sparkles, color: "#00CFA6", title: "بیان ساده", desc: "مفاهیم دشوار را بدون قربانی کردن دقت، قابل فهم می‌کنیم." },
+  { icon: Bot, color: "#6A1B9A", title: "همکاری هوش مصنوعی", desc: "AI برای نظم، بررسی و سرعت کمک می‌کند؛ نه برای انتشار بی‌مسئولانه." },
+  { icon: Shield, color: "#2E7D32", title: "اعتماد محتوایی", desc: "محتوای جعلی، اغراق‌آمیز و بی‌منبع جایی در اتمیک ندارد." },
 ];
 
 const DOMAINS = ["علوم پایه", "هوش مصنوعی", "مهندسی", "پزشکی", "علوم انسانی"];
@@ -23,30 +23,18 @@ export function AboutPage() {
               <Atom className="h-4 w-4" />
               درباره مجله علمی اتمیک
             </div>
-            <h1 className="text-3xl font-black leading-[1.5] text-label-primary sm:text-4xl">
-              اتمیک؛ یک خانه سرزنده و دقیق برای علم فارسی
-            </h1>
+            <h1 className="text-3xl font-black leading-[1.5] text-label-primary sm:text-4xl">اتمیک؛ یک خانه سرزنده و دقیق برای علم فارسی</h1>
             <p className="mt-4 max-w-2xl text-base leading-8 text-label-secondary">
               اتمیک علم را در قالبی مینیمال اما زنده ارائه می‌کند: کارت‌های روشن، هاله‌های رنگی کنترل‌شده، منابع قابل پیگیری و دسته‌بندی علمی منظم برای اینکه خواندن مقاله علمی خشک و سنگین نباشد.
             </p>
-
             <div className="mt-6 flex flex-wrap gap-2">
-              {DOMAINS.map((item) => (
-                <span key={item} className="rounded-full border border-separator/25 bg-bg-primary/70 px-3 py-1.5 text-xs font-bold text-label-secondary">
-                  {item}
-                </span>
-              ))}
+              {DOMAINS.map((item) => <span key={item} className="rounded-full border border-separator/25 bg-bg-primary/70 px-3 py-1.5 text-xs font-bold text-label-secondary">{item}</span>)}
             </div>
           </div>
 
           <div className="rounded-[28px] border border-separator/25 bg-bg-primary/70 p-4">
             <div className="grid grid-cols-2 gap-3">
-              {[
-                ["۵", "شاخه اصلی"],
-                ["۴۴+", "زیرشاخه علمی"],
-                ["RTL", "تجربه فارسی"],
-                ["AI", "پردازش کمکی"],
-              ].map(([num, label], index) => (
+              {[["۵", "شاخه اصلی"], ["۴۴+", "زیرشاخه علمی"], ["RTL", "تجربه فارسی"], ["AI", "پردازش کمکی"]].map(([num, label], index) => (
                 <div key={label} className="rounded-[22px] p-4 text-center" style={{ background: ["rgba(21,101,192,.08)", "rgba(0,207,166,.09)", "rgba(106,27,154,.08)", "rgba(255,211,0,.16)"][index] }}>
                   <div className="text-2xl font-black text-ios-blue">{num}</div>
                   <div className="mt-1 text-xs font-bold text-label-secondary">{label}</div>
@@ -58,40 +46,30 @@ export function AboutPage() {
       </section>
 
       <section className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {VALUES.map(({ icon: Icon, title, desc }) => (
+        {VALUES.map(({ icon: Icon, color, title, desc }) => (
           <div key={title} className="rounded-[26px] border border-separator/25 bg-bg-secondary/60 p-5 shadow-ios-sm">
-            <div className="mb-3 grid h-11 w-11 place-items-center rounded-[17px] bg-ios-blue-soft text-ios-blue">
-              <Icon className="h-5 w-5" />
+            <div className="mb-3 flex items-center gap-2">
+              <span className="grid h-10 w-10 place-items-center rounded-[16px]" style={{ backgroundColor: `${color}14`, color }}>
+                <Icon className="h-5 w-5" />
+              </span>
+              <h2 className="font-extrabold text-label-primary">{title}</h2>
             </div>
-            <h2 className="font-extrabold text-label-primary">{title}</h2>
-            <p className="mt-2 text-sm leading-7 text-label-secondary">{desc}</p>
+            <p className="text-sm leading-7 text-label-secondary">{desc}</p>
           </div>
         ))}
       </section>
 
       <section className="mt-6 rounded-[30px] border border-separator/25 bg-bg-secondary/60 p-6">
-        <div className="mb-4 flex items-center gap-2">
-          <CheckCircle2 className="h-5 w-5 text-ios-blue" />
-          <h2 className="text-xl font-black text-label-primary">روش کار اتمیک</h2>
-        </div>
+        <div className="mb-4 flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-ios-blue" /><h2 className="text-xl font-black text-label-primary">روش کار اتمیک</h2></div>
         <div className="space-y-4 text-sm leading-8 text-label-secondary">
-          <p>
-            محتواهای اتمیک با نگاه تحلیلی و آموزشی آماده می‌شوند. هدف ما تولید متن‌هایی است که هم برای مخاطب عمومی قابل فهم باشد و هم از نظر علمی بی‌پایه و سطحی نباشد.
-          </p>
-          <p>
-            در سازوکار خودکارسازی، مقاله بین ابزارهای پردازشی و هوش مصنوعی برای نظم‌دهی، پیشنهاد تگ و کاهش خطای محتوایی جابه‌جا می‌شود؛ اما خروجی نهایی باید منبع‌پذیر و قابل بازبینی باقی بماند.
-          </p>
+          <p>محتواهای اتمیک با نگاه تحلیلی و آموزشی آماده می‌شوند. هدف ما تولید متن‌هایی است که هم برای مخاطب عمومی قابل فهم باشد و هم از نظر علمی بی‌پایه و سطحی نباشد.</p>
+          <p>در سازوکار خودکارسازی، مقاله بین ابزارهای پردازشی و هوش مصنوعی برای نظم‌دهی، پیشنهاد تگ و کاهش خطای محتوایی جابه‌جا می‌شود؛ اما خروجی نهایی باید منبع‌پذیر و قابل بازبینی باقی بماند.</p>
         </div>
       </section>
 
       <section className="mt-6 rounded-[30px] border border-separator/25 bg-bg-secondary/60 p-6">
-        <div className="mb-4 flex items-center gap-2">
-          <Zap className="h-5 w-5 text-ios-blue" />
-          <h2 className="text-xl font-black text-label-primary">مسیر بعدی</h2>
-        </div>
-        <p className="text-sm leading-8 text-label-secondary">
-          اتمیک قرار است به یک مرجع سبک، منظم و موبایل‌محور برای محتوای علمی فارسی تبدیل شود؛ با دسته‌بندی دقیق، ربات تلگرام فعال، پردازش هوشمند و تجربه کاربری زنده اما خلوت.
-        </p>
+        <div className="mb-4 flex items-center gap-2"><Zap className="h-5 w-5 text-ios-blue" /><h2 className="text-xl font-black text-label-primary">مسیر بعدی</h2></div>
+        <p className="text-sm leading-8 text-label-secondary">اتمیک قرار است به یک مرجع سبک، منظم و موبایل‌محور برای محتوای علمی فارسی تبدیل شود؛ با دسته‌بندی دقیق، ربات تلگرام فعال، پردازش هوشمند و تجربه کاربری زنده اما خلوت.</p>
       </section>
     </div>
   );

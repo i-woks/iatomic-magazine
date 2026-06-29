@@ -115,6 +115,10 @@ export function ArticlePage() {
   );
 
   const accent = branchColor(post.category?.name, post.category?.accentColor || undefined);
+  const relatedImages = [
+    post.coverImage ? { url: post.coverImage.url, alt: post.coverImage.alt || post.title } : null,
+    post.videoPoster && post.videoPoster !== post.coverImage?.url ? { url: post.videoPoster, alt: `${post.title} - تصویر ویدئو` } : null,
+  ].filter(Boolean) as Array<{ url: string; alt: string }>;
   const videoMarker = "[[video]]";
   const hasVideoMarker = Boolean(post.videoUrl && post.content.includes(videoMarker));
   const [beforeVideo, afterVideo] = hasVideoMarker ? post.content.split(videoMarker) : [post.content, ""];
@@ -132,6 +136,12 @@ export function ArticlePage() {
         )}
         <span className="text-label-secondary">{post.title}</span>
       </nav>
+
+      {post.coverImage && (
+        <div className="article-hero mb-6 overflow-hidden rounded-[28px]">
+          <img src={post.coverImage.url} alt={post.title} className="aspect-video w-full object-cover" loading="eager" />
+        </div>
+      )}
 
       <div className="mb-4 flex flex-wrap items-center gap-3 text-sm text-label-secondary">
         <span className="flex items-center gap-1"><Calendar className="h-4 w-4" />{post.publishedAt ? toPersianDate(post.publishedAt) : "—"}</span>
@@ -156,11 +166,27 @@ export function ArticlePage() {
           <MarkdownRenderer content={beforeVideo} />
         </article>
 
+        {relatedImages.length > 0 && (
+          <div className="article-related-images-section">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <h2>تصاویر مرتبط</h2>
+              <span>{persianNumber(relatedImages.length)} تصویر</span>
+            </div>
+            <div className="article-related-images-strip">
+              {relatedImages.map((img, index) => (
+                <figure key={`${img.url}-${index}`}>
+                  <img src={img.url} alt={img.alt} loading="lazy" />
+                </figure>
+              ))}
+            </div>
+          </div>
+        )}
+
         {post.videoUrl && (
           <div className="article-video-section">
             <div className="mb-3 flex items-center justify-between gap-3">
               <h2>ویدئوی مرتبط</h2>
-              <span>جایگاه با مارکر [[video]] در متن کنترل می‌شود</span>
+              
             </div>
             <VideoPlayer videoUrl={post.videoUrl} posterUrl={post.videoPoster || post.coverImage?.url} title={post.title} />
           </div>
@@ -188,6 +214,11 @@ export function ArticlePage() {
             </div>
           </div>
         )}
+
+        <div className="article-support-strip">
+          <span>اگر این مقاله برایتان مفید بود، اتمیک را با معرفی به دوستانتان حمایت کنید.</span>
+          <Link to="/contact">ارتباط با اتمیک</Link>
+        </div>
       </section>
 
       {related.length > 0 && (

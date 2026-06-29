@@ -80,9 +80,9 @@ export function ContactPage() {
           href={settings?.instagramUrl || "https://instagram.com/iatomic_"}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-4 rounded-ios border border-separator/30 bg-bg-secondary/60 p-5 transition-colors hover:border-ios-blue-border"
+          className="contact-link-card contact-instagram flex items-center gap-4 rounded-ios border p-5 transition-colors"
         >
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-ios-blue-soft text-ios-blue">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full">
             <Instagram className="h-6 w-6" />
           </div>
           <div className="flex-1">
@@ -98,9 +98,9 @@ export function ContactPage() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="کانال تلگرام Atomic Magazine"
-          className="flex items-center gap-4 rounded-ios border border-separator/30 bg-bg-secondary/60 p-5 transition-colors hover:border-ios-blue-border"
+          className="contact-link-card contact-telegram flex items-center gap-4 rounded-ios border p-5 transition-colors"
         >
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-ios-blue-soft text-ios-blue">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full">
             <TelegramIcon className="h-6 w-6" />
           </div>
           <div className="flex-1">
@@ -111,8 +111,8 @@ export function ContactPage() {
         </a>
 
         {/* Email placeholder */}
-        <div className="flex items-center gap-4 rounded-ios border border-separator/30 bg-bg-secondary/60 p-5 opacity-70 cursor-default">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-fill-secondary text-label-tertiary">
+        <div className="contact-link-card contact-email flex cursor-default items-center gap-4 rounded-ios border p-5 opacity-80">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full">
             <Mail className="h-6 w-6" />
           </div>
           <div className="flex-1">
@@ -124,9 +124,9 @@ export function ContactPage() {
         {/* Direct admin message */}
         <button
           onClick={() => setFormOpen(true)}
-          className="flex items-center gap-4 rounded-ios border border-ios-blue-border bg-ios-blue-soft p-5 text-right transition-all hover:bg-ios-blue-soft/70 hover:shadow-ios"
+          className="contact-link-card contact-message flex items-center gap-4 rounded-ios border p-5 text-right transition-all hover:shadow-ios"
         >
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-ios-blue text-white">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full">
             <MessageSquare className="h-6 w-6" />
           </div>
           <div className="flex-1 text-right">
