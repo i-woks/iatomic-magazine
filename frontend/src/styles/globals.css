@@ -627,3 +627,100 @@
   .contact-email { --contact-color:#607D66; }
   .contact-message { --contact-color:#00CFA6; background:rgba(0,207,166,.06); }
 }
+
+@layer components {
+  .image-carousel-btn {
+    display:inline-grid;
+    place-items:center;
+    width:28px;
+    height:28px;
+    border-radius:999px;
+    border:1px solid rgba(38,50,56,.14);
+    background:#fff;
+    color:var(--sci-science-blue);
+    box-shadow:0 6px 14px rgba(10,24,61,.055);
+    transition:background-color .16s ease, color .16s ease, border-color .16s ease, transform .16s ease;
+  }
+  .image-carousel-btn:hover { transform:translateY(-1px); border-color:rgba(21,101,192,.28); background:rgba(21,101,192,.07); }
+
+  .article-support-addon {
+    position:relative;
+    overflow:hidden;
+    border-radius:20px;
+    border:1px solid rgba(106,27,154,.15);
+    background:linear-gradient(135deg, rgba(106,27,154,.07), rgba(0,207,166,.055), #fff);
+    box-shadow:0 12px 30px rgba(10,24,61,.06);
+    padding:1rem;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:1rem;
+  }
+  .article-support-addon::before {
+    content:"";
+    position:absolute;
+    left:-32px;
+    top:-32px;
+    width:96px;
+    height:96px;
+    border-radius:999px;
+    background:rgba(166,85,247,.12);
+    filter:blur(20px);
+    pointer-events:none;
+  }
+  .article-support-addon h3 { position:relative; font-size:.95rem; font-weight:900; color:var(--color-label-primary); }
+  .article-support-addon p { position:relative; margin-top:.2rem; font-size:.78rem; line-height:1.8; color:var(--color-label-secondary); }
+  .article-support-addon a {
+    position:relative;
+    white-space:nowrap;
+    border-radius:999px;
+    background:#6A1B9A;
+    color:#fff;
+    padding:.58rem .9rem;
+    font-size:.78rem;
+    font-weight:900;
+    text-decoration:none;
+    transition:transform .16s ease, background-color .16s ease;
+  }
+  .article-support-addon a:hover { transform:translateY(-1px); background:#8E24AA; color:#fff; }
+
+  .footer-copy-box {
+    display:flex;
+    align-items:center;
+    gap:.45rem;
+    border-radius:14px;
+    border:1px solid color-mix(in srgb, var(--copy-color) 18%, transparent);
+    background:color-mix(in srgb, var(--copy-color) 8%, white);
+    color:var(--copy-color);
+    padding:.65rem .8rem;
+    font-weight:800;
+  }
+
+  /* Animation stabilization: predictable, subtle, no layout jump */
+  .site-surface,
+  .article-card,
+  .action-box,
+  .science-chip-accent,
+  .header-search-icon,
+  .image-carousel-btn,
+  .article-support-addon,
+  .contact-link-card {
+    backface-visibility:hidden;
+    transform:translateZ(0);
+    will-change:transform;
+  }
+}
+
+@media (max-width:640px) {
+  .article-support-addon { align-items:stretch; flex-direction:column; }
+  .article-support-addon a { text-align:center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    scroll-behavior:auto !important;
+    transition-duration:.01ms !important;
+  }
+}

@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Clock, Calendar, Share2, ChevronRight, Eye, Heart, MessageCircle, Bookmark } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Clock, Eye, Heart, MessageCircle, Bookmark, Share2 } from "lucide-react";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { ArticleCard } from "@/components/ArticleCard";
 import { VideoPlayer } from "@/components/VideoPlayer";
@@ -14,12 +14,15 @@ import type { Post } from "@/types";
 
 type SourceLink = { name: string; url: string };
 
+type RelatedImage = { url: string; alt: string };
+
 export function ArticlePage() {
   const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState<Post | null>(null);
   const [related, setRelated] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [liked, setLiked] = useState(false);
+  const imagesRef = useRef<HTMLDivElement>(null);
   const { isBookmarked, toggle } = useBookmarks();
   const bookmarked = post ? isBookmarked(post.id) : false;
 
@@ -35,6 +38,13 @@ export function ArticlePage() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [slug]);
+
+  const scrollImages = (direction: "prev" | "next") => {
+    const el = imagesRef.current;
+    if (!el) return;
+    const amount = Math.max(240, el.clientWidth * 0.72);
+    el.scrollBy({ left: direction === "next" ? -amount : amount, behavior: "smooth" });
+  };
 
   const handleLike = async () => {
     if (!slug || liked) return;
@@ -115,10 +125,11 @@ export function ArticlePage() {
   );
 
   const accent = branchColor(post.category?.name, post.category?.accentColor || undefined);
-  const relatedImages = [
+  const relatedImages: RelatedImage[] = [
     post.coverImage ? { url: post.coverImage.url, alt: post.coverImage.alt || post.title } : null,
     post.videoPoster && post.videoPoster !== post.coverImage?.url ? { url: post.videoPoster, alt: `${post.title} - تصویر ویدئو` } : null,
-  ].filter(Boolean) as Array<{ url: string; alt: string }>;
+    ...related.map((item) => item.coverImage?.url ? { url: item.coverImage.url, alt: item.coverImage.alt || item.title } : null),
+  ].filter(Boolean) as RelatedImage[];
   const videoMarker = "[[video]]";
   const hasVideoMarker = Boolean(post.videoUrl && post.content.includes(videoMarker));
   const [beforeVideo, afterVideo] = hasVideoMarker ? post.content.split(videoMarker) : [post.content, ""];
@@ -152,81 +163,68 @@ export function ArticlePage() {
             {post.category.name}
           </Badge>
         )}
-        {(post.tags ?? []).map((t) => (
-          <Link key={t.id} to={`/search?q=${encodeURIComponent(t.name)}`} className="related-chip">{t.name}</Link>
-        ))}
+        {(post.tags ?? []).map((t) => <Link key={t.id} to={`/search?q=${encodeURIComponent(t.name)}`} className="related-chip">{t.name}</Link>)}
       </div>
 
       <header className="mb-5">
         <h1 className="text-3xl font-black leading-tight text-label-primary sm:text-4xl">{post.title}</h1>
       </header>
 
-      <section className="article-content-card mb-10">
-        <article>
-          <MarkdownRenderer content={beforeVideo} />
-        </article>
+      <section className="article-content-card mb-8">
+        <article><MarkdownRenderer content={beforeVideo} /></article>
 
         {relatedImages.length > 0 && (
           <div className="article-related-images-section">
             <div className="mb-3 flex items-center justify-between gap-3">
               <h2>تصاویر مرتبط</h2>
-              <span>{persianNumber(relatedImages.length)} تصویر</span>
+              <div className="flex items-center gap-2">
+                <span>{persianNumber(relatedImages.length)} تصویر</span>
+                <button type="button" className="image-carousel-btn" onClick={() => scrollImages("prev")} aria-label="تصویر قبلی"><ChevronRight className="h-4 w-4" /></button>
+                <button type="button" className="image-carousel-btn" onClick={() => scrollImages("next")} aria-label="تصویر بعدی"><ChevronLeft className="h-4 w-4" /></button>
+              </div>
             </div>
-            <div className="article-related-images-strip">
-              {relatedImages.map((img, index) => (
-                <figure key={`${img.url}-${index}`}>
-                  <img src={img.url} alt={img.alt} loading="lazy" />
-                </figure>
-              ))}
+            <div ref={imagesRef} className="article-related-images-strip">
+              {relatedImages.map((img, index) => <figure key={`${img.url}-${index}`}><img src={img.url} alt={img.alt} loading="lazy" /></figure>)}
             </div>
           </div>
         )}
 
         {post.videoUrl && (
           <div className="article-video-section">
-            <div className="mb-3 flex items-center justify-between gap-3">
-              <h2>ویدئوی مرتبط</h2>
-              
-            </div>
+            <div className="mb-3 flex items-center justify-between gap-3"><h2>ویدئوی مرتبط</h2></div>
             <VideoPlayer videoUrl={post.videoUrl} posterUrl={post.videoPoster || post.coverImage?.url} title={post.title} />
           </div>
         )}
 
-        {hasVideoMarker && afterVideo.trim() && (
-          <article className="mt-6">
-            <MarkdownRenderer content={afterVideo} />
-          </article>
-        )}
+        {hasVideoMarker && afterVideo.trim() && <article className="mt-6"><MarkdownRenderer content={afterVideo} /></article>}
 
-        <div className="article-actions-section">
-          <ActionButtons />
-        </div>
+        <div className="article-actions-section"><ActionButtons /></div>
 
         {parsedSources.length > 0 && (
           <div className="article-sources-inline">
             <h2>منابع و پیوندهای مرتبط</h2>
             <div className="flex flex-wrap gap-2">
-              {parsedSources.map((source) => (
-                <a key={`${source.name}-${source.url}`} href={source.url} target="_blank" rel="noopener noreferrer">
-                  {source.name}
-                </a>
-              ))}
+              {parsedSources.map((source) => <a key={`${source.name}-${source.url}`} href={source.url} target="_blank" rel="noopener noreferrer">{source.name}</a>)}
             </div>
           </div>
         )}
-
-        <div className="article-support-strip">
-          <span>اگر این مقاله برایتان مفید بود، اتمیک را با معرفی به دوستانتان حمایت کنید.</span>
-          <Link to="/contact">ارتباط با اتمیک</Link>
-        </div>
       </section>
+
+      <div className="article-support-addon mb-10">
+        <div className="flex items-center gap-3">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-ios-blue-soft text-ios-blue"><Heart className="h-5 w-5" /></span>
+          <div>
+            <h3>از انتشار علم فارسی حمایت کن</h3>
+            <p>اگر این مقاله برایتان مفید بود، اتمیک را به یک دوست علاقه‌مند به علم معرفی کنید.</p>
+          </div>
+        </div>
+        <Link to="/contact">همراهی با اتمیک</Link>
+      </div>
 
       {related.length > 0 && (
         <section>
           <h2 className="mb-4 text-lg font-bold text-label-primary">مقالات مرتبط</h2>
-          <div className="grid gap-6 sm:grid-cols-2">
-            {related.map(p => <ArticleCard key={p.id} post={p} />)}
-          </div>
+          <div className="grid gap-6 sm:grid-cols-2">{related.map(p => <ArticleCard key={p.id} post={p} />)}</div>
         </section>
       )}
     </div>
