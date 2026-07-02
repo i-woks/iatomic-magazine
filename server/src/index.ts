@@ -58,8 +58,22 @@ app.get("/api", async (_req, res) => {
 app.use("/api", (_req, res) => res.status(404).json({ error: "Not found" }));
 
 // API error boundary: database/network errors must not crash the container.
-app.use("/api", (err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+app.use("/api", async (err: any, req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error("api error:", err?.message || err);
+  // Emergency public-read fallback: if PandaStack PostgreSQL is temporarily unreachable,
+  // keep the public website usable by proxying GET API reads to the old Cloudflare API.
+  // This does not expose secrets and only applies to GET requests.
+  const fallback = process.env.CLOUDFLARE_API_FALLBACK_URL || "https://iatomic-api.iatomic-magazine.workers.dev";
+  if (req.method === "GET" && fallback) {
+    try {
+      const upstream = await fetch(fallback + req.originalUrl, { headers: { accept: "application/json" } });
+      const body = await upstream.text();
+      res.status(upstream.status).type(upstream.headers.get("content-type") || "application/json").send(body);
+      return;
+    } catch (fallbackErr: any) {
+      console.error("fallback api error:", fallbackErr?.message || fallbackErr);
+    }
+  }
   res.status(503).json({ error: "Service temporarily unavailable" });
 });
 
