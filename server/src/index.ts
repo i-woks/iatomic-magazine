@@ -1,3 +1,4 @@
+import "express-async-errors";
 import express from "express";
 import cookieParser from "cookie-parser";
 import { existsSync } from "node:fs";
@@ -55,6 +56,12 @@ app.get("/api", async (_req, res) => {
 
 // Unknown API routes → JSON 404 (never fall through to the SPA)
 app.use("/api", (_req, res) => res.status(404).json({ error: "Not found" }));
+
+// API error boundary: database/network errors must not crash the container.
+app.use("/api", (err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error("api error:", err?.message || err);
+  res.status(503).json({ error: "Service temporarily unavailable" });
+});
 
 // ── Static frontend (built SPA) ──────────────────────────────────────
 // In the container the Vite build is copied to /app/public.
