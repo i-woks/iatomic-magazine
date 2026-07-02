@@ -22,6 +22,8 @@ export const pool = new Pool({
   database: process.env.DATABASE_URL ? undefined : process.env.PGDATABASE,
   ssl: process.env.PGSSL === "true" ? { rejectUnauthorized: false } : undefined,
   max: Number(process.env.PG_POOL_MAX || 10),
+  connectionTimeoutMillis: Number(process.env.PG_CONNECT_TIMEOUT_MS || 3000),
+  idleTimeoutMillis: Number(process.env.PG_IDLE_TIMEOUT_MS || 10000),
 });
 
 export type QueryParam = unknown;

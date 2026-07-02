@@ -37,4 +37,4 @@ COPY --from=build /app/server/python ./python
 COPY --from=build /app/frontend/dist ./public
 COPY --from=go-build /out/processor ./go/processor
 EXPOSE 9999
-CMD ["sh", "-c", "node dist/seed.js && node dist/index.js"]
+CMD ["node", "dist/index.js"]
