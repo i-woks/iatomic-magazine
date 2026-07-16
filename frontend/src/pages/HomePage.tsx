@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { fetchFeaturedPost, fetchNewestPosts, fetchUserFavoritePosts, fetchTopWeekPosts } from "@/lib/api";
 import { useBookmarks } from "@/hooks/useBookmarks";
 import { branchColor } from "@/lib/mainBranches";
+import { Reveal } from "@/components/motion/Reveal";
 import type { Post, Category, SiteSettings } from "@/types";
 
 export function HomePage() {
@@ -52,19 +53,19 @@ export function HomePage() {
   return (
     <div className="mx-auto max-w-7xl px-3 py-4 sm:px-6 sm:py-6 lg:px-8">
       {/* Donation widget */}
-      <section className="mb-6">
+      <Reveal as="section" className="mb-6" delay={0.03}>
         <DonationWidget />
-      </section>
+      </Reveal>
 
       {/* Hero */}
       {featured && (
-        <section className="mb-8">
+        <Reveal as="section" className="mb-8" delay={0.06}>
           <ArticleCard post={featured} featured />
-        </section>
+        </Reveal>
       )}
 
       {/* علاقه‌مندی‌ها — bookmarked articles (text-only horizontal showcase) */}
-      <section className="mb-8">
+      <Reveal as="section" className="mb-8" delay={0.09}>
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Bookmark className="h-[18px] w-[18px]" style={{ color: "var(--sci-science-blue)" }} />
@@ -103,26 +104,32 @@ export function HomePage() {
             ))}
           </div>
         )}
-      </section>
+      </Reveal>
 
       {/* Showcase: Newest articles */}
-      <ShowcaseRow
-        title="جدیدترین مقالات"
-        posts={newest}
-        viewAllLink="/search?recent=week"
-      />
+      <Reveal delay={0.12}>
+        <ShowcaseRow
+          title="جدیدترین مقالات"
+          posts={newest}
+          viewAllLink="/search?recent=week"
+        />
+      </Reveal>
 
       {/* Showcase: User favorites */}
-      <ShowcaseRow
-        title="مقالات برگزیده از دید کاربران"
-        posts={userFavorites}
-      />
+      <Reveal delay={0.15}>
+        <ShowcaseRow
+          title="مقالات برگزیده از دید کاربران"
+          posts={userFavorites}
+        />
+      </Reveal>
 
       {/* Showcase: Top week */}
-      <ShowcaseRow
-        title="مقالات برتر هفته"
-        posts={topWeek}
-      />
+      <Reveal delay={0.18}>
+        <ShowcaseRow
+          title="مقالات برتر هفته"
+          posts={topWeek}
+        />
+      </Reveal>
     </div>
   );
 }

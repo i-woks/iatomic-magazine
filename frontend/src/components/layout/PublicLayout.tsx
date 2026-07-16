@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Outlet } from "react-router-dom";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
+import { PageTransition } from "@/components/motion/PageTransition";
 import { fetchSettings, fetchCategories } from "@/lib/api";
 import type { SiteSettings, Category } from "@/types";
 
@@ -35,9 +35,7 @@ export function PublicLayout() {
       />
 
       {/* pt-16 = header height clearance; relative z-10 sits above halos */}
-      <main className="relative flex-1 pt-16">
-        <Outlet context={{ settings, categories }} />
-      </main>
+      <PageTransition context={{ settings, categories }} />
 
       <Footer
         categories={categories}

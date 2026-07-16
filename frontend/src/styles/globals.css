@@ -761,3 +761,59 @@
 @layer components {
   .main-branch-badge { border-bottom-width:1px !important; box-shadow:none !important; }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   PHASE 01 — Motion foundation and interaction reliability
+═══════════════════════════════════════════════════════════ */
+:root {
+  --motion-ease-emphasized: cubic-bezier(.22, 1, .36, 1);
+  --motion-ease-standard: cubic-bezier(.2, .8, .2, 1);
+  --motion-duration-fast: 140ms;
+  --motion-duration-normal: 240ms;
+  --motion-duration-slow: 420ms;
+  --focus-ring: 0 0 0 3px rgba(0, 168, 255, .22);
+}
+
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--color-ios-blue) !important;
+    outline-offset: 3px;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+@layer components {
+  .motion-reveal {
+    will-change: transform, opacity;
+  }
+
+  .site-surface,
+  .glass-panel,
+  .contact-glass,
+  .article-card,
+  .action-box,
+  .science-chip-accent,
+  .header-search-icon,
+  .image-carousel-btn,
+  .article-support-addon,
+  .contact-link-card,
+  .footer-copy-box {
+    transition-duration: var(--motion-duration-normal);
+    transition-timing-function: var(--motion-ease-standard);
+  }
+
+  .site-surface:hover,
+  .glass-panel:hover {
+    border-color: rgba(0, 168, 255, .18);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    transition-delay: 0ms !important;
+  }
+}
