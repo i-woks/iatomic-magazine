@@ -10,6 +10,7 @@ import {
   Search, ShieldCheck, Sigma, Smile, Stethoscope, Telescope, Users, Vote, X, Zap
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { ThemeToggle } from "./ThemeToggle";
 import { cn } from "@/lib/utils";
 import type { Category } from "@/types";
 
@@ -116,7 +117,7 @@ export function Header({ categories, logoAlt }: HeaderProps) {
   const closeMenu = () => setMenuOpen(false);
 
   return (
-    <header className={cn("fixed inset-x-0 top-0 z-50 border-b border-separator/15 bg-white transition-all duration-240", scrolled && "shadow-[0_6px_20px_rgba(17,24,39,0.04)]")}>
+    <header className={cn("fixed inset-x-0 top-0 z-50 border-b border-separator/15 bg-white/95 backdrop-blur-xl transition-all duration-240 dark:bg-bg-secondary/95", scrolled && "shadow-[0_6px_20px_rgba(17,24,39,0.04)] dark:shadow-[0_10px_30px_rgba(0,0,0,0.35)]")}>
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3">
           <Button ref={menuBtnRef} variant="ghost" size="icon" className="rounded-full lg:hidden" aria-label="منو" aria-expanded={menuOpen} onClick={() => setMenuOpen(s => !s)}>{menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</Button>
@@ -125,7 +126,7 @@ export function Header({ categories, logoAlt }: HeaderProps) {
         <nav className="hidden items-center gap-1 lg:flex" aria-label="دسته‌بندی‌ها">
           {categories.slice(0, 6).map(cat => <Link key={cat.id} to={`/category/${cat.slug}`} className="science-chip-accent rounded-full border px-3 py-2 text-[13px] font-medium text-label-secondary transition-colors">{cat.name}</Link>)}
         </nav>
-        <Link to="/search" className="header-search-icon" aria-label="جستجو در مجله" title="جستجو"><Search className="h-[17px] w-[17px]" strokeWidth={1.85} aria-hidden="true" /></Link>
+        <div className="flex items-center gap-2"><ThemeToggle /><Link to="/search" className="header-search-icon" aria-label="جستجو در مجله" title="جستجو"><Search className="h-[17px] w-[17px]" strokeWidth={1.85} aria-hidden="true" /></Link></div>
       </div>
 
       <div className={cn("fixed inset-0 z-[70] lg:hidden", menuOpen ? "visible" : "invisible pointer-events-none")} aria-hidden={!menuOpen}>

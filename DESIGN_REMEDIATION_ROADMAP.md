@@ -8,10 +8,12 @@ This roadmap converts the UI/UX audit into small, controlled implementation phas
 - Define motion timing/easing tokens in CSS.
 - Improve perceived polish without changing product architecture.
 
-## Phase 02 — Design Tokens & Semantic Color System
-- Convert the science palette into semantic tokens: primary, secondary, success, warning, danger, info, surface, border, muted, branch colors.
-- Remove one-off colors and map UI components to semantic roles.
-- Audit contrast and adjust accessible text colors.
+## Phase 02 — Design Tokens & Semantic Color System ✅
+- Converted the science palette into semantic tokens: primary, secondary, success, warning, danger, info, surface, border, muted, branch colors.
+- Added a real dark/night theme using the existing class-based Tailwind strategy.
+- Restored the theme provider and header toggle so users can switch day/night modes.
+- Added broad dark-mode surface, card, input, table, chip and action-box normalization.
+- Added contrast-oriented text/surface variables for the next typography/accessibility phases.
 
 ## Phase 03 — Typography & Reading System
 - Define Persian typographic scale for display, page title, section title, card title, body, metadata and chips.

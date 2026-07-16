@@ -817,3 +817,198 @@
     transition-delay: 0ms !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   PHASE 02 — Semantic color system and dark/night theme
+═══════════════════════════════════════════════════════════ */
+:root {
+  --semantic-primary: var(--sci-science-blue);
+  --semantic-primary-hover: #0F3460;
+  --semantic-secondary: var(--sci-data-cyan);
+  --semantic-accent: var(--sci-ml-purple);
+  --semantic-success: #2E7D32;
+  --semantic-warning: #FFB800;
+  --semantic-danger: #E71C1C;
+  --semantic-info: #2F80ED;
+  --surface-canvas: #F5F7F6;
+  --surface-card: #FFFFFF;
+  --surface-card-raised: #FFFFFF;
+  --surface-muted: #EBEEF2;
+  --surface-glass: rgba(255,255,255,.78);
+  --text-strong: #121A14;
+  --text-body: rgba(18,26,20,.72);
+  --text-muted: rgba(18,26,20,.54);
+  --text-faint: rgba(18,26,20,.34);
+  --border-subtle: rgba(38,50,56,.14);
+  --border-strong: rgba(38,50,56,.24);
+  --shadow-card: 0 14px 36px rgba(10,24,61,.07);
+  --shadow-card-hover: 0 20px 48px rgba(10,24,61,.11);
+}
+
+.dark {
+  --color-bg-primary: #07100D;
+  --color-bg-secondary: #0D1714;
+  --color-bg-tertiary: #13211D;
+  --color-label-primary: rgba(244,250,247,.96);
+  --color-label-secondary: rgba(226,238,232,.74);
+  --color-label-tertiary: rgba(207,224,216,.56);
+  --color-label-quaternary: rgba(207,224,216,.34);
+  --color-fill-primary: rgba(255,255,255,.10);
+  --color-fill-secondary: rgba(255,255,255,.075);
+  --color-fill-tertiary: rgba(255,255,255,.055);
+  --color-fill-quaternary: rgba(255,255,255,.04);
+  --color-separator: rgba(214,241,228,.13);
+  --color-separator-opaque: rgba(214,241,228,.22);
+  --color-ios-blue: #4FC3F7;
+  --color-ios-blue-hover: #83D8FF;
+  --color-ios-blue-soft: rgba(79,195,247,.14);
+  --color-ios-blue-border: rgba(79,195,247,.30);
+  --semantic-primary: #4FC3F7;
+  --semantic-primary-hover: #83D8FF;
+  --semantic-secondary: #00E6AB;
+  --semantic-accent: #C084FC;
+  --semantic-success: #81C784;
+  --semantic-warning: #FFE660;
+  --semantic-danger: #FF8A80;
+  --semantic-info: #83D8FF;
+  --surface-canvas: #07100D;
+  --surface-card: #0D1714;
+  --surface-card-raised: #13211D;
+  --surface-muted: #1B2A25;
+  --surface-glass: rgba(13,23,20,.78);
+  --text-strong: rgba(244,250,247,.96);
+  --text-body: rgba(226,238,232,.74);
+  --text-muted: rgba(207,224,216,.56);
+  --text-faint: rgba(207,224,216,.34);
+  --border-subtle: rgba(214,241,228,.13);
+  --border-strong: rgba(214,241,228,.22);
+  --shadow-card: 0 18px 46px rgba(0,0,0,.34);
+  --shadow-card-hover: 0 22px 58px rgba(0,0,0,.48);
+}
+
+@layer base {
+  body {
+    background:
+      radial-gradient(circle at 8% -6%, rgba(0,168,255,.10), transparent 28%),
+      radial-gradient(circle at 88% 4%, rgba(0,207,166,.09), transparent 26%),
+      var(--surface-canvas);
+    color: var(--color-label-primary);
+    transition: background-color var(--motion-duration-normal) var(--motion-ease-standard), color var(--motion-duration-normal) var(--motion-ease-standard);
+  }
+  .dark body {
+    background:
+      radial-gradient(circle at 10% -8%, rgba(79,195,247,.14), transparent 30%),
+      radial-gradient(circle at 90% 0%, rgba(0,230,171,.10), transparent 28%),
+      radial-gradient(circle at 50% 100%, rgba(106,27,154,.14), transparent 30%),
+      var(--surface-canvas);
+  }
+}
+
+@layer components {
+  .site-surface,
+  .cosmic-surface,
+  .glass-panel,
+  .contact-glass {
+    background: var(--surface-card);
+    border-color: var(--border-subtle);
+    box-shadow: var(--shadow-card);
+  }
+  .site-surface:hover,
+  .article-card:hover,
+  .glass-panel:hover {
+    box-shadow: var(--shadow-card-hover);
+  }
+  .dark .site-surface,
+  .dark .cosmic-surface,
+  .dark .glass-panel,
+  .dark .contact-glass {
+    background: linear-gradient(180deg, rgba(19,33,29,.96), rgba(13,23,20,.96));
+  }
+
+  .dark .bg-white,
+  .dark .bg-bg-secondary\/40,
+  .dark .bg-bg-secondary\/60,
+  .dark .bg-bg-secondary\/70,
+  .dark .bg-fill-quaternary\/50,
+  .dark .bg-fill-quaternary\/60 {
+    background-color: var(--surface-card) !important;
+    box-shadow: var(--shadow-card);
+  }
+
+  .dark .science-chip-accent {
+    background: rgba(255,255,255,.055);
+    border-color: var(--border-subtle);
+    color: var(--color-label-secondary);
+  }
+  .dark .science-chip-accent:hover {
+    background: rgba(79,195,247,.10);
+    border-color: var(--color-ios-blue-border);
+    color: var(--color-ios-blue);
+  }
+
+  .related-chip {
+    background: var(--surface-muted);
+    border-color: var(--border-subtle);
+    color: var(--text-muted);
+  }
+  .dark .related-chip {
+    background: rgba(255,255,255,.055);
+    color: var(--color-label-tertiary);
+  }
+
+  .header-search-icon {
+    color: var(--semantic-primary);
+    background: color-mix(in srgb, var(--semantic-primary) 10%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-primary) 24%, transparent);
+  }
+  .dark .header-search-icon:hover {
+    background: rgba(79,195,247,.16);
+  }
+
+  .atomic-wordmark,
+  .footer-wordmark {
+    color: var(--semantic-primary);
+  }
+
+  .article-content-card,
+  .article-support-addon,
+  .article-related-images-strip figure,
+  .custom-video-player,
+  .footer-copy-box,
+  .contact-link-card,
+  .admin-metric-card {
+    border-color: var(--border-subtle);
+  }
+  .dark .article-content-card {
+    background: linear-gradient(180deg, rgba(19,33,29,.98), rgba(13,23,20,.98));
+    box-shadow: var(--shadow-card);
+  }
+  .dark .article-sources-inline a {
+    background: rgba(79,195,247,.11);
+    border-color: rgba(79,195,247,.24);
+    color: var(--color-ios-blue);
+  }
+  .dark .article-support-addon {
+    background: linear-gradient(135deg, rgba(192,132,252,.12), rgba(0,230,171,.075), rgba(13,23,20,.96));
+  }
+
+  .action-box {
+    background: linear-gradient(180deg, var(--surface-card-raised), var(--surface-card));
+    border-color: var(--border-subtle);
+    color: var(--text-body);
+  }
+  .dark .action-box {
+    background: rgba(255,255,255,.055);
+  }
+
+  input, textarea, select {
+    background-color: var(--surface-card) !important;
+    color: var(--color-label-primary) !important;
+    border-color: var(--border-subtle) !important;
+  }
+  .dark input::placeholder,
+  .dark textarea::placeholder { color: var(--color-label-quaternary); }
+
+  .dark table thead { background: rgba(255,255,255,.055); }
+  .dark tr { border-color: var(--border-subtle); }
+}
